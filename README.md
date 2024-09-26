@@ -1,4 +1,4 @@
 # EatWellthy
 This is SC2006 Team 31 Yr2024
 
-This is simply for logging purpose
+This repo is for our development team internal usage only.
