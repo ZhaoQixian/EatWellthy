@@ -1,3 +1,5 @@
+First download everything in this repo into a folder, name it as EatWellthy
+
 To start, use windows powershell: locate to the root repo using command cd
 
 cd D:
