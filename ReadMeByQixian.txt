@@ -14,3 +14,5 @@ it should auto pop out in yr browers
 most of the code are in EatWellthy\client\src
 
 Login UserName and Password : eatwellthy
+
+To terminate windows powershell, press ctrl + c
