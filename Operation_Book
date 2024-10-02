@@ -1,9 +1,20 @@
-1. Clone the whole repo into your either Git or Github desktop ( I use desktop and it looks easy after some tries)
+1. Clone the whole repo into your either Git or Github desktop ( I use desktop Github app and it looks easy after some tries)
 
-2. Before you start, always pull to get the latest updated version from the team!!!
+2. Before you start making any changes or just viewing, always fetch original to get the latest updated version from the team!!!
 
 3. Go to the cloned repo in your laptop, it should be named as Github\EatWellthy
 
-4. use your Laptop Powershell ( for windows)
+4. use your Laptop Powershell ( for windows )
 
-5. I go for dinner and come back later haha
+5. Type in this line: cd WhereYouStoreTheProject\EatWellthy\backend         e.g. cd "D:\Onedrive\Documents\GitHub\EatWellthy\backend"
+                      node --watch server
+
+6. Open another Powershell window and 
+   Type in this line: cd WhereYouStoreTheProject\EatWellthy\client          e.g. cd "D:\Onedrive\Documents\GitHub\EatWellthy\client"
+                      npm run start
+
+7. The web app window should pop out from your default browser
+
+8. After making changes, you can commit change and push to repo using github desktop app
+
+9. Or you can delete the changes you make as long as you donot commit change, by right click the file you want to undo the changes
