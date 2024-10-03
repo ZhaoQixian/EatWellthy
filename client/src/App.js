@@ -13,13 +13,13 @@ import Dashboard from "./components/Dashboard";
 import setAuthToken from "./utils/setAuthToken";
 import store from "./store";
 import { loadUser } from "./actions/auth";
-import NutritionCalculator from "./NutritionCalculator";
-import DietPlanner from "./DietPlanner";
-import DailyPriceList from "./DailyPriceList";
-import Welloh from "./Welloh";
-import Calendar from "./Calendar";
-import FAQs from "./FAQs";
-import Location from "./Location";
+import NutritionCalculator from "./components/NutritionCalculator";
+import DietPlanner from "./components/DietPlanner";
+import DailyPriceList from "./components/DailyPriceList";
+import Welloh from "./components/Welloh";
+import Calendar from "./components/Calendar";
+import FAQs from "./components/FAQs";
+import Location from "./components/Location";
 
 if (localStorage.token) {
   setAuthToken(localStorage.token);

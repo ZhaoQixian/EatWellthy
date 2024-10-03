@@ -1,32 +1,46 @@
-
-
 export default Dashboard;
 import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import Calendar from "./Calendar";  // Import additional features
-import NutritionCalculator from "./NutritionCalculator";
-import DietPlanner from "./DietPlanner";
-import DailyPriceList from "./DailyPriceList";
-import FAQs from "./FAQs";
-import Location from "./Location";
+import Calendar from "./components/Calendar"; // Import additional features
+import NutritionCalculator from "./components/NutritionCalculator";
+import DietPlanner from "./components/DietPlanner";
+import DailyPriceList from "./components/DailyPriceList";
+import FAQs from "./components/FAQs";
+import Location from "./components/Location";
 import icon from "../img/user.png";
 
 const Dashboard = ({ auth: { user } }) => {
   return (
     <div style={{ marginTop: "5rem", textAlign: "center" }}>
       <h1>Welcome, {user && user.name}!</h1>
-      <img src={icon} alt="user-icon" style={{ width: "150px", margin: "20px auto" }} />
-      
+      <img
+        src={icon}
+        alt="user-icon"
+        style={{ width: "150px", margin: "20px auto" }}
+      />
+
       {/* Navigation section for quick access */}
       <nav className="dashboard-nav">
-        <Link to="/nutrition-calculator" className="btn">Nutrition Calculator</Link>
-        <Link to="/diet-planner" className="btn">Diet Planner</Link>
-        <Link to="/daily-price-list" className="btn">Daily Price List</Link>
-        <Link to="/calendar" className="btn">Calendar</Link>
-        <Link to="/faqs" className="btn">FAQs</Link>
-        <Link to="/location" className="btn">Location</Link>
+        <Link to="/nutrition-calculator" className="btn">
+          Nutrition Calculator
+        </Link>
+        <Link to="/diet-planner" className="btn">
+          Diet Planner
+        </Link>
+        <Link to="/daily-price-list" className="btn">
+          Daily Price List
+        </Link>
+        <Link to="/calendar" className="btn">
+          Calendar
+        </Link>
+        <Link to="/faqs" className="btn">
+          FAQs
+        </Link>
+        <Link to="/location" className="btn">
+          Location
+        </Link>
       </nav>
 
       {/* Display dashboard features */}
@@ -74,4 +88,4 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
-connect(mapStateToProps)(Dashboard)
+connect(mapStateToProps)(Dashboard);
