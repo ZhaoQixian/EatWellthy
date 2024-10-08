@@ -1,4 +1,3 @@
-export default Dashboard;
 import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
@@ -10,6 +9,7 @@ import DailyPriceList from "./components/DailyPriceList";
 import FAQs from "./components/FAQs";
 import Location from "./components/Location";
 import icon from "../img/user.png";
+export default Dashboard;
 
 const Dashboard = ({ auth: { user } }) => {
   return (
