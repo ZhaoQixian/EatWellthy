@@ -11,7 +11,7 @@
 
 6. Open another Powershell window and 
    Type in this line: cd WhereYouStoreTheProject\EatWellthy\client          e.g. cd "D:\Onedrive\Documents\GitHub\EatWellthy\client"
-                      $env:NODE_OPTIONS="--openssl-legacy-provider"         Only if you node.js version is >= V17
+                      // No need to run this line anymore: $env:NODE_OPTIONS="--openssl-legacy-provider"         Only if you node.js version is >= V17
                       npm run start
 
 7. The web app window should pop out from your default browser
