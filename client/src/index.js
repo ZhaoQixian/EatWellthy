@@ -6,7 +6,8 @@ import reportWebVitals from "./reportWebVitals";
 import { createStore, applyMiddleware } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import { Provider } from "react-redux"; // Make sure you import Provider
-import { thunk } from "redux-thunk"; // Correctly import thunk as a named export
+import thunk from 'redux-thunk';
+ // Correctly import thunk as a named export
 import rootReducer from "./reducers";
 
 const initialState = {};
