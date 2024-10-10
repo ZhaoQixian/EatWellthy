@@ -6,11 +6,12 @@
 
 4. use your Laptop Powershell ( for windows )
 
-5. Type in this line: cd WhereYouStoreTheProject\EatWellthy\backend         e.g. cd "D:\Onedrive\Documents\GitHub\EatWellthy\client"
-                      npm install
+5. Type in this line: cd WhereYouStoreTheProject\EatWellthy         e.g. cd "D:\Onedrive\Documents\GitHub\EatWellthy"
+                     Copy the following code:
 
-6. Open another Powershell window and 
-   Type in this line: cd WhereYouStoreTheProject\EatWellthy\client          e.g. cd "D:\Onedrive\Documents\GitHub\EatWellthy\backend"
+                      cd client
+                      npm install
+                      cd ../backend
                       npm start
 
 7. The web app window should pop out from your default browser
