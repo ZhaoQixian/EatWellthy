@@ -6,8 +6,9 @@
 
 4. use your Laptop Powershell ( for windows )
 
-5. Type in this line: cd WhereYouStoreTheProject\EatWellthy         e.g. cd "D:\Onedrive\Documents\GitHub\EatWellthy"
-                     Copy the following code:
+5. Type in this line: cd WhereYouStoreTheProject\EatWellthy, or if u are using VS Code, click Terminal on the top bar        
+                      e.g. cd "D:\Onedrive\Documents\GitHub\EatWellthy"
+                      Copy the following code:
 
                       cd client
                       npm install
