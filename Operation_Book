@@ -6,13 +6,12 @@
 
 4. use your Laptop Powershell ( for windows )
 
-5. Type in this line: cd WhereYouStoreTheProject\EatWellthy\backend         e.g. cd "D:\Onedrive\Documents\GitHub\EatWellthy\backend"
-                      node --watch server
+5. Type in this line: cd WhereYouStoreTheProject\EatWellthy\backend         e.g. cd "D:\Onedrive\Documents\GitHub\EatWellthy\client"
+                      npm install
 
 6. Open another Powershell window and 
-   Type in this line: cd WhereYouStoreTheProject\EatWellthy\client          e.g. cd "D:\Onedrive\Documents\GitHub\EatWellthy\client"
-                      // No need to run this line anymore: $env:NODE_OPTIONS="--openssl-legacy-provider"         Only if you node.js version is >= V17
-                      npm run start
+   Type in this line: cd WhereYouStoreTheProject\EatWellthy\client          e.g. cd "D:\Onedrive\Documents\GitHub\EatWellthy\backend"
+                      npm start
 
 7. The web app window should pop out from your default browser
 
