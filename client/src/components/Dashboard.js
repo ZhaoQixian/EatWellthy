@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import "./Dashboard.css";
 import Sidebar from "./Sidebar";
 import NutritionalGraph from "./NutritionalGraph";
 import ProgressTracker from "./ProgressTracker";
@@ -7,7 +8,7 @@ import DietSuggestions from "./DietSuggestions";
 
 const Dashboard = ({ auth }) => {
   // Debugging: Log auth object
-  console.log('auth object:', auth);
+  console.log("auth object:", auth);
 
   // Check if user exists before rendering
   if (!auth || !auth.user) {
