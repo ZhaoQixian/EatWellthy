@@ -4,9 +4,9 @@
 
 3. Go to the cloned repo in your laptop, it should be named as Github\EatWellthy
 
-4. use your Laptop Powershell ( for windows )
+4. use your Laptop Powershell ( for windows ), or if u are using VS Code, click Terminal on the top bar 
 
-5. Type in this line: cd WhereYouStoreTheProject\EatWellthy, or if u are using VS Code, click Terminal on the top bar        
+5. Type in this line: cd WhereYouStoreTheProject\EatWellthy       
                       e.g. cd "D:\Onedrive\Documents\GitHub\EatWellthy"
                       Copy the following code:
 
@@ -18,6 +18,12 @@
 
 7. The web app window should pop out from your default browser
 
-8. After making changes, you can commit change and push to repo using github desktop app
+8. After making changes, under eartwellthy terminal, type npm uninstall mongoose 
+   you can commit change and push to repo using github desktop app
 
 9. Or you can delete the changes you make as long as you donot commit change, by right click the file you want to undo the changes
+
+10. To connect your component to database, these are the files you usually need to edit:
+    backend->models,routes,server.js
+    clent->src->actions
+    clent->src->components->reducers
