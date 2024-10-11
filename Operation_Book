@@ -10,6 +10,7 @@
                       e.g. cd "D:\Onedrive\Documents\GitHub\EatWellthy"
                       Copy the following code:
 
+                      npm install mongoose
                       cd client
                       npm install
                       cd ../backend

@@ -1,13 +1,18 @@
+const dotenv = require("dotenv");
+
+
+// Load environment variables
+dotenv.config();
+
 const express = require("express");
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const cors = require("cors");
 const auth = require("./routes/Auth");
 const favicon = require("serve-favicon");
 const path = require("path"); // Ensure path is required
 
-// Load environment variables
-dotenv.config();
+
+
 
 const app = express();
 
@@ -45,8 +50,13 @@ if (process.env.NODE_ENV === "production") {
   app.get("*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "mern-auth", "build", "index.html"));
   });
-}
+} 
 
 // Start the server
 const PORT = process.env.PORT || 5050;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+
+app.use("/api/supermarkets", require("./routes/supermarkets"));
+
+
