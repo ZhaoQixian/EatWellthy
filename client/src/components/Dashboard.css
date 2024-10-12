@@ -1,6 +1,7 @@
 .dashboard-container {
     display: flex;
-    height: 100vh;
+    height: (100vh-60px);
+    margin-top:60px;
     font-family: Arial, sans-serif;
   }
   
@@ -12,6 +13,9 @@
     flex-direction: column;
     align-items: center;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    position: fixed;
+    top: 60px;
+    bottom: 0;
   }
   
   .profile-section {
@@ -55,6 +59,7 @@
   .dashboard-content {
     flex-grow: 1;
     padding: 30px;
+    margin-left: 270px;
     background-color: #fff;
   }
   
@@ -89,6 +94,10 @@
     .section {
       width: 100%;
       margin-bottom: 20px;
+    }
+    .dashboard-content {
+      margin-left: 0;
+      padding-top: 80px;
     }
   }
   
