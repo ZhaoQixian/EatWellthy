@@ -1,8 +1,8 @@
 import React from 'react';
-import { add_nutrition_infor } from "./actions/manage_nutrition_db"
+import { add_nutrition_infor } from "../actions/manage_nutrition_db"
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import axios from 'axios';
-import SelectFoodComponent from './components/nutrition_cal/select_food_meal';
+import SelectFoodComponent from './nutrition_cal/select_food_meal';
 
 
 var nutrition_taken = '222';
