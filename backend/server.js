@@ -13,6 +13,8 @@ const auth = require("./routes/Auth");
 const googleAuth = require("./routes/googleAuth")
 const locationRouter = require("./routes/location")
 
+const nutrition = require("./routes/Nutrition");
+
 // Load environment variables
 dotenv.config();
 
@@ -86,12 +88,18 @@ app.use("/users/google", googleAuth);
 app.use("/users", auth);
 app.use("/location", locationRouter);
 app.use("/api/supermarkets", require("./routes/supermarkets"));
+app.use("/nutrition/", nutrition);
 
 // MongoDB connection
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log(err));
+
+  connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
 
 // Serve static assets in production
 if (process.env.NODE_ENV === "production") {
