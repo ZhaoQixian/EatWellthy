@@ -20,6 +20,7 @@ import Welloh from "./components/Welloh";
 import Calendar from "./components/Calendar";
 import FAQs from "./components/FAQs";
 import Location from "./components/Location";
+import Log_meal from "./components/NutritionCalculator_U0301";
 
 if (localStorage.token) {
   setAuthToken(localStorage.token);
@@ -46,6 +47,10 @@ function App() {
             <Route
               path="/nutrition-calculator"
               element={<NutritionCalculator />}
+            />
+            <Route
+              path="/log-meal"
+              element={<Log_meal />}
             />
             <Route path="/diet-planner" element={<DietPlanner />} />
             <Route path="/daily-price-list" element={<DailyPriceList />} />
