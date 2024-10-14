@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import MealForm from './components/nutrition_cal/Meal_form';
+import MealForm from './nutrition_cal/Meal_form';
 
 
 
