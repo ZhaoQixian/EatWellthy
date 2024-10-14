@@ -10,8 +10,8 @@ import { Link } from "react-router-dom"; //
 import icon from "../img/user.png";
 import { Route } from 'react-router-dom';
 
-import NutritionCalculator from "../NutritionCalculator"
-<Route path="../NutritionCalculator" element={<NutritionCalculator />} />
+import NutritionCalculator from "./NutritionCalculator"
+<Route path="./NutritionCalculator" element={<NutritionCalculator />} />
 
 const Dashboard = ({ auth }) => {
   // Debugging: Log auth object
