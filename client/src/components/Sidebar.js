@@ -9,15 +9,26 @@ const Sidebar = ({ user }) => (
       <p>{user && user.name}</p>
     </div>
     <ul className="menu">
-      <li><Link to="/nutrition-calculator">Nutrition Calculator</Link></li>
-      <li><Link to="/diet-planner">Diet Planner</Link></li>
-      <li><Link to="/daily-price-list">Daily Price List</Link></li>
-      <li><Link to="/calendar">Calendar</Link></li>
-      <li><Link to="/faqs">FAQs</Link></li>
-      <li><Link to="/location">Location</Link></li>
+      <li>
+        <Link to="/nutrition-calculator">Nutrition Calculator</Link>
+      </li>
+      <li>
+        <Link to="/diet-planner">Diet Planner</Link>
+      </li>
+      <li>
+        <Link to="/daily-price-list">Daily Price List</Link>
+      </li>
+      <li>
+        <Link to="/calendar">Calendar</Link>
+      </li>
+      <li>
+        <Link to="/faqs">FAQs</Link>
+      </li>
+      <li>
+        <Link to="/location">Location</Link>
+      </li>
     </ul>
   </div>
 );
 
 export default Sidebar;
-
