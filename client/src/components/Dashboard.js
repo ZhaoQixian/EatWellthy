@@ -5,6 +5,13 @@ import Sidebar from "./Sidebar";
 import NutritionalGraph from "./NutritionalGraph";
 import ProgressTracker from "./ProgressTracker";
 import DietSuggestions from "./DietSuggestions";
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom"; // 
+import icon from "../img/user.png";
+import { Route } from 'react-router-dom';
+
+import NutritionCalculator from "../NutritionCalculator"
+<Route path="../NutritionCalculator" element={<NutritionCalculator />} />
 
 const Dashboard = ({ auth }) => {
   // Debugging: Log auth object
@@ -21,7 +28,9 @@ const Dashboard = ({ auth }) => {
 
       <div className="dashboard-content">
         <h1>Welcome, {auth.user.name}!</h1>
-
+        <Link to="/nutrition-calculator" style={{ marginTop: "2rem", display: "block" }}>
+        Go to Nutrition Calculator
+      </Link>
         <div className="dashboard-sections">
           <div className="section">
             <h2>Daily Nutritional Intake</h2>
