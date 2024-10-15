@@ -27,6 +27,9 @@ const Sidebar = ({ user }) => (
       <li>
         <Link to="/location">Location</Link>
       </li>
+      <li>
+        <Link to="/Welloh" class = "wellohli">Talk to Welloh</Link>
+      </li>
     </ul>
   </div>
 );
