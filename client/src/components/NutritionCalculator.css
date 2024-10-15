@@ -1,0 +1,61 @@
+
+.select {
+    padding:0;
+}
+
+.select li{
+    list-style: none;
+    display: inline-block;
+    flex-grow: 1;
+    margin-right: 10px;
+    width: auto;
+}
+
+.select li a{
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    background-color: #e9e9e9;
+    text-align: center;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+    width: auto;
+}
+
+.add_food_bottom_buttons button{
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    background-color: #e9e9e9;
+    text-align: center;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+    width: auto;
+    display: inline-block;
+    margin-right: 20px;
+    border: transparent;
+    margin-top: 10px;
+}
+
+.add_food_form {
+    background-color: beige;
+    padding-top: 2.5rem;
+    padding-left: 4rem;
+    margin-top:1.5rem;
+    border-radius: 15px;
+    padding-bottom: 1.5rem;
+
+}
+
+.add_food_form p {
+    font-size: 20px;
+}
+
+.add_food_form input{
+    border-color: transparent;
+    border-radius: 5px;
+}
+
+
+
