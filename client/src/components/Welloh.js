@@ -1,10 +1,61 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import './Welloh.css';
 
 const Welloh = () => {
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
+  const [isThinking, setIsThinking] = useState(false);
+
+  const handleSend = async () => {
+    if (!input) return;
+
+    const userMessage = { sender: 'user', text: input };
+    setMessages((prevMessages) => [...prevMessages, userMessage]);
+    setInput('');
+    setIsThinking(true);
+
+    try {
+      const response = await getChatGPTResponse(input);
+      setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: response }]);
+    } catch (error) {
+      setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: 'Sorry, something went wrong.' }]);
+    } finally {
+      setIsThinking(false);
+    }
+  };
+
+  const getChatGPTResponse = async (message) => {
+    // Simulated GPT response for demonstration purposes
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve("I'm Welloh, here to assist you!");
+      }, 1500);
+    });
+  };
+
   return (
-    <div>
-      <h1>Welloh</h1>
-      <p>Welcome to the Welloh page!</p>
+    <div className="chatbot-container">
+      <div className="chatbot-header">
+        <div className="chatbot-icon"></div>
+        <h2>Welloh Bot</h2>
+      </div>
+      <div className="chatbot-messages">
+        {messages.map((message, index) => (
+          <div key={index} className={`message ${message.sender}`}>
+            {message.text}
+          </div>
+        ))}
+        {isThinking && <div className="thinking-animation">...</div>}
+      </div>
+      <div className="chatbot-input">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Type a message..."
+        />
+        <button onClick={handleSend}>Send</button>
+      </div>
     </div>
   );
 };
