@@ -5,6 +5,7 @@ const Welloh = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isThinking, setIsThinking] = useState(false);
+  const [isNew,setIsNew] = useState(true);
 
   const handleSend = async () => {
     if (!input) return;
@@ -25,6 +26,7 @@ const Welloh = () => {
   };
 
   const getChatGPTResponse = async (message) => {
+    setIsNew(false);
     // Simulated GPT response for demonstration purposes
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -46,6 +48,7 @@ const Welloh = () => {
           </div>
         ))}
         {isThinking && <div className="thinking-animation">...</div>}
+        {isNew&& <div className='chatbot-greeting'>WELLOH</div>}
       </div>
       <div className="chatbot-input">
         <input

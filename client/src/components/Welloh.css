@@ -1,5 +1,5 @@
 .chatbot-container {
-    width: 350px;
+    width: 75%;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     overflow: hidden;
@@ -7,8 +7,23 @@
     background-color: #f9f9f9;
     display: flex;
     flex-direction: column;
+    padding-top: 4rem;
+    margin-left: auto;
+    margin-right: auto;
   }
-  
+.chatbot-greeting {
+  width:100%;
+  background-color: transparent;
+  height:100%;
+  padding-top: auto;
+  padding-bottom: auto;
+  padding-right: auto;
+  padding-left: 35%;
+  color:rgba(46, 94, 78, 0.1);
+  font-size: 100px;
+  font-weight: bold;
+}
+
   .chatbot-header {
     display: flex;
     align-items: center;
@@ -30,6 +45,7 @@
     padding: 10px;
     overflow-y: auto;
     background-color: #e9f2eb;
+    min-height: 200px;
   }
   
   .message {
