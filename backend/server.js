@@ -10,8 +10,9 @@ const cookieSession = require("cookie-session");
 const { Strategy } = require("passport-google-oauth20");
 
 const auth = require("./routes/Auth");
-const googleAuth = require("./routes/googleAuth")
-const locationRouter = require("./routes/location")
+const googleAuth = require("./routes/googleAuth");
+const locationRouter = require("./routes/location");
+const passportSetup = require("./passport/passportConfig");
 
 const nutrition = require("./routes/Nutrition");
 
@@ -19,29 +20,6 @@ const nutrition = require("./routes/Nutrition");
 dotenv.config();
 
 const PORT = process.env.PORT || 5050;
-
-// Setting-up for Google OAuth stategy
-const AUTH_OPTIONS = {
-  callbackURL: "/users/google/callback",
-  clientID: process.env.CLIENT_ID,
-  clientSecret: process.env.CLIENT_SECRET,
-};
- 
-function verifyCallback(accessToken, refreshToken, profile, cb) {
-  cb(null, profile);
-}
-
-passport.use(new Strategy(AUTH_OPTIONS, verifyCallback));
-
-// Save the session to the cookie
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
-
-// Read the session from the cookie
-passport.deserializeUser((obj, done) => {
-  done(null, obj);
-});
 
 const app = express();
 
@@ -78,10 +56,6 @@ app.use(cors(corsOptions));
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
-app.get("/failure", (req, res) => {
-  return res.send("Failed to log in!");
-});
-
 
 // Basic route
 app.use("/users/google", googleAuth);
@@ -92,14 +66,12 @@ app.use("/nutrition/", nutrition);
 
 // MongoDB connection
 mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log(err));
-
-  connect(process.env.MONGO_URI, {
+  .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.log(err));
 
 // Serve static assets in production
 if (process.env.NODE_ENV === "production") {
@@ -109,13 +81,7 @@ if (process.env.NODE_ENV === "production") {
   app.get("*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "mern-auth", "build", "index.html"));
   });
-} 
+}
 
 // Start the server
-
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-
-
-
-

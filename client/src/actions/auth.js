@@ -124,7 +124,9 @@ export const login = (email, password) => async (dispatch) => {
 };
 
 // Logout / Clear Profile
-
-export const logout = () => (dispatch) => {
-  dispatch({ type: LOGOUT });
+export const logout = () => async (dispatch) => {
+  dispatch({ type: "LOGOUT" });
+  await fetch("http://localhost:5050/users/google/logout", {
+    method: "GET",
+  });
 };
