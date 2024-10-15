@@ -1,12 +1,12 @@
-import { GET_SUPERMARKETS, SUPERMARKETS_ERROR } from '../actions/types';
+import { GET_SUPERMARKETS, SUPERMARKETS_ERROR } from "../actions/types";
 
 const initialState = {
   supermarkets: [],
   loading: true,
-  error: {}
+  error: {},
 };
 
-export default function (state = initialState, action) {
+export default function supermarketsReducer(state = initialState, action) {
   const { type, payload } = action;
 
   switch (type) {

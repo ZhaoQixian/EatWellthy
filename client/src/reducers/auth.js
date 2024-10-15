@@ -6,20 +6,22 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT,
+  GOOGLE_AUTO,
 } from "../actions/types";
 
 const initialState = {
-  token: localStorage.getItem("token"),
-  isAuthenticated: null,
-  loading: true,
+  token: localStorage.getItem("token") || null,
+  isAuthenticated: false,
+  loading: false,
   user: null,
+  googleAuto: localStorage.getItem("googleAuto") || false,
 };
 
 export default function authReducer(state = initialState, action) {
   const { type, payload } = action;
 
   // Log the action type and payload for debugging
-  console.log("Action Type:", type, "Payload:", payload);
+  // console.log("Action Type:", type, "Payload:", payload);
 
   switch (type) {
     case USER_LOADED:
@@ -43,12 +45,18 @@ export default function authReducer(state = initialState, action) {
     case LOGIN_FAIL:
     case LOGOUT:
       localStorage.removeItem("token"); // Clear token on failure or logout
+      localStorage.removeItem("googleAuto"); // Clear token to localStorage
       return {
         ...state,
         token: null,
         isAuthenticated: false,
         loading: false,
+        googleAuto: false,
+        user: null,
       };
+    case GOOGLE_AUTO:
+      localStorage.setItem("googleAuto", true); // Save token to localStorage
+      return { googleAuto: true };
     default:
       return state; // Return current state if action type is unrecognized
   }
