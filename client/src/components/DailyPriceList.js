@@ -16,7 +16,7 @@ const DailyPriceList = ({ getSupermarkets, supermarketState }) => {
   }, [supermarkets]);
 
   return (
-    <div>
+    <div style={{paddingTop : "4rem",paddingLeft : "1.2rem" , paddingRight:"1.2rem"}}>
       <h1>Daily Price List</h1>
       <p>Here are the available supermarket brands:</p>
 

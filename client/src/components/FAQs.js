@@ -3,7 +3,7 @@ import "./FAQs.css"; //importing CSS file for styling
 
 const FAQs = () => {
   return (
-    <div>
+    <div style={{paddingTop : "4rem",paddingLeft : "1.2rem" , paddingRight:"1.2rem"}}>
       <h1>FAQs</h1>
       <p>
         Welcome to the FAQs page! Here are some common questions about how our
