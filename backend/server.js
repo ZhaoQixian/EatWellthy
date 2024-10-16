@@ -9,11 +9,11 @@ const passport = require("passport");
 const cookieSession = require("cookie-session");
 const { Strategy } = require("passport-google-oauth20");
 
+const passportSetup = require("./passport/passportConfig");
 const auth = require("./routes/Auth");
 const googleAuth = require("./routes/googleAuth");
 const locationRouter = require("./routes/location");
-const passportSetup = require("./passport/passportConfig");
-
+const eventRoute = require("./routes/eventRoute");
 const nutrition = require("./routes/Nutrition");
 
 // Load environment variables
@@ -63,6 +63,7 @@ app.use("/users", auth);
 app.use("/location", locationRouter);
 app.use("/api/supermarkets", require("./routes/supermarkets"));
 app.use("/nutrition/", nutrition);
+app.use("/events", eventRoute);
 
 // MongoDB connection
 mongoose

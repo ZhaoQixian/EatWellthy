@@ -14,7 +14,9 @@ import NutritionCalculator from "./components/NutritionCalculator";
 import DietPlanner from "./components/DietPlanner";
 import DailyPriceList from "./components/DailyPriceList";
 import Welloh from "./components/Welloh";
-import Calendar from "./components/Calendar";
+import MyCalendar from "./components/Calendar/MyCalendar";
+import AddEvents from "./components/Calendar/AddEvents";
+import UpdateEvent from "./components/Calendar/UpdateEvent";
 import FAQs from "./components/FAQs";
 import Location from "./components/Location";
 import LogMeal from "./components/NutritionCalculator_U0301";
@@ -47,7 +49,10 @@ function App() {
           <Route path="/diet-planner" element={<DietPlanner />} />
           <Route path="/daily-price-list" element={<DailyPriceList />} />
           <Route path="/welloh" element={<Welloh />} />
-          <Route path="/calendar" element={<Calendar />} />
+          <Route path="/calendar" element={<MyCalendar />} />
+          <Route path="/events/add" element={<AddEvents />} />
+          <Route path="/event/:id/update" element={<UpdateEvent />} />
+
           <Route path="/faqs" element={<FAQs />} />
           <Route path="/location" element={<Location />} />
           <Route path="*" element={<NotFound />} />
