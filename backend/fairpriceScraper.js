@@ -22,16 +22,10 @@ async function scrapeFairPrice() {
         const priceElement = element.querySelector('.sc-aa673588-1.sc-65bf849-1.kdTuLI.cXCGWM');
         const weightElement = element.querySelector('.sc-aa673588-1.cIXEsR');
         
-        const name = nameElement ? nameElement.textContent.trim() : 'Name not found';
-        const price = priceElement ? parseFloat(priceElement.textContent.trim().replace('$', '')) : 0;
-        const weight = weightElement ? weightElement.textContent.trim() : 'Weight not found';
-        
         return {
-          specific_name: name,
-          general_name: 'Stone Fruit',
-          category: 'Fruits',
-          price: price,
-          description: `${name} - ${weight}`
+          name: nameElement ? nameElement.textContent.trim() : 'Name not found',
+          price: priceElement ? priceElement.textContent.trim() : 'Price not found',
+          weight: weightElement ? weightElement.textContent.trim() : 'Weight not found'
         };
       });
     });
