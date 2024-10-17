@@ -1,10 +1,9 @@
 const dotenv = require("dotenv");
-
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const favicon = require("serve-favicon");
-const path = require("path"); // Ensure path is required
+const path = require("path");
 const passport = require("passport");
 const cookieSession = require("cookie-session");
 const { Strategy } = require("passport-google-oauth20");
@@ -15,6 +14,9 @@ const googleAuth = require("./routes/googleAuth");
 const locationRouter = require("./routes/location");
 const eventRoute = require("./routes/eventRoute");
 const nutrition = require("./routes/Nutrition");
+const scrapeRoutes = require("./routes/scrapeRoutes");
+const { setupScheduledTasks } = require("./scheduledTasks");
+const Supermarket = require("./models/Supermarket"); // Direct import
 
 // Load environment variables
 dotenv.config();
@@ -45,25 +47,25 @@ app.use(express.json());
 const corsOptions = {
   origin: "http://localhost:3000", // Replace with your frontend URL
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true, // Enable cookies to be sent in cross-origin requests
-  optionsSuccessStatus: 204, // Some legacy browsers (IE11, various SmartTVs) choke on 204
+  credentials: true,
+  optionsSuccessStatus: 204,
 };
 
 // Use CORS with options
 app.use(cors(corsOptions));
 
-//for temporary testing
+// Routes
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// Basic route
 app.use("/users/google", googleAuth);
 app.use("/users", auth);
 app.use("/location", locationRouter);
-app.use("/api/supermarkets", require("./routes/supermarkets"));
 app.use("/nutrition/", nutrition);
 app.use("/events", eventRoute);
+app.use("/api/supermarkets", require("./routes/supermarkets"));
+app.use("/api/scrape", scrapeRoutes);
 
 // MongoDB connection
 mongoose
@@ -71,12 +73,15 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log("MongoDB connected"))
+  .then(() => {
+    console.log("MongoDB connected");
+    // Set up scheduled tasks after successful database connection
+    setupScheduledTasks(mongoose);
+  })
   .catch((err) => console.log(err));
 
 // Serve static assets in production
 if (process.env.NODE_ENV === "production") {
-  // Set Static Folder
   app.use(express.static("mern-auth/build"));
 
   app.get("*", (req, res) => {

@@ -10,7 +10,7 @@ async function scrapeFairPrice() {
   
   try {
     console.log('Navigating to FairPrice stone fruits category...');
-    await page.goto('https://www.fairprice.com.sg/category/fruits-vegetables', { waitUntil: 'networkidle0', timeout: 60000 });
+    await page.goto('https://www.fairprice.com.sg/category/stone-fruits', { waitUntil: 'networkidle0', timeout: 60000 });
     console.log('Page loaded. Waiting for 5 seconds...');
     await new Promise(resolve => setTimeout(resolve, 5000));  // Wait for 5 seconds after page load
 
@@ -22,10 +22,16 @@ async function scrapeFairPrice() {
         const priceElement = element.querySelector('.sc-aa673588-1.sc-65bf849-1.kdTuLI.cXCGWM');
         const weightElement = element.querySelector('.sc-aa673588-1.cIXEsR');
         
+        const name = nameElement ? nameElement.textContent.trim() : 'Name not found';
+        const price = priceElement ? parseFloat(priceElement.textContent.trim().replace('$', '')) : 0;
+        const weight = weightElement ? weightElement.textContent.trim() : 'Weight not found';
+        
         return {
-          name: nameElement ? nameElement.textContent.trim() : 'Name not found',
-          price: priceElement ? priceElement.textContent.trim() : 'Price not found',
-          weight: weightElement ? weightElement.textContent.trim() : 'Weight not found'
+          specific_name: name,
+          general_name: 'Stone Fruit',
+          category: 'Fruits',
+          price: price,
+          description: `${name} - ${weight}`
         };
       });
     });
