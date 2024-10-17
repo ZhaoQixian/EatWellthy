@@ -1,4 +1,4 @@
-const { scrapeFairPrice } = require('./scraper');
+const { scrapeFairPrice } = require('./fairpriceScraper');
 
 async function testScraper() {
   try {
