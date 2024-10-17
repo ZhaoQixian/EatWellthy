@@ -52,7 +52,6 @@ function App() {
           <Route path="/calendar" element={<MyCalendar />} />
           <Route path="/events/add" element={<AddEvents />} />
           <Route path="/event/:id/update" element={<UpdateEvent />} />
-
           <Route path="/faqs" element={<FAQs />} />
           <Route path="/location" element={<Location />} />
           <Route path="*" element={<NotFound />} />

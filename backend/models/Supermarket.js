@@ -25,5 +25,4 @@ const SupermarketSchema = new mongoose.Schema({
   ],
 });
 
-// Ensure you're exporting the model correctly
 module.exports = mongoose.model('Supermarket', SupermarketSchema, 'supermarkets');
