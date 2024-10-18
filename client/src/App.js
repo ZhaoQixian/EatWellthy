@@ -18,7 +18,7 @@ import MyCalendar from "./components/Calendar/MyCalendar";
 import AddEvents from "./components/Calendar/AddEvents";
 import UpdateEvent from "./components/Calendar/UpdateEvent";
 import FAQs from "./components/FAQs";
-import Location from "./components/Location";
+import Location from "./components/Location/Location";
 import LogMeal from "./components/NutritionCalculator_U0301";
 
 // import { loadUser } from "./actions/auth";
