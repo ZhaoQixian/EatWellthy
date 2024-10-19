@@ -9,7 +9,6 @@ import DailyPriceList from "./components/DailyPriceList";
 import FAQs from "./components/FAQs";
 import Location from "./components/Location";
 import icon from "../img/user.png";
-export default Dashboard;
 
 const Dashboard = ({ auth: { user } }) => {
   return (
@@ -89,3 +88,4 @@ const mapStateToProps = (state) => ({
 });
 
 connect(mapStateToProps)(Dashboard);
+export default Dashboard;

@@ -1,0 +1,20 @@
+.container {
+  margin-top: 80px;
+  width: 100%;
+  height: calc(100vh - 80px) !important;
+  display: flex;
+  flex-direction: row;
+}
+
+.list-container {
+  width: 30%;
+  overflow: scroll;
+  padding-top: 20px;
+  padding-left: 30px;
+  padding-right: 30px;
+  overflow-x: hidden;
+}
+
+.map-container {
+  width: 70%;
+}
