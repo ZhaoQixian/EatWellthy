@@ -3,6 +3,7 @@ import { add_nutrition_infor } from "../actions/manage_nutrition_db"
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import axios from 'axios';
 import SelectFoodComponent from './nutrition_cal/select_food_meal';
+import "./NutritionCalculator.css";
 
 
 var nutrition_taken = '222';
@@ -67,27 +68,27 @@ const new_food_Submit = async (e) => {
 
 const NutritionCalculator = () => {
   return (
-    <div>
+    <div style={{paddingTop : "4rem",paddingLeft : "1.2rem" , paddingRight:"1.2rem"}}>
       <h1>NutritionCalculator</h1>
       <p>Welcome to the NutritionCalculator page!</p>
     
     <h3>Select an option:</h3>
-    <div id="food_meal_buttons">
-       
-      <button id="add_food">
+    <div id="food_meal_buttons" class="select">
+      <li id="add_food" >
         <Link to="/add-food">Add/Update a Food</Link>
-      </button>
+      </li>
 
-      <button id="add_meal">
+      <li id="add_meal">
         <Link to="/log-meal">Add/Update a Meal</Link>
-      </button>
+      </li>
 
-      <button id="remove">
+      <li id="remove">
         <Link to="/remove-food">Remove a Food/Meal</Link>
-      </button>
+      </li>
     </div>
 
-    <div id="food_meal_forms">
+    <div id="food_meal_forms" >
+      <div class="add_food_form">
         <form id="add_food_form" onSubmit={new_food_Submit}>
         <h3>Provide the following data for your food to add it to the registry:<br/><br/>(If the name of the food that you enter already exists, that food will be updated) </h3>
 
@@ -101,20 +102,23 @@ const NutritionCalculator = () => {
 <p>Protein (in grams): <input type="text" id="food_protein" autocomplete="off" /></p>
 
 
-            <div id="add_food_bottom_buttons">
-                <button class="submit" type="submit"  >Submit</button>
+            <div id="add_food_bottom_buttons" class="add_food_bottom_buttons">
+                <button class="submit" type="submit"   >Submit</button>
                 <button class="quit" type="reset" onclick="closeForm(addFoodForm)">Quit</button>
             </div>
         </form>
+        </div>
 
         <form id="add_meal_form">
-            <h3>Provide the following data for your meal to add it to the registry:<br/><br/>(If the name of the meal that you enter already exists, that meal will be updated) </h3>
+            <h3>Provide the following data for your meal to add it to the registry:</h3>
+            <br></br>
+            <h5>(If the name of the meal that you enter already exists, that meal will be updated)</h5>
             <h4><span class="error"></span></h4>
-            <p>Name: <input type="text" id="meal_name" autocomplete="off"/></p>
+            <p>Name:  <input type="text" id="meal_name" autocomplete="off"/></p>
             <div id="ingredients">
                 <div class="ingredient_and_serving">
-                    <p>Ingredient: <input type="text" class="meal_ingredients" autocomplete="off"/></p>  
-                    <p>Servings: <input type="text" class="meal_serving_sizes" autocomplete="off"/></p>
+                    <p>Ingredient:  <input type="text" class="meal_ingredients" autocomplete="off"/></p>  
+                    <p>Servings:  <input type="text" class="meal_serving_sizes" autocomplete="off"/></p>
                 </div>
             </div>
 

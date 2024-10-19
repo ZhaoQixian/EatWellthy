@@ -1,12 +1,17 @@
-import React from "react";
-import { Link, Navigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-const Landing = ({ isAuthenticated }) => {
-  if (isAuthenticated) {
-    return <Navigate to="/dashboard" />;
-  }
+const Landing = ({ auth }) => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    navigate();
+  }, []);
+
+  console.log("LANDING/isAuthenticated", auth.isAuthenticated);
+  console.log("LANDING/Loading", auth.loading);
+  console.log("LANDING/User", auth.user);
 
   return (
     <section className="landing">
@@ -29,11 +34,11 @@ const Landing = ({ isAuthenticated }) => {
 };
 
 Landing.propTypes = {
-  isAuthenticated: PropTypes.bool,
+  auth: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
+  auth: state.auth,
 });
 
 export default connect(mapStateToProps)(Landing);
