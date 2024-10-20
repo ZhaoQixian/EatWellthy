@@ -10,7 +10,8 @@ const Sidebar = ({ user }) => (
     </div>
     <ul className="menu">
       <li>
-        <Link to="/nutrition-calculator">Nutrition Calculator</Link>
+      <Link to={`/nutrition-calculator/${user && user.name}`}>Nutrition Calculator</Link>
+
       </li>
       <li>
         <Link to="/diet-planner">Diet Planner</Link>
