@@ -42,7 +42,7 @@ function App() {
             element={<PrivateRoute element={Dashboard} />}
           />
           <Route
-            path="/nutrition-calculator"
+            path="/nutrition-calculator/:username"
             element={<NutritionCalculator />}
           />
           <Route path="/log-meal" element={<LogMeal />} />

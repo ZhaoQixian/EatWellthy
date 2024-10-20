@@ -7,6 +7,7 @@ import { ADD_NUTRITION_INFOR_SUCCESS,
 export const add_nutrition_infor =
   ({ name, owner, energy, fat, sugar, fiber, protein, sodium, vitamin_c, calcium, iron }) =>
   async (dispatch) => {
+    dispatch.preventDefault();
     const config = {
       headers: {
         "Content-Type": "application/json",

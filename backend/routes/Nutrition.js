@@ -59,6 +59,30 @@ router.post(
     }
 )
 
+
+//query
+router.post(
+    // "/nutrition/add",
+    "/query_food",
+    [], // parameter check
+    async (req, res) => {
+        try{
+
+            const food_saved = await Nutrition_data.find({ });
+            
+            res.status(200).json({success : true , food_saved});
+        }
+        
+        
+        catch (err) {
+            console.error(err.message);
+            res.status(500).send("Server error");
+        }
+        
+        
+    }
+)
+
 router.post(
     // "/nutrition/add",
     "/log_meal",
@@ -92,4 +116,76 @@ router.post(
     }
 )
 
+router.post(
+    "/query_meal",
+    async (req, res) => {
+      const { meal_type, time } = req.body;
+      console.log(meal_type, time);
+      try {
+        //Take the date and ignore the time
+        const date = new Date(time);
+        const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        const endOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
+  
+        // Only query meals for the specified date and meal type
+        const query = {
+          meal_type: meal_type,
+          time: {
+            $gte: startOfDay,  // between start and end of day
+            $lt: endOfDay  
+          }
+        };
+  
+         
+        const meals = await Meal_data.find(query);
+  
+        if (meals.length > 0) {const mealsWithNutrition = await Promise.all(meals.map(async (meal) => {
+            const nutritionData = await Nutrition_data.findOne({ name: meal.food_taken });
+            return {
+              meal,
+              nutrition: nutritionData || "No nutrition data found for this food"
+            };
+          }));
+    
+          // 返回包含营养信息的餐点数据
+          return res.status(200).json({ success: true, meals: mealsWithNutrition });
+           
+        } else {
+          return res.status(404).json({ success: false, message: "No meals found for the specified date and meal type" });
+        }
+        
+      } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+      }
+    }
+  );
+
+router.delete(
+    "/delete/:id",
+    [], // parameter check
+    async (req, res)=> {
+    try {
+        await Nutrition_data.deleteOne({_id: req.params.id});
+        res.status(204).send('Delete successfully');
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+ }
+);
+
+router.delete(
+    "/meal_delete/:id",
+    [], // parameter check
+    async (req, res)=> {
+    try {
+        await Meal_data.deleteOne({_id: req.params.id});
+        res.status(204).send('Delete successfully');
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+ }
+);
 module.exports = router;
