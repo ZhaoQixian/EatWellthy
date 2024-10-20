@@ -33,12 +33,12 @@ const Dashboard = ({ auth }) => {
 
   return (
     <div className="dashboard-container">
-      <Sidebar user={auth.user} />
+      <Sidebar user={auth.user}  />
 
       <div className="dashboard-content">
         <h1>Welcome, {auth.user.name}!</h1>
         <Link
-          to="/nutrition-calculator"
+          to={`/nutrition-calculator/${auth.user && auth.user.name}`}
           style={{ marginTop: "2rem", display: "block" }}
         >
           Go to Nutrition Calculator
