@@ -9,6 +9,9 @@ const Welloh = () => {
   const [isNew,setIsNew] = useState(true);
   const [nutrition,setNutrition] = useState([]);
   const [isNutritionLoad,setNutritionLoad] = useState(false);
+  const [superMarket,setSuperMarket] = useState([]);
+  const [isSuperMarket,setSuperMarketLoad] = useState(false);
+
   useEffect(()=>{
     async function fetch_nutrition(){
       try{
@@ -22,9 +25,22 @@ const Welloh = () => {
         setNutrition(nutrition_data);
       }
     }
+    async function fetch_supermarket(){
+      try{
+        const superMarket_data = await axios.get("http://localhost:5050/supermarkets");
+        console.log("supermarket_fetch success!");
+        setSuperMarket(superMarket_data.data);
+        setSuperMarketLoad(true);
+      }catch(error){
+        console.log("supermarket_fetch error");
+        console.log("supermarket_fetch fail!");
+        const superMarket_data = ["error fetching superMarket data"];
+        setSuperMarket(superMarket_data)
+      }
+    }
     fetch_nutrition();
-    
 
+    fetch_supermarket();
     
   },[])
 
@@ -51,7 +67,9 @@ const Welloh = () => {
     // Simulated GPT response for demonstration purposes
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve("I'm Welloh, here to assist you!");
+        const message1 = JSON.stringify(nutrition);
+        const message2 = JSON.stringify(superMarket);
+        resolve(message1+message2);
       }, 1500);
     });
   };
@@ -70,6 +88,14 @@ const Welloh = () => {
         {!isNutritionLoad && 
         <div className={"message system"}>
           nutrition data loaded failed
+        </div>}
+        {isSuperMarket && 
+        <div className={"message system"}>
+          supermarket data loaded
+        </div>}
+        {!isSuperMarket && 
+        <div className={"message system"}>
+          supermarket data loaded failed
         </div>}
       
         {messages.map((message, index) => (
