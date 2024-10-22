@@ -10,8 +10,10 @@ const Sidebar = ({ user }) => (
     </div>
     <ul className="menu">
       <li>
-      <Link to={`/nutrition-calculator/${user && user.name}`}>Nutrition Calculator</Link>
-
+        <Link to="/profile">Profile</Link> {/* New Profile Button */}
+      </li>
+      <li>
+        <Link to={`/nutrition-calculator/${user && user.name}`}>Nutrition Calculator</Link>
       </li>
       <li>
         <Link to="/diet-planner">Diet Planner</Link>
@@ -29,7 +31,7 @@ const Sidebar = ({ user }) => (
         <Link to="/location">Location</Link>
       </li>
       <li>
-        <Link to="/Welloh" class = "wellohli">Talk to Welloh</Link>
+        <Link to="/Welloh" className="wellohli">Talk to Welloh</Link>
       </li>
     </ul>
   </div>
