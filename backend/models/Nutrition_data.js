@@ -14,7 +14,7 @@ const Nutrition_Schema = new mongoose.Schema({
   energy: {
     type: Number,
     default: 0.0,
-     
+
   },
   fat: {
     type: Number,
@@ -23,7 +23,7 @@ const Nutrition_Schema = new mongoose.Schema({
   sugar: {
     type: Number,
     default: 0.0,
-     
+    
   },
   fiber: {
     type: Number,
