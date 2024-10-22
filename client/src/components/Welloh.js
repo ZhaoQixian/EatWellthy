@@ -81,27 +81,23 @@ const Welloh = () => {
         <h2>Welloh Bot</h2>
       </div>
       <div className="chatbot-messages">
-      {isNutritionLoad && 
-        <div className={"message system"}>
-          nutrition data loaded
-        </div>}
-        {!isNutritionLoad && 
-        <div className={"message system"}>
-          nutrition data loaded failed
-        </div>}
-        {isSuperMarket && 
-        <div className={"message system"}>
-          supermarket data loaded
-        </div>}
-        {!isSuperMarket && 
-        <div className={"message system"}>
-          supermarket data loaded failed
-        </div>}
+      {isNutritionLoad ? (
+        <div className={"message system"}>nutrition data loaded</div>
+      ) : (
+        <div className={"message system"}>nutrition data loaded failed</div>
+      )}
+      {isSuperMarket ? (
+        <div className={"message system"}>supermarket data loaded</div>
+      ) : (
+        <div className={"message system"}>supermarket data loaded failed</div>
+      )}
       
         {messages.map((message, index) => (
+        index !== 0 ? (
           <div key={index} className={`message ${message.sender}`}>
             {message.text}
           </div>
+        ) : null
         ))}
         {isThinking && <div className="thinking-animation">...</div>}
         {isNew&& <div className='chatbot-greeting'>WELLOH</div>}
