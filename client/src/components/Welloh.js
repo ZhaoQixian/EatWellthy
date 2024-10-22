@@ -27,7 +27,7 @@ const Welloh = () => {
     }
     async function fetch_supermarket(){
       try{
-        const superMarket_data = await axios.get("http://localhost:5050/supermarkets");
+        const superMarket_data = await axios.get("http://localhost:5050/supermarkets/supermarket_data");
         console.log("supermarket_fetch success!");
         setSuperMarket(superMarket_data.data);
         setSuperMarketLoad(true);
