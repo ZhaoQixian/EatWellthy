@@ -188,4 +188,18 @@ router.delete(
     }
  }
 );
+
+router.get(
+  "/nutrition_data",
+  async (req, res) => {
+    try {
+      const nutritionData = await Nutrition_data.find();  
+      res.status(200).json({ success: true, data: nutritionData });
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server error");
+    }
+  }
+);
+
 module.exports = router;
