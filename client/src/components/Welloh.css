@@ -63,6 +63,18 @@
     background-color: #ffffff;
     align-self: flex-start;
   }
+
+  .message.system {
+    background-color: #d8e7df;
+    margin-left: auto;
+    margin-right: auto;
+    height: 1.8rem;
+    text-align: center;
+    font-weight: 400;
+    padding-top: auto;
+    padding-bottom: auto;
+  }
+
   
   .thinking-animation {
     align-self: flex-start;
