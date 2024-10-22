@@ -1,11 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import './Welloh.css';
+import axios from 'axios';
 
 const Welloh = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isThinking, setIsThinking] = useState(false);
   const [isNew,setIsNew] = useState(true);
+  const [nutrition,setNutrition] = useState([]);
+  const [isNutritionLoad,setNutritionLoad] = useState(false);
+  useEffect(()=>{
+    async function fetch_nutrition(){
+      try{
+        const nutrition_data = await axios.get("http://localhost:5050/nutrition/nutrition_data");
+        console.log("nutrition_fetch success!")
+        setNutrition(nutrition_data.data);
+        setNutritionLoad(true)
+      }catch(error){
+        console.log("nutrition_fetch error")
+        const nutrition_data = ["error fetching nutrition data"];
+        setNutrition(nutrition_data);
+      }
+    }
+    fetch_nutrition();
+    
+
+    
+  },[])
 
   const handleSend = async () => {
     if (!input) return;
@@ -42,6 +63,15 @@ const Welloh = () => {
         <h2>Welloh Bot</h2>
       </div>
       <div className="chatbot-messages">
+      {isNutritionLoad && 
+        <div className={"message system"}>
+          nutrition data loaded
+        </div>}
+        {!isNutritionLoad && 
+        <div className={"message system"}>
+          nutrition data loaded failed
+        </div>}
+      
         {messages.map((message, index) => (
           <div key={index} className={`message ${message.sender}`}>
             {message.text}
