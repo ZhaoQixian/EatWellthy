@@ -38,7 +38,7 @@ router.post(
 // @route   GET /api/supermarkets
 // @desc    Get all supermarkets
 // @access  Public
-router.get("/", async (req, res) => {
+router.get("/supermarket_data", async (req, res) => {
   try {
     const supermarkets = await Supermarket.find();  // Fetch all supermarkets from the "supermarkets" collection
     res.json(supermarkets);
