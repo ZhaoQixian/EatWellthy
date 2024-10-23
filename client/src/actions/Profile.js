@@ -49,7 +49,7 @@ export const getProfile = () => async (dispatch) => {
       },
     };
 
-    const res = await axios.get("http://localhost:5050/profile", config);
+    const res = await axios.get("http://localhost:5050/users/profile", config);
 
     return res.data;
   } catch (err) {
@@ -81,7 +81,7 @@ export const updateProfile = (profileData) => async (dispatch) => {
 
     const body = JSON.stringify(profileData);
 
-    await axios.put("http://localhost:5050/profile", body, config);
+    await axios.put("http://localhost:5050/users/profile", body, config);
 
     alert("Profile updated successfully");
   } catch (err) {

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import icon from "../img/user.png"; // Ensure you have this image
+import icon from "../../img/user.png"; // Ensure you have this image
 
 const Sidebar = ({ user }) => (
   <div className="sidebar">
@@ -13,7 +13,9 @@ const Sidebar = ({ user }) => (
         <Link to="/profile">Profile</Link> {/* New Profile Button */}
       </li>
       <li>
-        <Link to={`/nutrition-calculator/${user && user.name}`}>Nutrition Calculator</Link>
+        <Link to={`/nutrition-calculator/${user && user.name}`}>
+          Nutrition Calculator
+        </Link>
       </li>
       <li>
         <Link to="/diet-planner">Diet Planner</Link>
@@ -31,7 +33,9 @@ const Sidebar = ({ user }) => (
         <Link to="/location">Location</Link>
       </li>
       <li>
-        <Link to="/Welloh" className="wellohli">Talk to Welloh</Link>
+        <Link to="/Welloh" className="wellohli">
+          Talk to Welloh
+        </Link>
       </li>
     </ul>
   </div>

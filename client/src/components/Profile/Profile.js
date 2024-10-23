@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   changePassword,
   deleteAccount,
   updateProfile,
   getProfile,
-} from "../actions/Profile";
+} from "../../actions/Profile";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -35,17 +35,22 @@ const Profile = () => {
 
   // Get profile data when component mounts
   useEffect(() => {
-    dispatch(getProfile()).then((profile) => {
-      setFormData({
-        ...formData,
-        age: profile.age || "",
-        height: profile.height || "",
-        weight: profile.weight || "",
-        dailyBudget: profile.dailyBudget || "",
-        dietaryPreferences: profile.dietaryPreferences || "",
-        allergies: profile.allergies.join(", ") || "", // Assuming allergies are an array
-      });
-    });
+    const fetchProfile = async () => {
+      const profile = await dispatch(getProfile()); // Fetch profile from backend
+      if (profile) {
+        setFormData({
+          ...formData,
+          age: profile.age || "", // Default to empty if not set
+          height: profile.height || "",
+          weight: profile.weight || "",
+          dailyBudget: profile.dailyBudget || "",
+          dietaryPreferences: profile.dietaryPreferences || "",
+          allergies: profile.allergies ? profile.allergies.join(", ") : "", // Convert array to comma-separated string
+        });
+      }
+    };
+
+    fetchProfile();
   }, [dispatch]);
 
   // Handle change for all input fields
@@ -72,9 +77,10 @@ const Profile = () => {
         weight,
         dailyBudget,
         dietaryPreferences,
-        allergies: allergies.split(", "),
+        allergies: allergies.split(",").map((allergy) => allergy.trim()), // Convert string back to array
       })
     );
+    alert("Profile updated successfully");
   };
 
   const handleDelete = () => {

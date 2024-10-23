@@ -49,7 +49,7 @@ router.post("/", auth, async (req, res) => {
 // @route    GET api/profile/me
 // @desc     Get current user's profile
 // @access   Private
-router.get("/me", auth, async (req, res) => {
+router.get("/", auth, async (req, res) => {
   try {
     const profile = await Profile.findOne({ userId: req.user.id });
 
@@ -70,7 +70,7 @@ router.get("/me", auth, async (req, res) => {
 router.delete("/", auth, async (req, res) => {
   try {
     // Delete the profile
-    await Profile.findOneAndRemove({ userId: req.user.id });
+    await Profile.findByIdAndDelete({ userId: req.user.id });
 
     // Optionally, you can delete the user as well if you have the User model available:
     // await User.findOneAndRemove({ _id: req.user.id });

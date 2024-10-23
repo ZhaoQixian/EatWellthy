@@ -3,10 +3,10 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import Calendar from "./components/Calendar"; // Import additional features
-import NutritionCalculator from "./components/NutritionCalculator";
-import DietPlanner from "./components/DietPlanner";
-import DailyPriceList from "./components/DailyPriceList";
-import FAQs from "./components/FAQs";
+import NutritionCalculator from "./components/NutritionCalculator/NutritionCalculator";
+import DietPlanner from "./components/DailyPlanner/DietPlanner";
+import DailyPriceList from "./components/DailyPriceList/DailyPriceList";
+import FAQs from "./components/FAQ/FAQs";
 import Location from "./components/Location";
 import icon from "../img/user.png";
 

@@ -33,7 +33,7 @@ const Dashboard = ({ auth }) => {
 
   return (
     <div className="dashboard-container">
-      <Sidebar user={auth.user}  />
+      <Sidebar user={auth.user} />
 
       <div className="dashboard-content">
         <h1>Welcome, {auth.user.name}!</h1>
