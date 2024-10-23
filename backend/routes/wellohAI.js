@@ -5,13 +5,29 @@ const openAI = require("openai");
 const client = new openAI({
     apiKey: process.env.OPENAI_KEY, // 你的 OpenAI API 密钥
 });
-// router.get("/chat_on",async (req,res)=>{
+router.get("/chat",async (req,res)=>{
     
     
-//     const userMessage = req.params.userMessage;
-//     if (req.params.userMessage[0].role !==system)
+    const userMessage = req.query.userMessage;
+    async function main() {
+        try{
+            const chatCompletion = await client.chat.completions.create({
+                messages: userMessage,
+                model: 'gpt-4o-mini',
+            });
+            res.json(chatCompletion.choices[0].message.content)
+            console.log("gpt success")
+        }catch(error){
+            console.error("Error details:", error);
+            console.error("Error message:", error.message)
+            res.json("oppps something wrong with Welloh , maybe try again later?")
+            
+        }
+        
+    }
 
-// })
+    main()
+})
 
 router.get("/init",async (req,res)=>{
     const userData = req.query.userData || "oppps no data avaible";

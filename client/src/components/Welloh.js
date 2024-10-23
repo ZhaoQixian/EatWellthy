@@ -105,14 +105,20 @@ const Welloh = () => {
 
   const getChatGPTResponse = async (message) => {
     setIsNew(false);
-    // Simulated GPT response for demonstration purposes
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const message1 = JSON.stringify(nutrition);
-        const message2 = JSON.stringify(superMarket);
-        resolve(message1+message2);
-      }, 1500);
-    });
+    try{
+        const gpt_message = (await (axios.get("http://localhost:5050/welloh/chat"))).data
+        console.log("good gpt response!")
+        return gpt_message
+    }catch(error){
+      return "oppps some internal error occurs"
+    }
+    // return new Promise((resolve) => {
+    //   setTimeout(() => {
+    //     const message1 = JSON.stringify(nutrition);
+    //     const message2 = JSON.stringify(superMarket);
+    //     resolve(message1+message2);
+    //   }, 1500);
+    // });
   };
 
   return (
