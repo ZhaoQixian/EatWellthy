@@ -59,7 +59,7 @@
     align-self: flex-end;
   }
   
-  .message.bot {
+  .message.assistant {
     background-color: #ffffff;
     align-self: flex-start;
   }

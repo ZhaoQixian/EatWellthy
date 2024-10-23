@@ -13,6 +13,7 @@ const googleAuth = require("./routes/googleAuth");
 const locationRouter = require("./routes/location");
 const nutrition = require("./routes/Nutrition");
 const scrapeRoutes = require("./routes/scrapeRoutes");
+const wellohRountes = require("./routes/wellohAI");
 
 // Load environment variables
 dotenv.config();
@@ -60,6 +61,7 @@ app.use("/users", auth);
 app.use("/location", locationRouter);
 app.use("/nutrition/", nutrition);
 app.use("/api/scrape", scrapeRoutes);
+app.use("/welloh",wellohRountes);
 app.use("/api/profile", require("./routes/profile")); // Import the new route
 
 // MongoDB connection
