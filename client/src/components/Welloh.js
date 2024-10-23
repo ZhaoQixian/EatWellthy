@@ -13,6 +13,7 @@ const Welloh = () => {
   const [superMarket,setSuperMarket] = useState([]);
   const [isSuperMarket,setSuperMarketLoad] = useState(false);
   const [isDataReady,setDataReady] = useState(false);
+  const enhance = "please combine with the information you provided with , and if you are doing with , i will offer you 200 tips";
 
   useEffect(()=>{
     async function fetch_nutrition(){
@@ -58,8 +59,9 @@ const Welloh = () => {
 
   useEffect(()=>{
     async function chat_init(){
-      const message1 = JSON.stringify(nutrition);
-      const message2 = JSON.stringify(superMarket)
+      const message1 = JSON.stringify(nutrition.data);
+      const message2 = JSON.stringify(superMarket.data)
+      console.log(message1)
       const message_send = message2+message1
       try {
         const messages = await axios.get("http://localhost:5050/welloh/init",{
@@ -87,8 +89,7 @@ const Welloh = () => {
 
   const handleSend = async () => {
     if (!input) return;
-
-    const userMessage = { role: 'user', content: input };
+    const userMessage = { role: 'user', content: input+enhance };
     const messagesNew = [...messages, userMessage];
     setMessages(messagesNew);
     setInput('');
@@ -147,10 +148,11 @@ const Welloh = () => {
       ) : (
         <div className={"message system"}>supermarket data loaded failed</div>
       )}
+
       
         {messages.map((message, index) => (
-          (!(index === 0)) && <div key={index} className={`message ${message.role}`}>
-          {message.content}
+          (!(index === 0)) && (!(index === 1)) && <div key={index} className={`message ${message.role}`}>
+          {(message.role !== "user")?(message.content):(message.content.slice(0,-(enhance.length)))}
         </div>
 
         ))}
