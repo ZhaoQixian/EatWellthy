@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Welloh.css';
 import axios from 'axios';
 
+
 const Welloh = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -88,13 +89,14 @@ const Welloh = () => {
     if (!input) return;
 
     const userMessage = { role: 'user', content: input };
-    setMessages((prevMessages) => [...prevMessages, userMessage]);
+    const messagesNew = [...messages, userMessage];
+    setMessages(messagesNew);
     setInput('');
     setIsThinking(true);
-    console.log(messages)
+    
 
     try {
-      const response = await getChatGPTResponse(input);
+      const response = await getChatGPTResponse(messagesNew);
       setMessages((prevMessages) => [...prevMessages, { role: 'assistant', content: response }]);
     } catch (error) {
       setMessages((prevMessages) => [...prevMessages, { role: 'assistant', content: 'Sorry, something went wrong.' }]);
@@ -103,11 +105,18 @@ const Welloh = () => {
     }
   };
 
-  const getChatGPTResponse = async (message) => {
+  const getChatGPTResponse = async (messagesNew) => {
     setIsNew(false);
+    console.log("we would send")
+    console.log(messagesNew)
     try{
-        const gpt_message = (await (axios.get("http://localhost:5050/welloh/chat"))).data
+      const gpt_message = (await axios.get("http://localhost:5050/welloh/chat", {
+        params: {
+          userMessage: messagesNew, 
+        }
+      })).data;
         console.log("good gpt response!")
+        console.log(gpt_message)
         return gpt_message
     }catch(error){
       return "oppps some internal error occurs"

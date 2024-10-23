@@ -9,25 +9,24 @@ router.get("/chat",async (req,res)=>{
     
     
     const userMessage = req.query.userMessage;
-    async function main() {
+
         try{
             const chatCompletion = await client.chat.completions.create({
                 messages: userMessage,
                 model: 'gpt-4o-mini',
             });
             res.json(chatCompletion.choices[0].message.content)
-            console.log("gpt success")
+
         }catch(error){
             console.error("Error details:", error);
             console.error("Error message:", error.message)
-            res.json("oppps something wrong with Welloh , maybe try again later?")
+            const error_message = "oppps something wrong with Welloh , maybe try again later?" + error + error.message
+            res.json(error_message)
             
         }
-        
-    }
 
-    main()
-})
+    
+    })
 
 router.get("/init",async (req,res)=>{
     const userData = req.query.userData || "oppps no data avaible";
