@@ -3,11 +3,14 @@ import {
   SET_PROFILE,
   PROFILE_ERROR,
   LOADING_PROFILE,
-  LOGOUT
+  LOGOUT,
+  CLEAR_PROFILE
 } from "./types";
 
 // Get Profile
 export const getProfile = () => async (dispatch) => {
+  let config = null; // Define config at the top level of the function
+
   try {
     dispatch({ type: LOADING_PROFILE });
 
@@ -20,14 +23,14 @@ export const getProfile = () => async (dispatch) => {
       return null;
     }
 
-    const config = {
+    config = {
       headers: {
         "x-auth-token": token,
       },
     };
 
-    const res = await axios.get("http://localhost:5050/profile", config);
-    
+    console.log("Fetching profile..."); // Debug log
+    const res = await axios.get("http://localhost:5050/api/profile/me", config);
     console.log("Profile response:", res.data); // Debug log
 
     dispatch({
@@ -38,6 +41,35 @@ export const getProfile = () => async (dispatch) => {
     return res.data;
   } catch (err) {
     console.error("Error fetching profile:", err.response?.data || err.message);
+    
+    if (err.response?.status === 400 && config) {
+      // If profile doesn't exist, try to create a default one
+      try {
+        const defaultProfile = {
+          age: 0,
+          height: 0,
+          weight: 0,
+          dailyBudget: 0,
+          dietaryPreferences: "",
+          allergies: []
+        };
+
+        const createRes = await axios.post(
+          "http://localhost:5050/api/profile",
+          defaultProfile,
+          config
+        );
+
+        dispatch({
+          type: SET_PROFILE,
+          payload: createRes.data
+        });
+
+        return createRes.data;
+      } catch (createErr) {
+        console.error("Error creating default profile:", createErr);
+      }
+    }
     
     dispatch({
       type: PROFILE_ERROR,
@@ -69,11 +101,25 @@ export const updateProfile = (profileData) => async (dispatch) => {
       },
     };
 
-    const res = await axios.put(
-      "http://localhost:5050/profile",
-      profileData,
+    // Process the data before sending
+    const processedData = {
+      ...profileData,
+      age: Number(profileData.age) || 0,
+      height: Number(profileData.height) || 0,
+      weight: Number(profileData.weight) || 0,
+      dailyBudget: Number(profileData.dailyBudget) || 0,
+      allergies: Array.isArray(profileData.allergies) 
+        ? profileData.allergies 
+        : profileData.allergies?.split(',').map(a => a.trim()).filter(Boolean) || []
+    };
+
+    console.log("Sending profile data:", processedData); // Debug log
+    const res = await axios.post(
+      "http://localhost:5050/api/profile",
+      processedData,
       config
     );
+    console.log("Update response:", res.data); // Debug log
 
     dispatch({
       type: SET_PROFILE,
@@ -105,6 +151,14 @@ export const changePassword = (newPassword) => async (dispatch) => {
       return false;
     }
 
+    if (!newPassword || newPassword.length < 6) {
+      dispatch({
+        type: PROFILE_ERROR,
+        payload: "Password must be at least 6 characters"
+      });
+      return false;
+    }
+
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -112,11 +166,13 @@ export const changePassword = (newPassword) => async (dispatch) => {
       },
     };
 
-    await axios.put(
-      "http://localhost:5050/users/updatepassword",
+    console.log("Updating password..."); // Debug log
+    const res = await axios.put(
+      "http://localhost:5050/api/profile/updatepassword",
       { password: newPassword },
       config
     );
+    console.log("Password update response:", res.data); // Debug log
 
     return true;
   } catch (err) {
@@ -149,8 +205,11 @@ export const deleteAccount = () => async (dispatch) => {
       },
     };
 
-    await axios.delete("http://localhost:5050/users/delete", config);
+    console.log("Deleting account..."); // Debug log
+    await axios.delete("http://localhost:5050/api/profile", config);
+    console.log("Account deleted successfully"); // Debug log
 
+    dispatch({ type: CLEAR_PROFILE });
     dispatch({ type: LOGOUT });
     return true;
   } catch (err) {
