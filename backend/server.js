@@ -41,7 +41,7 @@ app.use(express.json());
 
 // CORS options
 const corsOptions = {
-  origin: "http://localhost:3000", // Replace with your frontend URL
+  origin: "http://localhost:3000", //frontend URL
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204,
@@ -51,11 +51,16 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Routes
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
 app.use("/users/google", googleAuth);
 app.use("/users", auth);
 app.use("/location", locationRouter);
 app.use("/nutrition/", nutrition);
 app.use("/api/scrape", scrapeRoutes);
+app.use("/api/profile", require("./routes/profile")); // Import the new route
 
 // MongoDB connection
 mongoose
@@ -63,14 +68,16 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => {
-    console.log("MongoDB connected successfully");
-  })
-  .catch((err) => {
-    console.error(err.message);
-    process.exit(1);
-  });
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.log(err));
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Serve static assets in production
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("mern-auth/build"));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "mern-auth", "build", "index.html"));
+  });
+}
+// Start the server
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

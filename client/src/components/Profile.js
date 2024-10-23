@@ -1,27 +1,80 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-//import { changePassword, deleteAccount } from "../actions/profile";
-import { changePassword, deleteAccount } from "../actions/Profile";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  changePassword,
+  deleteAccount,
+  updateProfile,
+  getProfile,
+} from "../actions/Profile";
 
 const Profile = () => {
+  const dispatch = useDispatch();
+
+  // Local state for form inputs
   const [formData, setFormData] = useState({
     newPassword: "",
     confirmPassword: "",
+    age: "",
+    height: "",
+    weight: "",
+    dailyBudget: "",
+    dietaryPreferences: "",
+    allergies: "",
   });
 
-  const { newPassword, confirmPassword } = formData;
-  const dispatch = useDispatch();
+  const {
+    newPassword,
+    confirmPassword,
+    age,
+    height,
+    weight,
+    dailyBudget,
+    dietaryPreferences,
+    allergies,
+  } = formData;
 
+  // Get profile data when component mounts
+  useEffect(() => {
+    dispatch(getProfile()).then((profile) => {
+      setFormData({
+        ...formData,
+        age: profile.age || "",
+        height: profile.height || "",
+        weight: profile.weight || "",
+        dailyBudget: profile.dailyBudget || "",
+        dietaryPreferences: profile.dietaryPreferences || "",
+        allergies: profile.allergies.join(", ") || "", // Assuming allergies are an array
+      });
+    });
+  }, [dispatch]);
+
+  // Handle change for all input fields
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const onSubmit = (e) => {
+  // Handle password change
+  const onSubmitPassword = (e) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
       alert("Passwords do not match");
     } else {
       dispatch(changePassword(newPassword));
     }
+  };
+
+  // Handle profile update
+  const onSubmitProfile = (e) => {
+    e.preventDefault();
+    dispatch(
+      updateProfile({
+        age,
+        height,
+        weight,
+        dailyBudget,
+        dietaryPreferences,
+        allergies: allergies.split(", "),
+      })
+    );
   };
 
   const handleDelete = () => {
@@ -37,7 +90,9 @@ const Profile = () => {
   return (
     <div className="profile-container">
       <h1>Profile</h1>
-      <form onSubmit={onSubmit}>
+
+      {/* Form for password change */}
+      <form onSubmit={onSubmitPassword}>
         <div>
           <label>New Password</label>
           <input
@@ -59,6 +114,72 @@ const Profile = () => {
           />
         </div>
         <button type="submit">Change Password</button>
+      </form>
+
+      {/* Form for profile update */}
+      <form onSubmit={onSubmitProfile}>
+        <div>
+          <label>Age</label>
+          <input
+            type="number"
+            name="age"
+            value={age}
+            onChange={onChange}
+            min="0"
+            max="150"
+          />
+        </div>
+        <div>
+          <label>Height (cm)</label>
+          <input
+            type="number"
+            name="height"
+            value={height}
+            onChange={onChange}
+            min="0"
+            max="300"
+          />
+        </div>
+        <div>
+          <label>Weight (kg)</label>
+          <input
+            type="number"
+            name="weight"
+            value={weight}
+            onChange={onChange}
+            min="0"
+            max="500"
+          />
+        </div>
+        <div>
+          <label>Daily Budget</label>
+          <input
+            type="number"
+            name="dailyBudget"
+            value={dailyBudget}
+            onChange={onChange}
+            min="0"
+          />
+        </div>
+        <div>
+          <label>Dietary Preferences</label>
+          <input
+            type="text"
+            name="dietaryPreferences"
+            value={dietaryPreferences}
+            onChange={onChange}
+          />
+        </div>
+        <div>
+          <label>Allergies (comma separated)</label>
+          <input
+            type="text"
+            name="allergies"
+            value={allergies}
+            onChange={onChange}
+          />
+        </div>
+        <button type="submit">Update Profile</button>
       </form>
 
       <button onClick={handleDelete} className="delete-btn">
