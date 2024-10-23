@@ -2,16 +2,19 @@ const express = require("express");
 const router = express.Router();
 const auth = require("../middlewares/auth");
 const Profile = require("../models/Profile");
-const bcrypt = require('bcryptjs');
-const User = require('../models/User');
+const bcrypt = require("bcryptjs");
+const User = require("../models/User");
 
 // Helper function to process allergies
 const processAllergies = (allergies) => {
   if (Array.isArray(allergies)) {
-    return allergies.map(allergy => allergy.trim()).filter(Boolean);
+    return allergies.map((allergy) => allergy.trim()).filter(Boolean);
   }
-  if (typeof allergies === 'string') {
-    return allergies.split(",").map(allergy => allergy.trim()).filter(Boolean);
+  if (typeof allergies === "string") {
+    return allergies
+      .split(",")
+      .map((allergy) => allergy.trim())
+      .filter(Boolean);
   }
   return [];
 };
@@ -54,7 +57,8 @@ router.get("/me", auth, async (req, res) => {
 router.post("/", auth, async (req, res) => {
   try {
     console.log("Received profile data:", req.body); // Debug log
-    const { age, height, weight, dailyBudget, dietaryPreferences, allergies } = req.body;
+    const { age, height, weight, dailyBudget, dietaryPreferences, allergies } =
+      req.body;
 
     // Build profile object
     const profileFields = {
@@ -64,7 +68,7 @@ router.post("/", auth, async (req, res) => {
       weight: Number(weight) || 0,
       dailyBudget: Number(dailyBudget) || 0,
       dietaryPreferences: dietaryPreferences || "",
-      allergies: processAllergies(allergies)
+      allergies: processAllergies(allergies),
     };
 
     console.log("Processed profile fields:", profileFields); // Debug log
@@ -99,7 +103,8 @@ router.post("/", auth, async (req, res) => {
 router.put("/", auth, async (req, res) => {
   try {
     console.log("Received update data:", req.body); // Debug log
-    const { age, height, weight, dailyBudget, dietaryPreferences, allergies } = req.body;
+    const { age, height, weight, dailyBudget, dietaryPreferences, allergies } =
+      req.body;
 
     let profile = await Profile.findOne({ userId: req.user.id });
 
@@ -112,8 +117,10 @@ router.put("/", auth, async (req, res) => {
     if (height !== undefined) profile.height = Number(height);
     if (weight !== undefined) profile.weight = Number(weight);
     if (dailyBudget !== undefined) profile.dailyBudget = Number(dailyBudget);
-    if (dietaryPreferences !== undefined) profile.dietaryPreferences = dietaryPreferences;
-    if (allergies !== undefined) profile.allergies = processAllergies(allergies);
+    if (dietaryPreferences !== undefined)
+      profile.dietaryPreferences = dietaryPreferences;
+    if (allergies !== undefined)
+      profile.allergies = processAllergies(allergies);
 
     console.log("Updated profile data:", profile); // Debug log
     await profile.save();
@@ -131,7 +138,7 @@ router.delete("/", auth, async (req, res) => {
   try {
     console.log("Deleting profile for user:", req.user.id); // Debug log
     // Delete the profile
-    await Profile.findOneAndRemove({ userId: req.user.id });
+    await User.findByIdAndDelete(req.user.id);
 
     // Optionally, you can delete the user as well if you have the User model available:
     // await User.findOneAndRemove({ _id: req.user.id });
