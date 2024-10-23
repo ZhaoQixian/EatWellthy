@@ -6,17 +6,13 @@ const favicon = require("serve-favicon");
 const path = require("path");
 const passport = require("passport");
 const cookieSession = require("cookie-session");
-const { Strategy } = require("passport-google-oauth20");
 
 const passportSetup = require("./passport/passportConfig");
 const auth = require("./routes/Auth");
 const googleAuth = require("./routes/googleAuth");
 const locationRouter = require("./routes/location");
-const eventRoute = require("./routes/eventRoute");
 const nutrition = require("./routes/Nutrition");
 const scrapeRoutes = require("./routes/scrapeRoutes");
-const { setupScheduledTasks } = require("./scheduledTasks");
-const Supermarket = require("./models/Supermarket"); // Direct import
 
 // Load environment variables
 dotenv.config();
@@ -39,7 +35,7 @@ app.use(passport.session());
 
 app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
 
-// Body parser middleware (using express.json and express.urlencoded directly)
+// Body parser middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -51,20 +47,14 @@ const corsOptions = {
   optionsSuccessStatus: 204,
 };
 
-// Use CORS with options
+// Use CORS
 app.use(cors(corsOptions));
 
 // Routes
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
 app.use("/users/google", googleAuth);
 app.use("/users", auth);
 app.use("/location", locationRouter);
 app.use("/nutrition/", nutrition);
-app.use("/events", eventRoute);
-app.use("/api/supermarkets", require("./routes/supermarkets"));
 app.use("/api/scrape", scrapeRoutes);
 
 // MongoDB connection
@@ -73,17 +63,14 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log(err));
-
-// Serve static assets in production
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("mern-auth/build"));
-
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "mern-auth", "build", "index.html"));
+  .then(() => {
+    console.log("MongoDB connected successfully");
+  })
+  .catch((err) => {
+    console.error(err.message);
+    process.exit(1);
   });
-}
 
-// Start the server
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
