@@ -31,7 +31,8 @@ router.get("/chat",async (req,res)=>{
 router.get("/init",async (req,res)=>{
     const userData = req.query.userData || "oppps no data avaible";
     const system_prompt = `You are an AI assistant called Welloh. You have been provided with a lot of basic information and background about the users. Our software is a health application that includes data about the food users have eaten and their dietary habits, as well as information from local supermarkets. Based on the user's prompts, you should answer flexibly. If you perform well, you'll receive a tip of 1000。Now these are the ${userData}`
-    res.json([{role:"system",content:system_prompt}])
+    const background_information = `here are the data you have to remember and give answers while users ask about that ${userData}`
+    res.json([{role:"system",content:system_prompt},{role:"user",content:background_information}])
 })
 
 module.exports = router;
