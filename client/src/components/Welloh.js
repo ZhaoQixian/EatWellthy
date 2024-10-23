@@ -11,6 +11,7 @@ const Welloh = () => {
   const [isNutritionLoad,setNutritionLoad] = useState(false);
   const [superMarket,setSuperMarket] = useState([]);
   const [isSuperMarket,setSuperMarketLoad] = useState(false);
+  const [isDataReady,setDataReady] = useState(false);
 
   useEffect(()=>{
     async function fetch_nutrition(){
@@ -23,11 +24,12 @@ const Welloh = () => {
         console.log("nutrition_fetch error")
         const nutrition_data = ["error fetching nutrition data"];
         setNutrition(nutrition_data);
+        setNutritionLoad(true)
       }
     }
     async function fetch_supermarket(){
       try{
-        const superMarket_data = await axios.get("http://localhost:5050/supermarkets/supermarket_data");
+        const superMarket_data = await axios.get('http://localhost:5050/api/supermarkets/supermarket_data');
         console.log("supermarket_fetch success!");
         setSuperMarket(superMarket_data.data);
         setSuperMarketLoad(true);
@@ -36,27 +38,66 @@ const Welloh = () => {
         console.log("supermarket_fetch fail!");
         const superMarket_data = ["error fetching superMarket data"];
         setSuperMarket(superMarket_data)
+        setSuperMarketLoad(true);
       }
     }
-    fetch_nutrition();
 
-    fetch_supermarket();
+
     
+
+    async function data_init(){
+        await fetch_nutrition()
+        await fetch_supermarket()
+    }
+
+
+  data_init()
+
   },[])
+
+  useEffect(()=>{
+    async function chat_init(){
+      const message1 = JSON.stringify(nutrition);
+      const message2 = JSON.stringify(superMarket)
+      const message_send = message2+message1
+      try {
+        const messages = await axios.get("http://localhost:5050/welloh/init",{
+          params: {
+            userData:message_send
+          }
+        });
+        
+        setMessages(messages.data)
+        console.log("chat_init success")
+      }catch(error){
+        console.log("chat_init error")
+        const messages = [{role:"system",content:"You are an AI assistant called Welloh,give people advice regarding health"}]
+        setMessages(messages)
+      }
+    }
+
+    if (isSuperMarket && isNutritionLoad){
+        chat_init()
+    }
+    
+  },[isSuperMarket,isNutritionLoad])
+
+
 
   const handleSend = async () => {
     if (!input) return;
 
-    const userMessage = { sender: 'user', text: input };
+    const userMessage = { role: 'user', content: input };
     setMessages((prevMessages) => [...prevMessages, userMessage]);
     setInput('');
     setIsThinking(true);
+    console.log(messages)
 
     try {
       const response = await getChatGPTResponse(input);
-      setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: response }]);
+      setMessages((prevMessages) => [...prevMessages, { role: 'assistant', content: response }]);
     } catch (error) {
-      setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: 'Sorry, something went wrong.' }]);
+      setMessages((prevMessages) => [...prevMessages, { role: 'assistant', content: 'Sorry, something went wrong.' }]);
     } finally {
       setIsThinking(false);
     }
@@ -93,11 +134,10 @@ const Welloh = () => {
       )}
       
         {messages.map((message, index) => (
-        index !== 0 ? (
-          <div key={index} className={`message ${message.sender}`}>
-            {message.text}
-          </div>
-        ) : null
+          (!(index === 0)) && <div key={index} className={`message ${message.role}`}>
+          {message.content}
+        </div>
+
         ))}
         {isThinking && <div className="thinking-animation">...</div>}
         {isNew&& <div className='chatbot-greeting'>WELLOH</div>}
