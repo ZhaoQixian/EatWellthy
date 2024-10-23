@@ -20,6 +20,7 @@ import UpdateEvent from "./components/Calendar/UpdateEvent";
 import FAQs from "./components/FAQs";
 import Location from "./components/Location/Location";
 import LogMeal from "./components/NutritionCalculator_U0301";
+import Profile from "./components/Profile";
 
 // import { loadUser } from "./actions/auth";
 
@@ -41,6 +42,8 @@ function App() {
             path="/dashboard"
             element={<PrivateRoute element={Dashboard} />}
           />
+          <Route path="/profile" element={<PrivateRoute element={Profile} />} />
+
           <Route
             path="/nutrition-calculator/:username"
             element={<NutritionCalculator />}
