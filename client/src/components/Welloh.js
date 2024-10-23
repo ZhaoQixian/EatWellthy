@@ -13,7 +13,7 @@ const Welloh = () => {
   const [superMarket,setSuperMarket] = useState([]);
   const [isSuperMarket,setSuperMarketLoad] = useState(false);
   const [isDataReady,setDataReady] = useState(false);
-  const enhance = "please combine with the information you provided with , and if you are doing with , i will offer you 200 tips";
+  const enhance = "please combine with the information you provided with (only when you think it is needed), and if you are doing with , i will offer you 200 tips,and plz consider whether or not this should combined with knowledge directly , we need you to think carefully, and i believe you can definely do well!";
 
   useEffect(()=>{
     async function fetch_nutrition(){
