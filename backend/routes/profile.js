@@ -25,12 +25,13 @@ const processAllergies = (allergies) => {
 router.get("/me", auth, async (req, res) => {
   try {
     console.log("User ID:", req.user.id); // Debug log
-    let profile = await Profile.findOne({ userId: req.user.id });
+    const hashedUserId = Profile.hashUserId(req.user.id);
+    let profile = await Profile.findOne({ userId: hashedUserId });
 
     if (!profile) {
       // Create a default profile if none exists
       const defaultProfile = {
-        userId: req.user.id,
+        userId: hashedUserId,
         age: 0,
         height: 0,
         weight: 0,
@@ -60,9 +61,11 @@ router.post("/", auth, async (req, res) => {
     const { age, height, weight, dailyBudget, dietaryPreferences, allergies } =
       req.body;
 
+    const hashedUserId = Profile.hashUserId(req.user.id);
+    
     // Build profile object
     const profileFields = {
-      userId: req.user.id,
+      userId: hashedUserId,
       age: Number(age) || 0,
       height: Number(height) || 0,
       weight: Number(weight) || 0,
@@ -73,12 +76,12 @@ router.post("/", auth, async (req, res) => {
 
     console.log("Processed profile fields:", profileFields); // Debug log
 
-    let profile = await Profile.findOne({ userId: req.user.id });
+    let profile = await Profile.findOne({ userId: hashedUserId });
 
     if (profile) {
       // Update existing profile
       profile = await Profile.findOneAndUpdate(
-        { userId: req.user.id },
+        { userId: hashedUserId },
         { $set: profileFields },
         { new: true }
       );
@@ -106,7 +109,8 @@ router.put("/", auth, async (req, res) => {
     const { age, height, weight, dailyBudget, dietaryPreferences, allergies } =
       req.body;
 
-    let profile = await Profile.findOne({ userId: req.user.id });
+    const hashedUserId = Profile.hashUserId(req.user.id);
+    let profile = await Profile.findOne({ userId: hashedUserId });
 
     if (!profile) {
       return res.status(400).json({ msg: "Profile not found" });
@@ -137,13 +141,13 @@ router.put("/", auth, async (req, res) => {
 router.delete("/", auth, async (req, res) => {
   try {
     console.log("Deleting profile for user:", req.user.id); // Debug log
+    const hashedUserId = Profile.hashUserId(req.user.id);
+    
     // Delete the profile
+    await Profile.findOneAndDelete({ userId: hashedUserId });
     await User.findByIdAndDelete(req.user.id);
 
-    // Optionally, you can delete the user as well if you have the User model available:
-    // await User.findOneAndRemove({ _id: req.user.id });
-
-    res.json({ msg: "Profile deleted" });
+    res.json({ msg: "Profile and user deleted" });
   } catch (err) {
     console.error("Profile deletion error:", err.message);
     res.status(500).json({ msg: "Server Error", error: err.message });
