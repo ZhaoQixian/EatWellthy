@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
+const crypto = require('crypto');
 
 const ProfileSchema = new mongoose.Schema({
   userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'user',  // This references your User model
+    type: String,  // Only store hashed ID
     required: true,
     unique: true
   },
@@ -61,5 +61,16 @@ ProfileSchema.pre('save', function(next) {
   this.updatedAt = new Date();
   next();
 });
+
+// Static method to hash user IDs
+ProfileSchema.statics.hashUserId = function(userId) {
+  if (!process.env.HASH_SECRET) {
+    throw new Error('HASH_SECRET environment variable is not set');
+  }
+  return crypto
+    .createHash('sha256')
+    .update(userId.toString() + process.env.HASH_SECRET)
+    .digest('hex');
+};
 
 module.exports = Profile = mongoose.model("profile", ProfileSchema);
