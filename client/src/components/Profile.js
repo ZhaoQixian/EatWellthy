@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import "./Profile.css";
 import {
   changePassword,
   deleteAccount,
@@ -13,7 +14,7 @@ const Profile = () => {
   const { loading, error } = profileState;
 
   const [message, setMessage] = useState({ text: "", type: "" });
-
+  const [editing, setEditing] = useState(false); // State to toggle editing
   const [formData, setFormData] = useState({
     newPassword: "",
     confirmPassword: "",
@@ -40,7 +41,7 @@ const Profile = () => {
     const loadProfile = async () => {
       const profileData = await dispatch(getProfile());
       if (profileData) {
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
           age: profileData.age || "",
           height: profileData.height || "",
@@ -51,7 +52,6 @@ const Profile = () => {
         }));
       }
     };
-
     loadProfile();
   }, [dispatch]);
 
@@ -74,10 +74,14 @@ const Profile = () => {
       showMessage("Passwords do not match", "error");
       return;
     }
-    
+
     const success = await dispatch(changePassword(newPassword));
     if (success) {
-      setFormData(prev => ({ ...prev, newPassword: "", confirmPassword: "" }));
+      setFormData((prev) => ({
+        ...prev,
+        newPassword: "",
+        confirmPassword: "",
+      }));
       showMessage("Password updated successfully");
     }
   };
@@ -90,7 +94,10 @@ const Profile = () => {
       weight: Number(weight) || 0,
       dailyBudget: Number(dailyBudget) || 0,
       dietaryPreferences,
-      allergies: allergies.split(",").map(item => item.trim()).filter(Boolean),
+      allergies: allergies
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean),
     };
 
     const success = await dispatch(updateProfile(profileData));
@@ -100,9 +107,11 @@ const Profile = () => {
   };
 
   const handleDelete = async () => {
-    if (window.confirm(
-      "Are you sure you want to delete your account? This action cannot be undone."
-    )) {
+    if (
+      window.confirm(
+        "Are you sure you want to delete your account? This action cannot be undone."
+      )
+    ) {
       const success = await dispatch(deleteAccount());
       if (success) {
         showMessage("Account deleted successfully");
@@ -111,160 +120,110 @@ const Profile = () => {
   };
 
   if (loading) {
-    return (
-      <div className="text-center p-4">
-        <p>Loading...</p>
-      </div>
-    );
+    return <div className="loading">Loading...</div>;
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Profile Settings</h1>
-      
+    <div className="profile-container">
+      <div className="profile-header">
+        <h1>Profile Settings</h1>
+        <button
+          className="profile-edit-btn"
+          onClick={() => setEditing(!editing)}
+        >
+          {editing ? "Cancel" : "Edit Profile"}
+        </button>
+      </div>
+
       {message.text && (
-        <div className={`p-3 mb-4 rounded ${
-          message.type === "error" ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
-        }`}>
+        <div
+          className={`message ${
+            message.type === "error" ? "error" : "success"
+          }`}
+        >
           {message.text}
         </div>
       )}
 
-      {error && (
-        <div className="p-3 mb-4 rounded bg-red-100 text-red-700">
-          {error}
-        </div>
-      )}
+      {error && <div className="message error">{error}</div>}
 
-      <div className="grid gap-6">
-        {/* Password Change Form */}
-        <div className="border p-4 rounded">
-          <h2 className="text-xl font-semibold mb-4">Change Password</h2>
-          <form onSubmit={onSubmitPassword}>
-            <div className="mb-4">
-              <label className="block mb-2">New Password</label>
-              <input
-                type="password"
-                name="newPassword"
-                value={newPassword}
-                onChange={onChange}
-                className="w-full p-2 border rounded"
-                minLength="6"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block mb-2">Confirm Password</label>
-              <input
-                type="password"
-                name="confirmPassword"
-                value={confirmPassword}
-                onChange={onChange}
-                className="w-full p-2 border rounded"
-                minLength="6"
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-              disabled={loading}
-            >
-              Update Password
-            </button>
-          </form>
-        </div>
-
-        {/* Profile Information Form */}
-        <div className="border p-4 rounded">
-          <h2 className="text-xl font-semibold mb-4">Profile Information</h2>
-          <form onSubmit={onSubmitProfile}>
-            <div className="mb-4">
-              <label className="block mb-2">Age</label>
+      {editing && (
+        <div className="profile-form active">
+          <div className="profile-form-section">
+            <h2>Profile Information</h2>
+            <form onSubmit={onSubmitProfile}>
               <input
                 type="number"
                 name="age"
                 value={age}
                 onChange={onChange}
-                className="w-full p-2 border rounded"
-                min="0"
-                max="150"
+                placeholder="Age"
               />
-            </div>
-            <div className="mb-4">
-              <label className="block mb-2">Height (cm)</label>
               <input
                 type="number"
                 name="height"
                 value={height}
                 onChange={onChange}
-                className="w-full p-2 border rounded"
-                min="0"
-                max="300"
+                placeholder="Height (cm)"
               />
-            </div>
-            <div className="mb-4">
-              <label className="block mb-2">Weight (kg)</label>
               <input
                 type="number"
                 name="weight"
                 value={weight}
                 onChange={onChange}
-                className="w-full p-2 border rounded"
-                min="0"
-                max="500"
+                placeholder="Weight (kg)"
               />
-            </div>
-            <div className="mb-4">
-              <label className="block mb-2">Daily Budget</label>
               <input
                 type="number"
                 name="dailyBudget"
                 value={dailyBudget}
                 onChange={onChange}
-                className="w-full p-2 border rounded"
-                min="0"
+                placeholder="Daily Budget"
               />
-            </div>
-            <div className="mb-4">
-              <label className="block mb-2">Dietary Preferences</label>
               <input
                 type="text"
                 name="dietaryPreferences"
                 value={dietaryPreferences}
                 onChange={onChange}
-                className="w-full p-2 border rounded"
+                placeholder="Dietary Preferences"
               />
-            </div>
-            <div className="mb-4">
-              <label className="block mb-2">Allergies (comma separated)</label>
               <input
                 type="text"
                 name="allergies"
                 value={allergies}
                 onChange={onChange}
-                className="w-full p-2 border rounded"
+                placeholder="Allergies (comma separated)"
               />
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600"
-              disabled={loading}
-            >
-              Update Profile
-            </button>
-          </form>
+              <button type="submit">Update Profile</button>
+            </form>
+          </div>
         </div>
+      )}
 
-        {/* Delete Account Section */}
-        <div className="border border-red-200 p-4 rounded bg-red-50">
-          <h2 className="text-xl font-semibold mb-4 text-red-700">Danger Zone</h2>
-          <button
-            onClick={handleDelete}
-            className="bg-red-500 text-white p-2 rounded hover:bg-red-600"
-            disabled={loading}
-          >
-            Delete Account
-          </button>
-        </div>
+      <div className="profile-form-section">
+        <h2>Change Password</h2>
+        <form onSubmit={onSubmitPassword}>
+          <input
+            type="password"
+            name="newPassword"
+            value={newPassword}
+            onChange={onChange}
+            placeholder="New Password"
+          />
+          <input
+            type="password"
+            name="confirmPassword"
+            value={confirmPassword}
+            onChange={onChange}
+            placeholder="Confirm Password"
+          />
+          <button type="submit">Update Password</button>
+        </form>
+      </div>
+
+      <div className="danger-zone">
+        <h2>Delete Account</h2>
+        <button onClick={handleDelete}>Delete My Account</button>
       </div>
     </div>
   );
