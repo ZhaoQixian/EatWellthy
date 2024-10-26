@@ -8,8 +8,14 @@ const User = require("../models/User");
 const fs = require("fs");
 let multer = require("multer");
 let uuidv4 = require("uuid");
+const { sendVerificationEmail } = require('../utils/emailUtil');
 
 var jwtSecret = "mysecrettoken";
+
+// Generate 6-digit verification code
+const generateVerificationCode = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
 
 // @route   POST /users
 // @desc    Register user
@@ -42,10 +48,17 @@ router.post(
           .json({ errors: [{ msg: "User already exists" }] });
       }
 
+      // Generate verification code
+      const verificationCode = generateVerificationCode();
+      const verificationCodeExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+
       user = new User({
         name,
         email,
         password,
+        verificationCode,
+        verificationCodeExpires,
+        isVerified: false
       });
 
       //Encrypt Password
@@ -53,6 +66,9 @@ router.post(
       user.password = await bcrypt.hash(password, salt);
 
       await user.save();
+
+      // Send verification email with code
+      await sendVerificationEmail(email, verificationCode);
 
       //Return jsonwebtoken
       const payload = {
@@ -63,8 +79,53 @@ router.post(
 
       jwt.sign(payload, jwtSecret, { expiresIn: 360000 }, (err, token) => {
         if (err) throw err;
-        res.json({ token });
+        res.json({ 
+          token,
+          msg: "Registration successful! Please check your email for the verification code." 
+        });
       });
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server error");
+    }
+  }
+);
+
+// @route   POST /users/verify-code
+// @desc    Verify email with code
+// @access  Public
+router.post("/verify-code", 
+  [
+    check("email", "Email is required").isEmail(),
+    check("code", "Verification code is required").not().isEmpty(),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { email, code } = req.body;
+
+    try {
+      const user = await User.findOne({
+        email,
+        verificationCode: code,
+        verificationCodeExpires: { $gt: Date.now() }
+      });
+
+      if (!user) {
+        return res.status(400).json({ 
+          errors: [{ msg: "Invalid or expired verification code" }] 
+        });
+      }
+
+      user.isVerified = true;
+      user.verificationCode = undefined;
+      user.verificationCodeExpires = undefined;
+      await user.save();
+
+      res.json({ msg: "Email verified successfully" });
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server error");
@@ -103,13 +164,18 @@ router.post(
     const { email, password } = req.body;
 
     try {
-      // See if user exists
       let user = await User.findOne({ email });
 
       if (!user) {
         return res
           .status(400)
           .json({ errors: [{ msg: "Invalid Credentials" }] });
+      }
+
+      if (!user.isVerified) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: "Please verify your email before logging in" }] });
       }
 
       const isMatch = await bcrypt.compare(password, user.password);
@@ -120,7 +186,6 @@ router.post(
           .json({ errors: [{ msg: "Invalid Credentials" }] });
       }
 
-      //Return jsonwebtoken
       const payload = {
         user: {
           id: user.id,
@@ -131,6 +196,46 @@ router.post(
         if (err) throw err;
         res.json({ token });
       });
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server error");
+    }
+  }
+);
+
+// @route   POST /users/resend-verification
+// @desc    Resend verification code
+// @access  Public
+router.post("/resend-verification", 
+  [check("email", "Please include a valid email").isEmail()],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { email } = req.body;
+
+    try {
+      const user = await User.findOne({ email });
+
+      if (!user) {
+        return res.status(400).json({ errors: [{ msg: "User not found" }] });
+      }
+
+      if (user.isVerified) {
+        return res.status(400).json({ errors: [{ msg: "Email already verified" }] });
+      }
+
+      // Generate new verification code
+      const verificationCode = generateVerificationCode();
+      user.verificationCode = verificationCode;
+      user.verificationCodeExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+
+      await user.save();
+      await sendVerificationEmail(email, verificationCode);
+
+      res.json({ msg: "New verification code sent" });
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server error");
@@ -174,7 +279,6 @@ router.post(
   "/uploadfile",
   auth,
   [upload.single("avatar")],
-
   async (req, res) => {
     try {
       const url = req.protocol + "://" + req.get("host");

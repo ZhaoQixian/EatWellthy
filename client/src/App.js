@@ -6,6 +6,7 @@ import Navbar from "./components/layout/Navbar";
 import Landing from "./components/layout/Landing";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
+import VerifyEmail from "./components/auth/VerifyEmail"; // Add this import
 import PrivateRoute from "./routing/PrivateRoute";
 import NotFound from "./components/NotFound";
 import Dashboard from "./components/Dashboard";
@@ -22,10 +23,7 @@ import Location from "./components/Location/Location";
 import LogMeal from "./components/NutritionCalculator_U0301";
 import Profile from "./components/Profile";
 
-// import { loadUser } from "./actions/auth";
-
 function App() {
-  // useEffect(() => dispatch(loadUser()), []);
   if (localStorage.token) {
     setAuthToken(localStorage.token);
   }
@@ -38,12 +36,12 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/verify" element={<VerifyEmail />} /> {/* Add this route */}
           <Route
             path="/dashboard"
             element={<PrivateRoute element={Dashboard} />}
           />
           <Route path="/profile" element={<PrivateRoute element={Profile} />} />
-
           <Route
             path="/nutrition-calculator/:username"
             element={<NutritionCalculator />}

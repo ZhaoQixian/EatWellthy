@@ -1,3 +1,5 @@
+// backend/models/User.js
+
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
@@ -16,6 +18,16 @@ const UserSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
+  },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  verificationCode: {
+    type: String,
+  },
+  verificationCodeExpires: {
+    type: Date,
   },
   date: {
     type: Date,

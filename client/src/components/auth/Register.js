@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom"; // Add useNavigate
 import { register } from "../../actions/auth";
 import PropTypes from "prop-types";
 import Alert from "../layout/Alert";
 import { setAlert } from "../../actions/alert";
 
 const Register = ({ setAlert, register, isAuthenticated }) => {
+  const navigate = useNavigate(); // Add this
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -20,12 +21,14 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const onSubmit = async (e) => {
-    console.log("Form data", e);
     e.preventDefault();
     if (password !== password2) {
       setAlert("Password do not match", "danger");
     } else {
-      register({ name, email, password });
+      const result = await register({ name, email, password });
+      if (result !== false) { // If registration was successful
+        navigate('/verify', { state: { email } }); // Pass email to verification page
+      }
     }
   };
 

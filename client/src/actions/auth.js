@@ -1,3 +1,5 @@
+// client/src/actions/auth.js
+
 import axios from "axios";
 import { setAlert } from "./alert";
 import {
@@ -8,6 +10,8 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT,
+  EMAIL_VERIFICATION_SUCCESS,
+  EMAIL_VERIFICATION_FAIL,
 } from "./types";
 import setAuthToken from "../utils/setAuthToken";
 
@@ -22,10 +26,10 @@ export const loadUser = () => async (dispatch) => {
 
     dispatch({
       type: USER_LOADED,
-      payload: res.data || {}, // Fallback to an empty object if data is undefined
+      payload: res.data || {},
     });
   } catch (err) {
-    console.error(err); // Log the error for debugging
+    console.error(err);
     dispatch({
       type: AUTH_ERROR,
     });
@@ -53,16 +57,19 @@ export const register =
 
       dispatch({
         type: REGISTER_SUCCESS,
-        payload: res.data || {}, // Fallback to an empty object
+        payload: res.data || {},
       });
 
+      // Load user immediately after registration
       dispatch(loadUser());
-    } catch (err) {
-      console.error("Registration Error: ", err); // Log the entire error
 
-      // If err.response is undefined, that indicates a network error or the server is unreachable.
+      dispatch(setAlert('Registration successful! Please check your email to verify your account.', 'success'));
+      return true;
+    } catch (err) {
+      console.error("Registration Error: ", err);
+
       if (err.response) {
-        const errors = err.response.data.errors; // Check for validation errors
+        const errors = err.response.data.errors;
 
         if (errors) {
           errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
@@ -73,7 +80,7 @@ export const register =
                 "Unknown error",
               "danger"
             )
-          ); // Show server message
+          );
         }
       } else {
         dispatch(setAlert("Network error: Unable to reach server", "danger"));
@@ -82,10 +89,82 @@ export const register =
       dispatch({
         type: REGISTER_FAIL,
       });
+      return false;
     }
   };
 
-// Login User
+// Verify Email with Code
+export const verifyEmail = (email, code) => async (dispatch) => {
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  const body = JSON.stringify({ email, code });
+
+  try {
+    const res = await axios.post(
+      "http://localhost:5050/users/verify-code",
+      body,
+      config
+    );
+
+    dispatch({
+      type: EMAIL_VERIFICATION_SUCCESS,
+      payload: res.data
+    });
+
+    // Load user after successful verification
+    await dispatch(loadUser());
+
+    dispatch(setAlert('Email verified successfully! You can now proceed to dashboard.', 'success'));
+    return true;
+  } catch (err) {
+    dispatch({
+      type: EMAIL_VERIFICATION_FAIL
+    });
+
+    if (err.response && err.response.data.errors) {
+      const errors = err.response.data.errors;
+      errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
+    } else {
+      dispatch(setAlert('Email verification failed', 'danger'));
+    }
+    return false;
+  }
+};
+
+// Resend Verification Code
+export const resendVerification = (email) => async (dispatch) => {
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  const body = JSON.stringify({ email });
+
+  try {
+    const res = await axios.post(
+      "http://localhost:5050/users/resend-verification",
+      body,
+      config
+    );
+    
+    dispatch(setAlert('New verification code has been sent. Please check your inbox.', 'success'));
+    return true;
+  } catch (err) {
+    if (err.response && err.response.data.errors) {
+      const errors = err.response.data.errors;
+      errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
+    } else {
+      dispatch(setAlert('Failed to send verification code', 'danger'));
+    }
+    return false;
+  }
+};
+
 // Login User
 export const login = (email, password) => async (dispatch) => {
   const config = {
@@ -108,7 +187,8 @@ export const login = (email, password) => async (dispatch) => {
       payload: res.data,
     });
 
-    dispatch(loadUser());
+    // Load user after successful login
+    await dispatch(loadUser());
   } catch (err) {
     if (err.response && err.response.data.errors) {
       const errors = err.response.data.errors;
