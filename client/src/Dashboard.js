@@ -11,14 +11,29 @@ import Location from "./components/Location";
 import icon from "../img/user.png";
 
 const Dashboard = ({ auth: { user } }) => {
+  // Add a check for user loading
+  if (!user) {
+    return <div style={{ marginTop: "5rem", textAlign: "center" }}>Loading...</div>;
+  }
+
   return (
     <div style={{ marginTop: "5rem", textAlign: "center" }}>
-      <h1>Welcome, {user && user.name}!</h1>
+      <h1>Welcome, {user.name}!</h1>
       <img
         src={icon}
         alt="user-icon"
         style={{ width: "150px", margin: "20px auto" }}
       />
+
+      {/* Add verification reminder if user is not verified */}
+      {!user.isVerified && (
+        <div className="alert alert-warning" style={{ margin: "20px auto", maxWidth: "600px" }}>
+          Please verify your email address. 
+          <Link to="/verify" style={{ marginLeft: "10px" }}>
+            Verify Now
+          </Link>
+        </div>
+      )}
 
       {/* Navigation section for quick access */}
       <nav className="dashboard-nav">
@@ -87,5 +102,5 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
-connect(mapStateToProps)(Dashboard);
-export default Dashboard;
+// Fix the export - connect needs to wrap the export
+export default connect(mapStateToProps)(Dashboard);

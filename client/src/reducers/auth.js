@@ -1,3 +1,5 @@
+// client/src/reducers/auth.js
+
 import {
   REGISTER_SUCCESS,
   REGISTER_FAIL,
@@ -7,6 +9,8 @@ import {
   LOGIN_FAIL,
   LOGOUT,
   GOOGLE_AUTO,
+  EMAIL_VERIFICATION_SUCCESS,
+  EMAIL_VERIFICATION_FAIL
 } from "../actions/types";
 
 const initialState = {
@@ -20,32 +24,43 @@ const initialState = {
 export default function authReducer(state = initialState, action) {
   const { type, payload } = action;
 
-  // Log the action type and payload for debugging
-  // console.log("Action Type:", type, "Payload:", payload);
-
   switch (type) {
     case USER_LOADED:
       return {
         ...state,
         isAuthenticated: true,
         loading: false,
-        user: payload, // Ensure payload contains the user object
+        user: payload,
       };
     case REGISTER_SUCCESS:
     case LOGIN_SUCCESS:
-      localStorage.setItem("token", payload.token); // Save token to localStorage
+      localStorage.setItem("token", payload.token);
       return {
         ...state,
-        ...payload, // Ensure payload has the necessary user details
+        ...payload,
         isAuthenticated: true,
         loading: false,
+      };
+    case EMAIL_VERIFICATION_SUCCESS:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          isVerified: true
+        },
+        loading: false
+      };
+    case EMAIL_VERIFICATION_FAIL:
+      return {
+        ...state,
+        loading: false
       };
     case REGISTER_FAIL:
     case AUTH_ERROR:
     case LOGIN_FAIL:
     case LOGOUT:
-      localStorage.removeItem("token"); // Clear token on failure or logout
-      localStorage.removeItem("googleAuto"); // Clear token to localStorage
+      localStorage.removeItem("token");
+      localStorage.removeItem("googleAuto");
       return {
         ...state,
         token: null,
@@ -55,9 +70,12 @@ export default function authReducer(state = initialState, action) {
         user: null,
       };
     case GOOGLE_AUTO:
-      localStorage.setItem("googleAuto", true); // Save token to localStorage
-      return { googleAuto: true };
+      localStorage.setItem("googleAuto", true);
+      return { 
+        ...state,
+        googleAuto: true 
+      };
     default:
-      return state; // Return current state if action type is unrecognized
+      return state;
   }
 }
