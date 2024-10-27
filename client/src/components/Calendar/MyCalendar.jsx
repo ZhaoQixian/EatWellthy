@@ -13,6 +13,7 @@ import { ShowEventApi, ShowEventsApi } from "../../actions/eventsActions";
 import { closeEvent } from "../../actions/modal";
 
 import "react-big-calendar/lib/css/react-big-calendar.css";
+
 const locales = {
   "en-US": enUS,
 };
@@ -44,13 +45,23 @@ const MyCalendar = ({ events, ShowEventApi, closeEvent, ShowEventsApi }) => {
     if (event.id) {
       ShowEventApi(event.id);
     }
-
-    return;
   };
 
   const closeEventClick = () => {
     setOpen(false);
     setTimeout(() => closeEvent(), 300);
+  };
+
+  const generateGoogleCalendarLink = (event) => {
+    const { title, start, end, describe } = event;
+    const startDate = new Date(start)
+      .toISOString()
+      .replace(/-|:|\.\d\d\d/g, "");
+    const endDate = new Date(end).toISOString().replace(/-|:|\.\d\d\d/g, "");
+    const details = describe ? `&details=${encodeURIComponent(describe)}` : "";
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
+      title
+    )}&dates=${startDate}/${endDate}${details}`;
   };
 
   return (
@@ -93,10 +104,41 @@ const MyCalendar = ({ events, ShowEventApi, closeEvent, ShowEventsApi }) => {
         startAccessor="start"
         endAccessor="end"
         style={{ height: 450, margin: 20 }}
-        onSelectEvent={openEventClick}
+        onSelectEvent={(event) => {
+          openEventClick(event);
+        }}
         defaultView="month"
         views={{ month: true, week: true, day: true }}
       />
+
+      {/* Google Calendar Button */}
+      {open && (
+        <div
+          style={{ display: "flex", justifyContent: "center", marginTop: 20 }}
+        >
+          <a
+            href={generateGoogleCalendarLink(
+              events.find((event) => event.id === open.id)
+            )}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <button
+              style={{
+                paddingTop: 10,
+                paddingBottom: 10,
+                paddingRight: 30,
+                paddingLeft: 30,
+                borderRadius: 8,
+                borderWidth: 0,
+                cursor: "pointer",
+              }}
+            >
+              Add to Google Calendar
+            </button>
+          </a>
+        </div>
+      )}
     </div>
   );
 };
