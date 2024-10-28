@@ -17,6 +17,39 @@ const generateVerificationCode = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
+// @route   PUT /users/update-name
+// @desc    Update user's name
+// @access  Private
+router.put(
+  "/update-name",
+  auth,
+  [
+    check("name", "Name is required").not().isEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const user = await User.findById(req.user.id);
+      if (!user) {
+        return res.status(404).json({ msg: "User not found" });
+      }
+
+      user.name = req.body.name;
+      await user.save();
+
+      const userResponse = await User.findById(req.user.id).select("-password");
+      res.json(userResponse);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server error");
+    }
+  }
+);
+
 // @route   POST /users
 // @desc    Register user
 // @access  Public
@@ -39,7 +72,6 @@ router.post(
     const { name, email, password } = req.body;
 
     try {
-      // See if user exists
       let user = await User.findOne({ email });
 
       if (user) {
@@ -48,9 +80,8 @@ router.post(
           .json({ errors: [{ msg: "User already exists" }] });
       }
 
-      // Generate verification code
       const verificationCode = generateVerificationCode();
-      const verificationCodeExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+      const verificationCodeExpires = Date.now() + 24 * 60 * 60 * 1000;
 
       user = new User({
         name,
@@ -61,16 +92,13 @@ router.post(
         isVerified: false
       });
 
-      //Encrypt Password
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
 
       await user.save();
 
-      // Send verification email with code
       await sendVerificationEmail(email, verificationCode);
 
-      //Return jsonwebtoken
       const payload = {
         user: {
           id: user.id,
@@ -227,10 +255,9 @@ router.post("/resend-verification",
         return res.status(400).json({ errors: [{ msg: "Email already verified" }] });
       }
 
-      // Generate new verification code
       const verificationCode = generateVerificationCode();
       user.verificationCode = verificationCode;
-      user.verificationCodeExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+      user.verificationCodeExpires = Date.now() + 24 * 60 * 60 * 1000;
 
       await user.save();
       await sendVerificationEmail(email, verificationCode);
@@ -342,12 +369,10 @@ router.put(
 
       console.log("User found:", user.email);
 
-      // Hash the new password
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
       console.log("Hashed password:", hashedPassword);
 
-      // Update user's password
       user.password = hashedPassword;
 
       await user.save();

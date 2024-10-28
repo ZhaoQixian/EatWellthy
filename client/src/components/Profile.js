@@ -7,18 +7,21 @@ import {
   updateProfile,
   getProfile,
 } from "../actions/Profile";
+import { updateName } from "../actions/auth";
 
 const Profile = () => {
   const dispatch = useDispatch();
   const profileState = useSelector((state) => state.profile);
+  const authState = useSelector((state) => state.auth);
   const { loading, error } = profileState;
 
   const [message, setMessage] = useState({ text: "", type: "" });
   const [formData, setFormData] = useState({
+    name: "",
     newPassword: "",
     confirmPassword: "",
     age: "",
-    gender: "", // Add gender field
+    gender: "",
     height: "",
     weight: "",
     dailyBudget: "",
@@ -27,10 +30,11 @@ const Profile = () => {
   });
 
   const {
+    name,
     newPassword,
     confirmPassword,
     age,
-    gender, // Add gender to destructuring
+    gender,
     height,
     weight,
     dailyBudget,
@@ -44,8 +48,9 @@ const Profile = () => {
       if (profileData) {
         setFormData((prev) => ({
           ...prev,
+          name: authState.user?.name || "",
           age: profileData.age || "",
-          gender: profileData.gender || "", // Add gender
+          gender: profileData.gender || "",
           height: profileData.height || "",
           weight: profileData.weight || "",
           dailyBudget: profileData.dailyBudget || "",
@@ -55,7 +60,7 @@ const Profile = () => {
       }
     };
     loadProfile();
-  }, [dispatch]);
+  }, [dispatch, authState.user]);
 
   const showMessage = (text, type = "success") => {
     setMessage({ text, type });
@@ -68,9 +73,18 @@ const Profile = () => {
 
   const onSubmitProfile = async (e) => {
     e.preventDefault();
+
+    // Update name if changed
+    if (name !== authState.user?.name) {
+      const nameUpdateSuccess = await dispatch(updateName(name));
+      if (!nameUpdateSuccess) {
+        return;
+      }
+    }
+
     const profileData = {
       age: Number(age) || 0,
-      gender, // Add gender to profile data
+      gender,
       height: Number(height) || 0,
       weight: Number(weight) || 0,
       dailyBudget: Number(dailyBudget) || 0,
@@ -144,13 +158,16 @@ const Profile = () => {
         <div className="profile-form-section">
           <h2>Profile Information</h2>
           <form onSubmit={onSubmitProfile}>
-            <input
-              type="number"
-              name="age"
-              value={age}
-              onChange={onChange}
-              placeholder="Age"
-            />
+            <div className="form-group">
+              <input
+                type="text"
+                name="name"
+                value={name}
+                onChange={onChange}
+                placeholder="Name"
+                className="name-input"
+              />
+            </div>
             <select
               name="gender"
               value={gender}
@@ -161,6 +178,13 @@ const Profile = () => {
               <option value="male">Male</option>
               <option value="female">Female</option>
             </select>
+            <input
+              type="number"
+              name="age"
+              value={age}
+              onChange={onChange}
+              placeholder="Age"
+            />
             <input
               type="number"
               name="height"

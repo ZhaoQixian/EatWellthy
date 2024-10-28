@@ -1,5 +1,3 @@
-// client/src/reducers/auth.js
-
 import {
   REGISTER_SUCCESS,
   REGISTER_FAIL,
@@ -10,7 +8,9 @@ import {
   LOGOUT,
   GOOGLE_AUTO,
   EMAIL_VERIFICATION_SUCCESS,
-  EMAIL_VERIFICATION_FAIL
+  EMAIL_VERIFICATION_FAIL,
+  UPDATE_NAME_SUCCESS,
+  UPDATE_NAME_FAIL
 } from "../actions/types";
 
 const initialState = {
@@ -40,6 +40,17 @@ export default function authReducer(state = initialState, action) {
         ...payload,
         isAuthenticated: true,
         loading: false,
+      };
+    case UPDATE_NAME_SUCCESS:
+      return {
+        ...state,
+        user: payload,
+        loading: false
+      };
+    case UPDATE_NAME_FAIL:
+      return {
+        ...state,
+        loading: false
       };
     case EMAIL_VERIFICATION_SUCCESS:
       return {

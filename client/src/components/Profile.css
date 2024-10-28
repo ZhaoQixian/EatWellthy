@@ -163,3 +163,38 @@
 .gender-select option {
   padding: 10px;
 }
+
+
+/* Add these to your existing Profile.css */
+.name-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.name-input:focus {
+  outline: none;
+  border-color: #2e5e4e;
+  box-shadow: 0 0 0 2px rgba(46, 94, 78, 0.2);
+}
+
+.name-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+.name-input:focus {
+  outline: none;
+  border-color: #2e5e4e;
+  box-shadow: 0 0 0 2px rgba(46, 94, 78, 0.2);
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
