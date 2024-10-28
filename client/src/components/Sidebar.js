@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import icon from "../img/user.png"; // Ensure you have this image
+import icon from "../img/MyCutePhoto.png"; // Ensure you have this image
 
 const Sidebar = ({ user }) => (
   <div className="sidebar">

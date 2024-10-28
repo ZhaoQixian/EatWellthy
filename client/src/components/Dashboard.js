@@ -9,7 +9,7 @@ import NutritionalGraph from "./NutritionalGraph";
 import ProgressTracker from "./ProgressTracker";
 import DietSuggestions from "./DietSuggestions";
 
-// import icon from "../img/user.png";
+// import icon from "../img/MyCutePhoto.png";
 // import { Route } from "react-router-dom";
 
 const Dashboard = ({ auth }) => {

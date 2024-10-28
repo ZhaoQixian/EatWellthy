@@ -8,7 +8,7 @@ import DietPlanner from "./components/DietPlanner";
 import DailyPriceList from "./components/DailyPriceList";
 import FAQs from "./components/FAQs";
 import Location from "./components/Location";
-import icon from "../img/user.png";
+import icon from "../img/MyCutePhoto.png";
 
 const Dashboard = ({ auth: { user } }) => {
   // Add a check for user loading
