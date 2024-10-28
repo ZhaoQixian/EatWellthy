@@ -12,6 +12,11 @@ const ProfileSchema = new mongoose.Schema({
     min: 0,
     max: 150
   },
+  gender: {
+    type: String,
+    enum: ['male', 'female'],
+    default: null
+  },
   height: {
     type: Number,
     min: 0,

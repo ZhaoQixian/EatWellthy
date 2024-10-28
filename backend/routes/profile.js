@@ -33,6 +33,7 @@ router.get("/me", auth, async (req, res) => {
       const defaultProfile = {
         userId: hashedUserId,
         age: 0,
+        gender: null,
         height: 0,
         weight: 0,
         dailyBudget: 0,
@@ -58,7 +59,7 @@ router.get("/me", auth, async (req, res) => {
 router.post("/", auth, async (req, res) => {
   try {
     console.log("Received profile data:", req.body); // Debug log
-    const { age, height, weight, dailyBudget, dietaryPreferences, allergies } =
+    const { age, gender, height, weight, dailyBudget, dietaryPreferences, allergies } =
       req.body;
 
     const hashedUserId = Profile.hashUserId(req.user.id);
@@ -67,6 +68,7 @@ router.post("/", auth, async (req, res) => {
     const profileFields = {
       userId: hashedUserId,
       age: Number(age) || 0,
+      gender: gender || null,
       height: Number(height) || 0,
       weight: Number(weight) || 0,
       dailyBudget: Number(dailyBudget) || 0,
@@ -106,7 +108,7 @@ router.post("/", auth, async (req, res) => {
 router.put("/", auth, async (req, res) => {
   try {
     console.log("Received update data:", req.body); // Debug log
-    const { age, height, weight, dailyBudget, dietaryPreferences, allergies } =
+    const { age, gender, height, weight, dailyBudget, dietaryPreferences, allergies } =
       req.body;
 
     const hashedUserId = Profile.hashUserId(req.user.id);
@@ -118,6 +120,7 @@ router.put("/", auth, async (req, res) => {
 
     // Update fields
     if (age !== undefined) profile.age = Number(age);
+    if (gender !== undefined) profile.gender = gender;
     if (height !== undefined) profile.height = Number(height);
     if (weight !== undefined) profile.weight = Number(weight);
     if (dailyBudget !== undefined) profile.dailyBudget = Number(dailyBudget);

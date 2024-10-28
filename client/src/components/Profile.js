@@ -18,6 +18,7 @@ const Profile = () => {
     newPassword: "",
     confirmPassword: "",
     age: "",
+    gender: "", // Add gender field
     height: "",
     weight: "",
     dailyBudget: "",
@@ -29,6 +30,7 @@ const Profile = () => {
     newPassword,
     confirmPassword,
     age,
+    gender, // Add gender to destructuring
     height,
     weight,
     dailyBudget,
@@ -43,6 +45,7 @@ const Profile = () => {
         setFormData((prev) => ({
           ...prev,
           age: profileData.age || "",
+          gender: profileData.gender || "", // Add gender
           height: profileData.height || "",
           weight: profileData.weight || "",
           dailyBudget: profileData.dailyBudget || "",
@@ -67,6 +70,7 @@ const Profile = () => {
     e.preventDefault();
     const profileData = {
       age: Number(age) || 0,
+      gender, // Add gender to profile data
       height: Number(height) || 0,
       weight: Number(weight) || 0,
       dailyBudget: Number(dailyBudget) || 0,
@@ -147,6 +151,16 @@ const Profile = () => {
               onChange={onChange}
               placeholder="Age"
             />
+            <select
+              name="gender"
+              value={gender}
+              onChange={onChange}
+              className="gender-select"
+            >
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
             <input
               type="number"
               name="height"
