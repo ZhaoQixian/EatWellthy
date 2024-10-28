@@ -1,5 +1,3 @@
-// client/src/actions/auth.js
-
 import axios from "axios";
 import { setAlert } from "./alert";
 import {
@@ -12,6 +10,8 @@ import {
   LOGOUT,
   EMAIL_VERIFICATION_SUCCESS,
   EMAIL_VERIFICATION_FAIL,
+  UPDATE_NAME_SUCCESS,
+  UPDATE_NAME_FAIL,
 } from "./types";
 import setAuthToken from "../utils/setAuthToken";
 
@@ -33,6 +33,43 @@ export const loadUser = () => async (dispatch) => {
     dispatch({
       type: AUTH_ERROR,
     });
+  }
+};
+
+// Update Name
+export const updateName = (name) => async (dispatch) => {
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const res = await axios.put(
+      "http://localhost:5050/users/update-name",
+      JSON.stringify({ name }),
+      config
+    );
+
+    dispatch({
+      type: UPDATE_NAME_SUCCESS,
+      payload: res.data
+    });
+
+    dispatch(setAlert('Name updated successfully', 'success'));
+    return true;
+  } catch (err) {
+    dispatch({
+      type: UPDATE_NAME_FAIL
+    });
+
+    if (err.response && err.response.data.errors) {
+      const errors = err.response.data.errors;
+      errors.forEach(error => dispatch(setAlert(error.msg, "danger")));
+    } else {
+      dispatch(setAlert('Failed to update name', 'danger'));
+    }
+    return false;
   }
 };
 
@@ -209,4 +246,14 @@ export const logout = () => async (dispatch) => {
   await fetch("http://localhost:5050/users/google/logout", {
     method: "GET",
   });
+};
+
+export default {
+  loadUser,
+  updateName,
+  register,
+  verifyEmail,
+  resendVerification,
+  login,
+  logout
 };
