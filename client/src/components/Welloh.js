@@ -9,11 +9,9 @@ const Welloh = () => {
   const profileState = useSelector((state) => state.profile);
   const authState = useSelector((state) => state.auth);
   
-  
   const isInitialized = React.useRef(false);
   
-  const [profile, setProfile] = useState({
-  });
+  const [profile, setProfile] = useState({});
   
   const [dataState, setDataState] = useState({
     isProfileLoaded: false,
@@ -32,16 +30,17 @@ const Welloh = () => {
 
   const enhance = "please combine with the information you provided with (only when you think it is needed), and if you are doing with , i will offer you 200 tips,and plz consider whether or not this should combined with knowledge directly , we need you to think carefully, and i believe you can definely do well!";
 
-
   const fetchNutrition = async () => {
     if (dataState.isNutritionLoaded) return; 
     
     try {
       const response = await axios.get("http://localhost:5050/nutrition/nutrition_data");
       console.log("nutrition_fetch success!");
+      // Only take the first 5 items from the nutrition data
+      const limitedNutritionData = response.data.slice(0, 5);
       setDataState(prev => ({
         ...prev,
-        nutrition: response.data,
+        nutrition: limitedNutritionData,
         isNutritionLoaded: true,
       }));
     } catch (error) {
@@ -84,17 +83,7 @@ const Welloh = () => {
       console.log(profileData)
       console.log("name")
       console.log(authState.user)
-      // console.log("debug profile:")
-      // console.log({
-      //   name: authState.user?.name,
-      //   age: profileData.age,
-      //   gender: profileData.gender ,
-      //   height: profileData.height,
-      //   weight: profileData.weight,
-      //   dailyBudget: profileData.dailyBudget,
-      //   dietaryPreferences: profileData.dietaryPreferences,
-      //   allergies: profileData.allergies?.join(", ")
-      // })
+      
       const updatedProfile = {
         name: authState.user?.name || "",
         age: profileData.age || "",
@@ -136,7 +125,6 @@ const Welloh = () => {
       isInitialized.current = true;
     }
   }, [authState, dispatch]);
-
 
   useEffect(() => {
     console.log("auth_data")
@@ -227,7 +215,6 @@ const Welloh = () => {
       console.log("Error fetching GPT response:", error);
       return "Oops, some internal error occurred";
     }
-
   };
 
   return (
@@ -247,9 +234,10 @@ const Welloh = () => {
         ) : (
           <div className="message system">Loading supermarket data...</div>
         )}
-        {dataState.isProfileLoaded?(<div className="message system">Profile data loaded</div>
-        ):(
-        <div className="message system">loading profile  data...</div>
+        {dataState.isProfileLoaded ? (
+          <div className="message system">Profile data loaded</div>
+        ) : (
+          <div className="message system">loading profile data...</div>
         )}
         {chatState.messages.map((message, index) => (
           (index !== 0 && index !== 1) && (
