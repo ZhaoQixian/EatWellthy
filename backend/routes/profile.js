@@ -39,6 +39,8 @@ router.get("/me", auth, async (req, res) => {
         dailyBudget: 0,
         dietaryPreferences: "",
         allergies: [],
+        activityLevel: "sedentary",
+        dietPlan: "maintenance"
       };
 
       profile = new Profile(defaultProfile);
@@ -59,8 +61,17 @@ router.get("/me", auth, async (req, res) => {
 router.post("/", auth, async (req, res) => {
   try {
     console.log("Received profile data:", req.body); // Debug log
-    const { age, gender, height, weight, dailyBudget, dietaryPreferences, allergies } =
-      req.body;
+    const {
+      age,
+      gender,
+      height,
+      weight,
+      dailyBudget,
+      dietaryPreferences,
+      allergies,
+      activityLevel,
+      dietPlan
+    } = req.body;
 
     const hashedUserId = Profile.hashUserId(req.user.id);
     
@@ -74,6 +85,8 @@ router.post("/", auth, async (req, res) => {
       dailyBudget: Number(dailyBudget) || 0,
       dietaryPreferences: dietaryPreferences || "",
       allergies: processAllergies(allergies),
+      activityLevel: activityLevel || "sedentary",
+      dietPlan: dietPlan || "maintenance"
     };
 
     console.log("Processed profile fields:", profileFields); // Debug log
@@ -108,8 +121,17 @@ router.post("/", auth, async (req, res) => {
 router.put("/", auth, async (req, res) => {
   try {
     console.log("Received update data:", req.body); // Debug log
-    const { age, gender, height, weight, dailyBudget, dietaryPreferences, allergies } =
-      req.body;
+    const {
+      age,
+      gender,
+      height,
+      weight,
+      dailyBudget,
+      dietaryPreferences,
+      allergies,
+      activityLevel,
+      dietPlan
+    } = req.body;
 
     const hashedUserId = Profile.hashUserId(req.user.id);
     let profile = await Profile.findOne({ userId: hashedUserId });
@@ -124,10 +146,10 @@ router.put("/", auth, async (req, res) => {
     if (height !== undefined) profile.height = Number(height);
     if (weight !== undefined) profile.weight = Number(weight);
     if (dailyBudget !== undefined) profile.dailyBudget = Number(dailyBudget);
-    if (dietaryPreferences !== undefined)
-      profile.dietaryPreferences = dietaryPreferences;
-    if (allergies !== undefined)
-      profile.allergies = processAllergies(allergies);
+    if (dietaryPreferences !== undefined) profile.dietaryPreferences = dietaryPreferences;
+    if (allergies !== undefined) profile.allergies = processAllergies(allergies);
+    if (activityLevel !== undefined) profile.activityLevel = activityLevel;
+    if (dietPlan !== undefined) profile.dietPlan = dietPlan;
 
     console.log("Updated profile data:", profile); // Debug log
     await profile.save();

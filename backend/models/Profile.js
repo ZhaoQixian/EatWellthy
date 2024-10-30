@@ -3,7 +3,7 @@ const crypto = require('crypto');
 
 const ProfileSchema = new mongoose.Schema({
   userId: {
-    type: String,  // Only store hashed ID
+    type: String,
     required: true,
     unique: true
   },
@@ -44,6 +44,16 @@ const ProfileSchema = new mongoose.Schema({
     type: String,
     enum: ['user', 'admin'],
     default: 'user'
+  },
+  activityLevel: {
+    type: String,
+    enum: ['sedentary', 'lightly', 'moderately', 'very', 'super'],
+    default: 'sedentary'
+  },
+  dietPlan: {
+    type: String,
+    enum: ['maintenance', 'weightloss', 'keto', 'vegetarian'],
+    default: 'maintenance'
   },
   createdAt: {
     type: Date,

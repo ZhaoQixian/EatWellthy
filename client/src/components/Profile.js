@@ -27,6 +27,8 @@ const Profile = () => {
     dailyBudget: "",
     dietaryPreferences: "",
     allergies: "",
+    activityLevel: "sedentary",
+    dietPlan: "maintenance"
   });
 
   const {
@@ -40,6 +42,8 @@ const Profile = () => {
     dailyBudget,
     dietaryPreferences,
     allergies,
+    activityLevel,
+    dietPlan
   } = formData;
 
   useEffect(() => {
@@ -56,6 +60,8 @@ const Profile = () => {
           dailyBudget: profileData.dailyBudget || "",
           dietaryPreferences: profileData.dietaryPreferences || "",
           allergies: profileData.allergies?.join(", ") || "",
+          activityLevel: profileData.activityLevel || "sedentary",
+          dietPlan: profileData.dietPlan || "maintenance"
         }));
       }
     };
@@ -74,7 +80,6 @@ const Profile = () => {
   const onSubmitProfile = async (e) => {
     e.preventDefault();
 
-    // Update name if changed
     if (name !== authState.user?.name) {
       const nameUpdateSuccess = await dispatch(updateName(name));
       if (!nameUpdateSuccess) {
@@ -93,6 +98,8 @@ const Profile = () => {
         .split(",")
         .map((item) => item.trim())
         .filter(Boolean),
+      activityLevel,
+      dietPlan
     };
 
     const success = await dispatch(updateProfile(profileData));
@@ -206,6 +213,29 @@ const Profile = () => {
               onChange={onChange}
               placeholder="Daily Budget"
             />
+            <select
+              name="activityLevel"
+              value={activityLevel}
+              onChange={onChange}
+              className="activity-select"
+            >
+              <option value="sedentary">Sedentary (little or no exercise)</option>
+              <option value="lightly">Lightly active (1-3 days/week)</option>
+              <option value="moderately">Moderately active (3-5 days/week)</option>
+              <option value="very">Very active (6-7 days/week)</option>
+              <option value="super">Super active (physical job)</option>
+            </select>
+            <select
+              name="dietPlan"
+              value={dietPlan}
+              onChange={onChange}
+              className="diet-plan-select"
+            >
+              <option value="maintenance">Maintenance Plan</option>
+              <option value="weightloss">Weight Loss Plan</option>
+              <option value="keto">Keto Plan</option>
+              <option value="vegetarian">Vegetarian Plan</option>
+            </select>
             <input
               type="text"
               name="dietaryPreferences"

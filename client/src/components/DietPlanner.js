@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProfile } from '../actions/Profile';
+import { getProfile, updateProfile } from '../actions/Profile';
 import { Link } from 'react-router-dom';
 import './DietPlanner.css';
 
@@ -8,6 +8,8 @@ const DietPlanner = () => {
   const dispatch = useDispatch();
   const { profile, loading } = useSelector((state) => state.profile);
   const [bmi, setBmi] = useState(null);
+  const [bmr, setBmr] = useState(null);
+  const [dailyCalories, setDailyCalories] = useState(null);
 
   useEffect(() => {
     dispatch(getProfile());
@@ -20,6 +22,26 @@ const DietPlanner = () => {
         profile.weight / (heightInMeters * heightInMeters)
       ).toFixed(1);
       setBmi(calculatedBMI);
+
+      if (profile.age && profile.gender) {
+        let calculatedBMR;
+        if (profile.gender === 'male') {
+          calculatedBMR = 88.362 + (13.397 * profile.weight) + (4.799 * profile.height) - (5.677 * profile.age);
+        } else {
+          calculatedBMR = 447.593 + (9.247 * profile.weight) + (3.098 * profile.height) - (4.330 * profile.age);
+        }
+        setBmr(Math.round(calculatedBMR));
+
+        const activityMultipliers = {
+          sedentary: 1.2,
+          lightly: 1.375,
+          moderately: 1.55,
+          very: 1.725,
+          super: 1.9
+        };
+        const calories = calculatedBMR * activityMultipliers[profile.activityLevel || 'sedentary'];
+        setDailyCalories(Math.round(calories));
+      }
     }
   }, [profile]);
 
@@ -30,6 +52,37 @@ const DietPlanner = () => {
     return { category: 'Obese', color: '#FF0000', recommendation: 'Consult with a healthcare provider for a personalized weight management plan.' };
   };
 
+  const calculateMacroCalories = (totalCalories, macroPercentage) => {
+    const calories = (totalCalories * (macroPercentage / 100));
+    return Math.round(calories);
+  };
+
+  const getDietPlanMacros = (plan) => {
+    const plans = {
+      maintenance: { carbs: 55, protein: 15, fats: 30 },
+      weightloss: { carbs: 50, protein: 25, fats: 25 },
+      keto: { carbs: 5, protein: 20, fats: 75 },
+      vegetarian: { carbs: 55, protein: 20, fats: 25 }
+    };
+    return plans[plan || 'maintenance'];
+  };
+
+  const handleActivityChange = async (e) => {
+    const updatedProfile = {
+      ...profile,
+      activityLevel: e.target.value
+    };
+    await dispatch(updateProfile(updatedProfile));
+  };
+
+  const handleDietPlanChange = async (e) => {
+    const updatedProfile = {
+      ...profile,
+      dietPlan: e.target.value
+    };
+    await dispatch(updateProfile(updatedProfile));
+  };
+
   if (loading) {
     return <div className="diet-planner-loading">Loading...</div>;
   }
@@ -38,9 +91,9 @@ const DietPlanner = () => {
     <div className="diet-planner-container">
       <h1>Diet Planner</h1>
       
-      {!profile?.height || !profile?.weight ? (
+      {!profile?.height || !profile?.weight || !profile?.age || !profile?.gender ? (
         <div className="diet-planner-alert">
-          <p>Please complete your profile with height and weight information to see your BMI and get diet recommendations.</p>
+          <p>Please complete your profile with height, weight, age, and gender information to see your BMI and get diet recommendations.</p>
           <Link to="/profile" className="update-profile-btn">Update Profile</Link>
         </div>
       ) : (
@@ -60,6 +113,81 @@ const DietPlanner = () => {
               </div>
               <div className="bmi-recommendation">
                 {getBMICategory(bmi)?.recommendation}
+              </div>
+            </div>
+          </div>
+
+          <div className="metabolic-info">
+            <h2>Metabolic Information</h2>
+            <div className="metabolic-card">
+              <div className="bmr-value">
+                Basal Metabolic Rate (BMR): {bmr} calories/day
+              </div>
+              <div className="activity-selector">
+                <label>Activity Level:</label>
+                <select 
+                  value={profile.activityLevel || 'sedentary'} 
+                  onChange={handleActivityChange}
+                >
+                  <option value="sedentary">Sedentary (little or no exercise)</option>
+                  <option value="lightly">Lightly active (1-3 days/week)</option>
+                  <option value="moderately">Moderately active (3-5 days/week)</option>
+                  <option value="very">Very active (6-7 days/week)</option>
+                  <option value="super">Super active (physical job)</option>
+                </select>
+              </div>
+              <div className="daily-calories">
+                Daily Calorie Needs: {dailyCalories} calories/day
+              </div>
+            </div>
+          </div>
+
+          <div className="diet-plan">
+            <h2>Diet Plan Selection</h2>
+            <div className="diet-plan-card">
+              <div className="plan-selector">
+                <label>Choose your diet plan:</label>
+                <select 
+                  value={profile.dietPlan || 'maintenance'} 
+                  onChange={handleDietPlanChange}
+                >
+                  <option value="maintenance">Maintenance Plan</option>
+                  <option value="weightloss">Weight Loss Plan</option>
+                  <option value="keto">Keto Plan</option>
+                  <option value="vegetarian">Vegetarian Plan</option>
+                </select>
+              </div>
+              <div className="macros">
+                <h3>Recommended Macronutrient Split:</h3>
+                <div className="macros-breakdown">
+                  <div className="macro-item">
+                    <div className="macro-percentage">
+                      Carbohydrates: {getDietPlanMacros(profile.dietPlan).carbs}%
+                    </div>
+                    <div className="macro-calories">
+                      {calculateMacroCalories(dailyCalories, getDietPlanMacros(profile.dietPlan).carbs)} calories
+                      ({Math.round(calculateMacroCalories(dailyCalories, getDietPlanMacros(profile.dietPlan).carbs) / 4)}g)
+                    </div>
+                  </div>
+                  <div className="macro-item">
+                    <div className="macro-percentage">
+                      Proteins: {getDietPlanMacros(profile.dietPlan).protein}%
+                    </div>
+                    <div className="macro-calories">
+                      {calculateMacroCalories(dailyCalories, getDietPlanMacros(profile.dietPlan).protein)} calories
+                      ({Math.round(calculateMacroCalories(dailyCalories, getDietPlanMacros(profile.dietPlan).protein) / 4)}g)
+                    </div>
+                  </div>
+                  <div className="macro-item">
+                    <div className="macro-percentage">
+                      Fats: {getDietPlanMacros(profile.dietPlan).fats}%
+                    </div>
+                    <div className="macro-calories">
+                      {calculateMacroCalories(dailyCalories, getDietPlanMacros(profile.dietPlan).fats)} calories
+                      ({Math.round(calculateMacroCalories(dailyCalories, getDietPlanMacros(profile.dietPlan).fats) / 9)}g)
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
