@@ -1,127 +1,190 @@
+/* Base container styles */
 .diet-planner-container {
-    padding-top: 4rem;
-    padding-left: 1.2rem;
-    padding-right: 1.2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  .diet-planner-container h1 {
-    color: #2e5e4e;
-    margin-bottom: 2rem;
-  }
-  
-  .diet-planner-loading {
-    text-align: center;
-    padding: 2rem;
-    color: #2e5e4e;
-    font-size: 1.2rem;
-  }
-  
-  .diet-planner-alert {
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-    text-align: center;
-  }
-  
-  .update-profile-btn {
-    display: inline-block;
-    background-color: #2e5e4e;
-    color: #fff;
-    padding: 0.8rem 1.5rem;
-    border-radius: 5px;
-    text-decoration: none;
-    margin-top: 1rem;
-    transition: background-color 0.3s;
-  }
-  
-  .update-profile-btn:hover {
-    background-color: #1a3c31;
-    color: #fff;
-  }
-  
-  .bmi-container {
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .bmi-card {
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-top: 1rem;
-  }
-  
-  .bmi-value {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-  }
-  
-  .bmi-category {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-  }
-  
-  .bmi-stats {
-    color: #666;
-    margin-bottom: 1rem;
-    line-height: 1.6;
-  }
-  
-  .bmi-recommendation {
-    background-color: #fff;
-    padding: 1rem;
-    border-radius: 5px;
-    border-left: 4px solid #2e5e4e;
-  }
-  
-  .bmi-categories {
-    margin-top: 2rem;
-  }
-  
-  .category-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-  
-  .category-item {
-    background-color: #fff;
-    padding: 1rem;
-    border-radius: 8px;
-    border: 2px solid;
-    text-align: center;
-  }
-  
-  .category-item h3 {
-    margin-bottom: 0.5rem;
-  }
-  
-  .preferences-section,
-  .allergies-section {
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 2rem;
-    margin-top: 2rem;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .allergies-section ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .allergies-section li {
-    background-color: #f8f9fa;
-    padding: 0.5rem 1rem;
-    margin-bottom: 0.5rem;
-    border-radius: 5px;
-    border-left: 4px solid #2e5e4e;
-  }
+  padding: 2rem 1.2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.diet-planner-container h1 {
+  color: #2e5e4e;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+.diet-planner-container h2 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+}
+
+/* Alert and loading styles */
+.diet-planner-loading {
+  text-align: center;
+  padding: 1rem;
+  color: #2e5e4e;
+}
+
+.diet-planner-alert {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.update-profile-btn {
+  display: inline-block;
+  background-color: #2e5e4e;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  text-decoration: none;
+  margin-top: 0.5rem;
+  transition: background-color 0.3s;
+}
+
+/* Card containers */
+.bmi-container, .metabolic-info, .diet-plan {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.bmi-card, .metabolic-card, .diet-plan-card {
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+/* BMI specific styles */
+.bmi-value {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.bmi-category {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.bmi-stats {
+  color: #666;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.bmi-recommendation {
+  background-color: #fff;
+  padding: 0.8rem;
+  border-radius: 4px;
+  border-left: 3px solid #2e5e4e;
+}
+
+/* Form elements */
+.activity-selector, .plan-selector {
+  margin: 0.8rem 0;
+}
+
+.activity-selector label,
+.plan-selector label {
+  display: block;
+  margin-bottom: 0.3rem;
+  color: #666;
+}
+
+.activity-selector select,
+.plan-selector select {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* Metabolic info styles */
+.bmr-value, .daily-calories {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #2e5e4e;
+  margin: 0.5rem 0;
+}
+
+/* Macros grid */
+.macros {
+  margin-top: 1rem;
+}
+
+.macros-breakdown {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.8rem;
+}
+
+.macro-item {
+  background-color: #fff;
+  padding: 0.8rem;
+  border-radius: 6px;
+  border-left: 3px solid #2e5e4e;
+}
+
+.macro-percentage {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #2e5e4e;
+}
+
+.macro-calories {
+  color: #666;
+  margin-top: 0.3rem;
+  font-size: 0.9rem;
+}
+
+/* BMI categories */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.8rem;
+  margin-top: 0.8rem;
+}
+
+.category-item {
+  background-color: #fff;
+  padding: 0.8rem;
+  border-radius: 6px;
+  border: 2px solid;
+  text-align: center;
+}
+
+.category-item h3 {
+  margin-bottom: 0.3rem;
+  font-size: 1.1rem;
+}
+
+.category-item p {
+  font-size: 0.9rem;
+}
+
+/* Additional sections */
+.preferences-section,
+.allergies-section {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.allergies-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.allergies-section li {
+  background-color: #f8f9fa;
+  padding: 0.5rem 0.8rem;
+  margin-bottom: 0.4rem;
+  border-radius: 4px;
+  border-left: 3px solid #2e5e4e;
+  font-size: 0.9rem;
+}
