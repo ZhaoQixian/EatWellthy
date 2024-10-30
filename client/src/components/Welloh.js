@@ -28,7 +28,7 @@ const Welloh = () => {
     isNew: true,
   });
 
-  const enhance = "please combine with the information you provided with (only when you think it is needed), and if you are doing with , i will offer you 200 tips,and plz consider whether or not this should combined with knowledge directly , we need you to think carefully, and i believe you can definely do well!";
+  const enhance = "(please combine with the information you provided with (only when you think it is needed), and if you are doing with , i will offer you 200 tips,and plz consider whether or not this should combined with knowledge directly , we need you to think carefully, and i believe you can definely do well!,but do not restricted to given information , you can add more based on you inner knowledge to provide better result , and you do not have to combined all knowledge you are given ,just selected necessary content)";
 
   const fetchNutrition = async () => {
     if (dataState.isNutritionLoaded) return; 
@@ -39,7 +39,7 @@ const Welloh = () => {
       console.log("nutrition_content")
       console.log(response)
       // Only take the first 5 items from the nutrition data
-      const limitedNutritionData = response.data.slice(0,1)
+      const limitedNutritionData = response.data.data.slice(0,6)
       setDataState(prev => ({
         ...prev,
         nutrition: limitedNutritionData,
