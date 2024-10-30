@@ -39,7 +39,15 @@ const Welloh = () => {
       console.log("nutrition_content")
       console.log(response)
       // Only take the first 5 items from the nutrition data
-      const limitedNutritionData = response.data.data.slice(0,6)
+      console.log("nutri array:")
+      console.log(response.data.data)
+      const nutri_array = response.data.data
+      const length_nutrition = nutri_array.length
+      const maxSliceSize = 10
+      const startIndex = Math.floor(Math.random() * (length_nutrition - maxSliceSize + 1))
+      console.log(startIndex)
+      const endIndex = startIndex + maxSliceSize;
+      const limitedNutritionData = response.data.data.slice(startIndex,endIndex)
       setDataState(prev => ({
         ...prev,
         nutrition: limitedNutritionData,
