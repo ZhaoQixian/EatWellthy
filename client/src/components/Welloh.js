@@ -36,8 +36,10 @@ const Welloh = () => {
     try {
       const response = await axios.get("http://localhost:5050/nutrition/nutrition_data");
       console.log("nutrition_fetch success!");
+      console.log("nutrition_content")
+      console.log(response)
       // Only take the first 5 items from the nutrition data
-      const limitedNutritionData = response.data.slice(0, 5);
+      const limitedNutritionData = response.data.slice(0,1)
       setDataState(prev => ({
         ...prev,
         nutrition: limitedNutritionData,
@@ -148,10 +150,9 @@ const Welloh = () => {
 
       console.log("Chat initialization data:", messageData);
       try {
-        const response = await axios.get("http://localhost:5050/welloh/init", {
-          params: {
-            userData: JSON.stringify(messageData)
-          }
+        const response = await axios.post("http://localhost:5050/welloh/init", {
+          userData: JSON.stringify(messageData)
+
         });
         setChatState(prev => ({
           ...prev,
@@ -204,10 +205,8 @@ const Welloh = () => {
 
   const getChatGPTResponse = async (messagesNew) => {
     try {
-      const response = await axios.get("http://localhost:5050/welloh/chat", {
-        params: {
-          userMessage: messagesNew,
-        }
+      const response = await axios.post("http://localhost:5050/welloh/chat", {
+        userMessage: messagesNew
       });
       console.log("Good GPT response:", response.data);
       return response.data;
