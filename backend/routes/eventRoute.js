@@ -56,26 +56,33 @@ router.post("/", async (req, res) => {
     const savedEvent = await newEvent.save();
 
     // Create Google Calendar event
-    const googleEvent = await createGoogleCalendarEvent(savedEvent);
-
+    // const googleEvent = await createGoogleCalendarEvent(savedEvent);
+    console.log(savedEvent);
     return res.status(200).json({
       success: true,
       data: savedEvent,
-      googleCalendarEventId: googleEvent.id,
+      // googleCalendarEventId: googleEvent.id,
     });
   } catch (err) {
     console.error("Error:", err);
-    handleError(err, res);
+    // handleError(err, res);
   }
 });
 
 router.get("/", async (req, res) => {
+  const user = req.query;
+
   const events = await Event.find({});
 
+  const filteredEvents = events.filter((event) => event.userId == user.id);
+  // console.log("ID : ", user.id);
+  // console.log("FilteredEvent : ", filteredEvents);
+
   try {
-    res.status(200).json(events);
+    res.status(200).json(filteredEvents);
   } catch (err) {
-    handleError(err, res);
+    console.error("Error:", err);
+    // handleError(err, res);
   }
 });
 
@@ -86,7 +93,12 @@ router.get("/:id/show", async (req, res) => {
   try {
     res.status(200).json(event);
   } catch (err) {
-    handleError(err, res);
+    console.error("Error:", err);
+    return res
+      .status(400)
+      .json({ success: false, message: "Event is not found" });
+
+    // handleError(err, res);
   }
 });
 
@@ -96,69 +108,38 @@ router.post("/", async (req, res) => {
   console.log(newEvent);
   try {
     const data = await newEvent.save();
-    console.log(data);
-    return res.status(200).json({ sucess: true, data });
+    // console.log(data);
+    return res
+      .status(200)
+      .json({ sucess: true, data, message: "Event is added" });
   } catch (err) {
-    console.log(err);
-    return res.status(400).json({ success: false, message: err });
+    console.error("Error:", err);
+    return res.status(400).json({ success: false, error: err });
   }
-
-  // try {
-  //   await newEvent.save((err, event) => {
-  //     if (err) {
-  //       handleError(err, res);
-  //     } else {
-  //       res.status(200).json(event);
-  //     }
-  //   });
-  // } catch (err) {
-  //   handleError(err, res);
-  // }
 });
 
 router.put("/:id/update", async (req, res) => {
   const id = req.params.id;
+  console.log("ID: ", id);
+  console.log(req.body);
+  const updateQuery = {
+    title: req.body.title,
+    start: req.body.start,
+    end: req.body.end,
+    describe: req.body.describe,
+  };
   try {
-    const event = await Event.findOne({ _id: id });
-    if (event) {
-      Object.assign(event, req.body);
-      event.save((err, event) => {
-        if (err) {
-          handleError(err, res);
-        } else {
-          res.status(200).json(event);
-        }
-      });
-    }
-    if (!event) {
-      res.status(404).json({ error: "event is not found" });
-    }
+    const result = await Event.findOneAndUpdate({ _id: id }, updateQuery);
+    console.log("event found", result);
+    return res
+      .status(200)
+      .json({ sucess: true, data: result, message: "event is updated" });
   } catch (err) {
     console.log(err);
-    handleError(err, res);
+    return res
+      .status(404)
+      .json({ success: false, message: "event is not updated" });
   }
-
-  //   const result = await Event.findOneAndUpdate(req.params.id,
-  //         {
-  //         $set: req.body,
-  //     }
-  //     , {new: true, runValidators: true}).clone()
-
-  //     try{
-  //         res.status(200).json(result)
-  //     }catch(err){
-  //         // res.status(500).json(Object.keys(result.errors)[0])
-  //         console.log(err)
-  //         res.status(400).json(err)
-  //     }
-  // .then((docs, err)=>{
-  //     if(docs){
-  //         res.status(200).json(docs)
-  //     }else{
-  //         console.log(err.errors.path)
-  //         handleError(err, res)
-  //     }
-  // })
 });
 
 router.delete("/:id/delete", async (req, res) => {
@@ -170,10 +151,10 @@ router.delete("/:id/delete", async (req, res) => {
     if (found) {
       const result = await Event.findByIdAndDelete(id);
       console.log("DELETE result:", result);
-      res.status(200).json("Event has been deleted");
+      res.status(200).json({ sucess: true, message: "Event is delete" });
     }
   } catch (err) {
-    console.log(err);
+    console.log({ sucess: false, message: "Event is not delete" });
   }
 });
 

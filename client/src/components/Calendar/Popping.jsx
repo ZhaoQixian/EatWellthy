@@ -1,81 +1,58 @@
-import { Modal, Button } from "react-bootstrap";
-import React, { useState } from "react";
+import React from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-import { deleteEventApi, ShowEventsApi } from "../../actions/eventsActions";
-import { closeEvent } from "../../actions/modal";
+import { deleteEvent } from "../../actions/eventsActions";
+import "./popping.css";
 
-import "./model.css";
-
-const Popping = ({
-  open,
-  handleClose,
-  event,
-  deleteEventApi,
-  renderStatus,
-  rerender,
-}) => {
+const Popping = ({ open, setOpen, event, deleteEvent }) => {
   const navigate = useNavigate();
   const { id, describe, title, start, end } = event;
   console.log("ID :", id);
 
   const handleDelete = async () => {
-    await deleteEventApi(event.id);
-    rerender(!renderStatus);
+    await deleteEvent(event.id);
+    setOpen(!open);
+    navigate("/calendar");
   };
 
-  const modal = () => {
-    return (
-      <Modal show={open} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title className="text-capitalize">{title}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {describe ? (
-            <p className="lead">{describe}</p>
-          ) : (
-            "No Dsecriptions Yet"
-          )}
-          <div className="row justify-content-between">
-            <p className="col small text-muted text-center pb-0 mb-0">
-              from: {start}
-            </p>
-            <p className="col small text-muted text-center pb-0 mb-0">
-              to: {end}
-            </p>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="warning" onClick={handleClose}>
-            Close
-          </Button>
-          <Link to={`/event/${id}/update`}>
-            <Button variant="success">Update</Button>
-          </Link>
-          <Button variant="danger" onClick={handleDelete}>
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    );
+  const handleCancel = () => {
+    setOpen(!open);
   };
 
-  if (id) {
-    return modal();
-  } else {
-    <p>there is no modal to preview</p>;
-  }
+  return (
+    <div className="wrapper">
+      <div className="event-item">
+        <div className="title">Event type</div>
+        <div className="description">{title}</div>
+      </div>
+      <div className="event-item">
+        <div className="title">Description</div>
+        <div className="description">
+          <textarea rows={10} readOnly={true}>
+            {describe}
+          </textarea>
+        </div>
+      </div>
+      <div className="event-item">
+        <div className="title">Event start</div>
+        <div className="description">{start}</div>
+      </div>
+      <div className="event-item">
+        <div className="title">Event end</div>
+        <div className="description">{end}</div>
+      </div>
+      <div className="event-item">
+        <button onClick={() => navigate(`/event/${id}/update`)}>Update</button>
+        <button onClick={handleDelete}>Delete</button>
+        <button onClick={handleCancel}>Cancel</button>
+      </div>
+    </div>
+  );
 };
 
-function mapStateToProps({ event }) {
-  return {
-    event,
-    //  modalStatus
-  };
-}
+const mapStateToProps = ({ event }) => ({
+  event,
+});
 
-export default connect(mapStateToProps, { deleteEventApi, closeEvent })(
-  Popping
-);
+export default connect(mapStateToProps, { deleteEvent })(Popping);

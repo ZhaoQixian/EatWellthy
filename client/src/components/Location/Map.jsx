@@ -1,19 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   GoogleMap,
   useLoadScript,
   MarkerF,
   InfoWindowF,
+  CircleF,
 } from "@react-google-maps/api";
 
-import { formatRelative } from "date-fns";
-
-import { Search } from "./mapUtility";
-import "@reach/combobox/styles.css";
+import { Search, getAddress, getStoreList } from "./mapUtility";
+// import "@reach/combobox/styles.css";
 import mapStyles from "./mapStyles";
 import "./map.css";
-import { dummyData } from "./dummyData";
-import Compass from "./compass.png";
 
 const libraries = ["places"];
 const mapContainerStyle = {
@@ -22,54 +19,74 @@ const mapContainerStyle = {
 };
 const options = {
   // styles: mapStyles,
-  disableDefaultUI: true,
-  zoomControl: true,
-};
-const center = {
-  lat: 1.388843,
-  lng: 103.849089,
+  // disableDefaultUI: true,
+  // zoomControl: true,
 };
 
-const Map = ({ clickData }) => {
+const Map = ({ clickData, setStoreList, storeList }) => {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries,
   });
-  const [markers, setMarkers] = useState([]);
   const [selected, setSelected] = useState(null);
-  const [location, setLocation] = useState({
-    lat: 1.388843,
-    lng: 103.849089,
-  });
-  const [address, setAddress] = useState({
-    city: "Singapore",
-    country: "Singapore",
-    house_number: "10",
-    postcode: "569059",
-    road: "Ang Mo Kio Street 65",
-    shop: "Techpoint",
-    suburb: "Ang Mo Kio",
-  });
+  const [location, setLocation] = useState("");
+  const [address, setAddress] = useState(null);
+
+  const circleOptions = {
+    strokeColor: "#90daee",
+    strokeOpacity: 0.5,
+    strokeWeight: 1,
+    fillColor: "grey",
+    fillOpacity: 0.4,
+    clickable: false,
+    draggable: false,
+    editable: false,
+    visible: true,
+    radius: 1000, // Radius in meters
+    center: location,
+  };
 
   useEffect(() => {
-    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${location.lat}&lon=${location.lng}&zoom=18&addressdetails=1`;
-    fetch(url)
-      .then((res) => res.json())
-      .then((result) => {
-        setAddress({ ...result.address });
-        // console.log(address);
-      })
-      .catch((err) => console.error(err));
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        console.log("Position is", position);
+        setLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+
+        getAddress(position.coords.latitude, position.coords.longitude)
+          .then((res) => setAddress({ ...res.data.address }))
+          .catch((err) => {
+            console.error(err);
+          });
+      },
+      () => null
+    );
+  }, []);
+
+  useEffect(() => {
+    getAddress(location.lat, location.lng)
+      .then((res) => setAddress({ ...res.data.address }))
+      .catch((err) => {
+        console.error(err);
+      });
   }, [location]);
 
   useEffect(() => {
     if (clickData !== "") {
-      console.log("DATA", clickData);
+      // console.log("DATA", clickData);
       setSelected(clickData);
     }
   }, [clickData]);
 
-  const onMapClick = React.useCallback((e) => {
+  useEffect(() => {
+    getStoreList(location)
+      .then((data) => setStoreList(data))
+      .catch((err) => console.error(err));
+  }, [location]);
+
+  const onMapClick = useCallback((e) => {
     // console.log("Click", e.latLng);
 
     setLocation({
@@ -82,14 +99,16 @@ const Map = ({ clickData }) => {
     });
   }, []);
 
-  const mapRef = React.useRef();
-  const onMapLoad = React.useCallback((map) => {
+  const mapRef = useRef();
+  const onMapLoad = useCallback((map) => {
     mapRef.current = map;
   }, []);
 
-  const panTo = React.useCallback(({ lat, lng }) => {
-    mapRef.current.panTo({ lat, lng });
-    mapRef.current.setZoom(14);
+  const panTo = useCallback(({ lat, lng }) => {
+    if (lat !== "" && lng !== "") {
+      mapRef.current.panTo({ lat, lng });
+      mapRef.current.setZoom(15);
+    }
   }, []);
 
   const Locate = () => {
@@ -106,13 +125,13 @@ const Map = ({ clickData }) => {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude,
               });
-              console.log(address);
+              // console.log(address);
             },
             () => null
           );
         }}
       >
-        <img src={Compass} alt="compass" />
+        <img src={require("./compass.png")} alt="compass" />
       </div>
     );
   };
@@ -123,10 +142,9 @@ const Map = ({ clickData }) => {
   return (
     <div className="wrapper">
       <GoogleMap
-        // id="map"
         mapContainerStyle={mapContainerStyle}
-        zoom={14}
-        center={center}
+        zoom={15}
+        center={location}
         options={options}
         onClick={onMapClick}
         onLoad={onMapLoad}
@@ -140,7 +158,7 @@ const Map = ({ clickData }) => {
             scaledSize: new window.google.maps.Size(60, 60),
           }}
         />
-        {dummyData.map((item, index) => (
+        {storeList?.map((item, index) => (
           <MarkerF
             key={index}
             position={{
@@ -151,13 +169,15 @@ const Map = ({ clickData }) => {
               setSelected(item);
             }}
             icon={{
-              url: "https://maps.google.com/mapfiles/ms/icons/grocerystore.png",
+              url: require("./grocery.png"),
               origin: new window.google.maps.Point(0, 0),
-              anchor: new window.google.maps.Point(20, 20),
-              scaledSize: new window.google.maps.Size(40, 40),
+              anchor: new window.google.maps.Point(18, 18),
+              scaledSize: new window.google.maps.Size(36, 36),
             }}
           />
         ))}
+
+        <CircleF options={circleOptions} />
 
         {selected ? (
           <InfoWindowF
@@ -169,7 +189,9 @@ const Map = ({ clickData }) => {
               setSelected(null);
             }}
           >
-            <div>{selected.name}</div>
+            <div style={{ fontSize: "16px", fontWeight: "600" }}>
+              {selected.name}
+            </div>
           </InfoWindowF>
         ) : null}
         <div className="locate">
@@ -178,17 +200,22 @@ const Map = ({ clickData }) => {
         <div className="search">
           <Search panTo={panTo} setLocation={setLocation} />
         </div>
-        <div className="address">
-          <div>
-            <span style={{ fontWeight: 800, fontSize: 20 }}>
-              Current Address
-            </span>
-            <br />
-            {address.house_number} {address.road} {address.shop}
-            <br />
-            {address.postcode} {address.city}
+
+        {address !== null ? (
+          <div className="address">
+            <div>
+              <span style={{ fontWeight: 800, fontSize: 20 }}>
+                Current Address
+              </span>
+              <br />
+              {address.house_number} {address.road} {address.shop}
+              <br />
+              {address.postcode} {address.city}
+            </div>
           </div>
-        </div>
+        ) : (
+          ""
+        )}
       </GoogleMap>
     </div>
   );

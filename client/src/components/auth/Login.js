@@ -4,10 +4,11 @@ import { useDispatch } from "react-redux";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import { LOGIN_SUCCESS, GOOGLE_AUTO } from "../../actions/types";
+import { LOGIN_SUCCESS, GOOGLE_AUTO, USER_LOADED } from "../../actions/types";
 import { login } from "../../actions/auth";
 import Alert from "../layout/Alert";
 import googleLogo from "./google.png";
+import "./login.css";
 
 const Login = ({ auth, login }) => {
   const googleAuthURL = "http://localhost:5050/users/google";
@@ -81,11 +82,15 @@ const Login = ({ auth, login }) => {
       });
     } else if (response.status === 200) {
       response.json().then((data) => {
-        // console.log("DATA", data);
+        console.log("DATA", data.user);
         dispatch({
           type: LOGIN_SUCCESS,
           payload: data,
         });
+        // dispatch({
+        //   type: USER_LOADED,
+        //   payload: data.user,
+        // });
       });
     }
   };
@@ -133,26 +138,25 @@ const Login = ({ auth, login }) => {
           flexDirection: "row",
           alignContent: "center",
           justifyContent: "center",
-          marginTop: 20,
+          marginTop: 35,
         }}
       >
-        <div style={{ marginRight: 60, alignContent: "center" }}>
-          -- Alternative sign-in methods --
-        </div>
         <div
-          onClick={handleGoogleAuth}
           style={{
-            cursor: "pointer",
+            marginRight: 100,
+            alignContent: "center",
+            fontSize: 22,
+            fontWeight: 600,
           }}
         >
-          <img
-            src={googleLogo}
-            alt="Google OAuth"
-            style={{ width: 40, height: 40 }}
-          />
+          Or
+        </div>
+        <div onClick={handleGoogleAuth} className="google_btn">
+          <img src={googleLogo} alt="Google OAuth" />
+          <span>Sign in with Google</span>
         </div>
       </div>
-      <div style={{ marginTop: 40 }}>
+      <div style={{ marginTop: 60 }}>
         <p className="link">
           Don't have an account? <Link to="/register">Sign Up</Link>
         </p>

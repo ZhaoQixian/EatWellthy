@@ -1,0 +1,46 @@
+.wrapper {
+  width: 100%;
+}
+
+.event-item {
+  width: 50%;
+  display: flex;
+  flex-direction: row;
+  margin: 20px auto;
+  font-size: 20px;
+}
+
+.title {
+  width: 30%;
+  padding: 10px 0;
+}
+
+.description {
+  width: 70%;
+  padding: 10px 0;
+}
+
+.description textarea {
+  width: 100%;
+  font-size: 20px;
+}
+.event-item button {
+  margin-top: 20px;
+  margin-right: 60px;
+  background-color: darkgreen;
+  font-size: 20px;
+  font-weight: 600;
+  padding: 15px 40px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.event-item button:active {
+  transform: scale(1.1);
+}
+
+.event-item button:hover {
+  background-color: lightgreen;
+  color: darkgreen;
+}

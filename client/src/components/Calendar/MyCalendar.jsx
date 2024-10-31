@@ -9,110 +9,79 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
 import Popping from "./Popping";
-import { ShowEventApi, ShowEventsApi } from "../../actions/eventsActions";
-import { closeEvent } from "../../actions/modal";
-
+import { getEvent, getAllEvents } from "../../actions/eventsActions";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import "./myCalendar.css";
 
-const locales = {
-  "en-US": enUS,
-};
-
-const localizer = dateFnsLocalizer({
-  format,
-  parse,
-  startOfWeek,
-  getDay,
-  locales,
-});
-
-const MyCalendar = ({ events, ShowEventApi, closeEvent, ShowEventsApi }) => {
+const MyCalendar = ({ auth, events, getEvent, getAllEvents }) => {
   const [open, setOpen] = useState(false);
-  const [renderStatus, rerender] = useState(false);
+
+  // const temp = localStorage.getItem("id");
+  // console.log(temp);
+  const locales = {
+    "en-US": enUS,
+  };
+
+  const localizer = dateFnsLocalizer({
+    format,
+    parse,
+    startOfWeek,
+    getDay,
+    locales,
+  });
 
   useEffect(() => {
-    ShowEventsApi();
-    console.log("i renderd because of refresh or start");
-  }, []);
-
-  useEffect(() => {
-    ShowEventsApi();
-    console.log("i renderd");
-  }, [renderStatus]);
+    getAllEvents(auth.user._id);
+  }, [getAllEvents, open, auth.user._id]);
 
   const openEventClick = (event) => {
     setOpen(true);
     if (event.id) {
-      ShowEventApi(event.id);
+      getEvent(event.id);
     }
   };
 
-  const closeEventClick = () => {
-    setOpen(false);
-    setTimeout(() => closeEvent(), 300);
-  };
-
-  const generateGoogleCalendarLink = (event) => {
-    const { title, start, end, describe } = event;
-    const startDate = new Date(start)
-      .toISOString()
-      .replace(/-|:|\.\d\d\d/g, "");
-    const endDate = new Date(end).toISOString().replace(/-|:|\.\d\d\d/g, "");
-    const details = describe ? `&details=${encodeURIComponent(describe)}` : "";
-    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
-      title
-    )}&dates=${startDate}/${endDate}${details}`;
-  };
+  // const generateGoogleCalendarLink = (event) => {
+  //   const { title, start, end, describe } = event;
+  //   const startDate = new Date(start)
+  //     .toISOString()
+  //     .replace(/-|:|\.\d\d\d/g, "");
+  //   const endDate = new Date(end).toISOString().replace(/-|:|\.\d\d\d/g, "");
+  //   const details = describe ? `&details=${encodeURIComponent(describe)}` : "";
+  //   return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
+  //     title
+  //   )}&dates=${startDate}/${endDate}${details}`;
+  // };
 
   return (
-    <div style={{ marginTop: 80 }}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          width: "100%",
-        }}
-      >
-        <Link to="/events/add">
-          <button
-            style={{
-              marginRight: 20,
-              paddingTop: 10,
-              paddingBottom: 10,
-              paddingRight: 30,
-              paddingLeft: 30,
-              borderRadius: 8,
-              borderWidth: 0,
-              cursor: "pointer",
-            }}
-          >
-            Add Event
-          </button>
-        </Link>
-      </div>
+    <div className="main-calendar">
+      {!open && (
+        <div className="button-wrapper">
+          <Link to="/events/add">
+            <button>Add Event</button>
+          </Link>
+        </div>
+      )}
 
-      <Popping
-        open={open}
-        handleOpen={openEventClick}
-        handleClose={closeEventClick}
-        renderStatus={renderStatus}
-        rerender={rerender}
-      />
-      <Calendar
-        localizer={localizer}
-        events={events}
-        startAccessor="start"
-        endAccessor="end"
-        style={{ height: 450, margin: 20 }}
-        onSelectEvent={(event) => {
-          openEventClick(event);
-        }}
-        defaultView="month"
-        views={{ month: true, week: true, day: true }}
-      />
+      {!open && (
+        <Calendar
+          className="calendar-wrapper"
+          localizer={localizer}
+          events={events}
+          startAccessor="start"
+          endAccessor="end"
+          onSelectEvent={(event) => {
+            openEventClick(event);
+          }}
+          defaultView="month"
+          views={{ month: true, week: true, day: true }}
+        />
+      )}
+
+      {open && <Popping open={open} setOpen={setOpen} />}
 
       {/* Google Calendar Button */}
-      {open && (
+      {/* {open && (
         <div
           style={{ display: "flex", justifyContent: "center", marginTop: 20 }}
         >
@@ -138,20 +107,18 @@ const MyCalendar = ({ events, ShowEventApi, closeEvent, ShowEventsApi }) => {
             </button>
           </a>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
 
-function mapStateToProps({ event, events }) {
-  return {
-    event,
-    events,
-  };
-}
+const mapStateToProps = ({ auth, event, events }) => ({
+  auth,
+  event,
+  events,
+});
 
 export default connect(mapStateToProps, {
-  ShowEventApi,
-  closeEvent,
-  ShowEventsApi,
+  getEvent,
+  getAllEvents,
 })(MyCalendar);

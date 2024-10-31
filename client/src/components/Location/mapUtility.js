@@ -9,10 +9,9 @@ import {
   ComboboxList,
   ComboboxOption,
 } from "@reach/combobox";
-
-import "@reach/combobox/styles.css";
+import axios from "axios";
 import "./map.css";
-import Compass from "./compass.png";
+import "@reach/combobox/styles.css";
 
 export const Search = ({ panTo, setLocation }) => {
   const {
@@ -23,8 +22,8 @@ export const Search = ({ panTo, setLocation }) => {
     clearSuggestions,
   } = usePlacesAutocomplete({
     requestOptions: {
-      location: { lat: () => 43.6532, lng: () => -79.3832 },
-      radius: 2 * 1000,
+      location: { lat: () => 1.29027, lng: () => 103.851959 },
+      radius: 1 * 1000,
     },
   });
 
@@ -54,8 +53,9 @@ export const Search = ({ panTo, setLocation }) => {
   };
 
   return (
-    <Combobox onSelect={handleSelect}>
+    <Combobox className="box-style" onSelect={handleSelect}>
       <ComboboxInput
+        className="box-input"
         value={value}
         onChange={handleInput}
         disabled={!ready}
@@ -73,22 +73,38 @@ export const Search = ({ panTo, setLocation }) => {
   );
 };
 
-export const Locate = ({ panTo }) => {
-  return (
-    <div
-      onClick={() => {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            panTo({
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            });
-          },
-          () => null
-        );
-      }}
-    >
-      <img src={Compass} alt="compass" />
-    </div>
-  );
+export const getAddress = (lat, lng) => {
+  let config = {
+    method: "get",
+    url: `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`,
+    headers: {},
+  };
+  const promiseAddress = new Promise((resolve, reject) => {
+    resolve(axios.request(config));
+    reject(new Error("Failed to retrieve address!"));
+  });
+  return promiseAddress;
+};
+
+export const getStoreList = (location) => {
+  let config = {
+    method: "post",
+    url: "http://localhost:5050/location",
+    headers: {},
+    data: location,
+  };
+
+  const promiseStoreList = new Promise((resolve, reject) => {
+    resolve(axios.request(config).then((response) => response.data));
+    reject(new Error("Failed to retrieve store!"));
+  });
+  // try {
+  //   const response = await axios.request(config);
+  //   // console.log(response.data);
+  //   setStoreList(response.data);
+  // } catch (e) {
+  //   console.error(e);
+  // }
+
+  return promiseStoreList;
 };
