@@ -6,6 +6,7 @@ code {
 .wrapper {
   width: 100%;
   height: 100%;
+  padding: 15px;
 }
 
 .search {
@@ -41,7 +42,7 @@ code {
   left: 20px;
   z-index: 10;
   border: none;
-  background-color: #f3ec65;
+  background-color: #73e984;
   font-size: 18px;
   padding: 25px;
   border-radius: 15px;
@@ -51,4 +52,20 @@ code {
 .address span {
   text-decoration: underline;
   font-weight: bold;
+}
+.box-style {
+  width: 400px;
+}
+
+.box-input {
+  background-color: #73e984;
+  border: none;
+  border-radius: 12px;
+  font-family: sans-serif;
+  font-weight: 400;
+}
+
+.box-input::placeholder {
+  color: gray;
+  font-weight: 100;
 }

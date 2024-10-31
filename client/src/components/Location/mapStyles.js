@@ -1,55 +1,58 @@
 export default [
   {
-    featureType: "all",
-    elementType: "geometry.fill",
+    featureType: "administrative",
+    elementType: "labels.text.fill",
     stylers: [
       {
-        weight: "2.00",
+        color: "#6195a0",
       },
     ],
   },
   {
-    featureType: "all",
+    featureType: "administrative.province",
     elementType: "geometry.stroke",
     stylers: [
       {
-        color: "#9c9c9c",
-      },
-    ],
-  },
-  {
-    featureType: "all",
-    elementType: "labels.text",
-    stylers: [
-      {
-        visibility: "on",
+        visibility: "off",
       },
     ],
   },
   {
     featureType: "landscape",
-    elementType: "all",
+    elementType: "geometry",
     stylers: [
       {
-        color: "#f2f2f2",
+        lightness: "0",
       },
-    ],
-  },
-  {
-    featureType: "landscape",
-    elementType: "geometry.fill",
-    stylers: [
       {
-        color: "#ffffff",
+        saturation: "0",
+      },
+      {
+        color: "#f5f5f2",
+      },
+      {
+        gamma: "1",
       },
     ],
   },
   {
     featureType: "landscape.man_made",
-    elementType: "geometry.fill",
+    elementType: "all",
     stylers: [
       {
-        color: "#ffffff",
+        lightness: "-3",
+      },
+      {
+        gamma: "1.00",
+      },
+    ],
+  },
+  {
+    featureType: "landscape.natural.terrain",
+    elementType: "all",
+    stylers: [
+      {
+        visibility: "off",
       },
     ],
   },
@@ -63,6 +66,18 @@ export default [
     ],
   },
   {
+    featureType: "poi.park",
+    elementType: "geometry.fill",
+    stylers: [
+      {
+        color: "#bae5ce",
+      },
+      {
+        visibility: "on",
+      },
+    ],
+  },
+  {
     featureType: "road",
     elementType: "all",
     stylers: [
@@ -72,32 +87,8 @@ export default [
       {
         lightness: 45,
       },
-    ],
-  },
-  {
-    featureType: "road",
-    elementType: "geometry.fill",
-    stylers: [
       {
-        color: "#eeeeee",
-      },
-    ],
-  },
-  {
-    featureType: "road",
-    elementType: "labels.text.fill",
-    stylers: [
-      {
-        color: "#7b7b7b",
-      },
-    ],
-  },
-  {
-    featureType: "road",
-    elementType: "labels.text.stroke",
-    stylers: [
-      {
-        color: "#ffffff",
+        visibility: "simplified",
       },
     ],
   },
@@ -107,6 +98,36 @@ export default [
     stylers: [
       {
         visibility: "simplified",
+      },
+    ],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "geometry.fill",
+    stylers: [
+      {
+        color: "#fac9a9",
+      },
+      {
+        visibility: "simplified",
+      },
+    ],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "labels.text",
+    stylers: [
+      {
+        color: "#4e4e4e",
+      },
+    ],
+  },
+  {
+    featureType: "road.arterial",
+    elementType: "labels.text.fill",
+    stylers: [
+      {
+        color: "#787878",
       },
     ],
   },
@@ -124,7 +145,52 @@ export default [
     elementType: "all",
     stylers: [
       {
-        visibility: "off",
+        visibility: "simplified",
+      },
+    ],
+  },
+  {
+    featureType: "transit.station.airport",
+    elementType: "labels.icon",
+    stylers: [
+      {
+        hue: "#0a00ff",
+      },
+      {
+        saturation: "-77",
+      },
+      {
+        gamma: "0.57",
+      },
+      {
+        lightness: "0",
+      },
+    ],
+  },
+  {
+    featureType: "transit.station.rail",
+    elementType: "labels.text.fill",
+    stylers: [
+      {
+        color: "#43321e",
+      },
+    ],
+  },
+  {
+    featureType: "transit.station.rail",
+    elementType: "labels.icon",
+    stylers: [
+      {
+        hue: "#ff6c00",
+      },
+      {
+        lightness: "4",
+      },
+      {
+        gamma: "0.75",
+      },
+      {
+        saturation: "-68",
       },
     ],
   },
@@ -133,7 +199,7 @@ export default [
     elementType: "all",
     stylers: [
       {
-        color: "#46bcec",
+        color: "#eaf6f8",
       },
       {
         visibility: "on",
@@ -145,7 +211,7 @@ export default [
     elementType: "geometry.fill",
     stylers: [
       {
-        color: "#c8d7d4",
+        color: "#c7eced",
       },
     ],
   },
@@ -154,16 +220,13 @@ export default [
     elementType: "labels.text.fill",
     stylers: [
       {
-        color: "#070707",
+        lightness: "-49",
       },
-    ],
-  },
-  {
-    featureType: "water",
-    elementType: "labels.text.stroke",
-    stylers: [
       {
-        color: "#ffffff",
+        saturation: "-53",
+      },
+      {
+        gamma: "0.79",
       },
     ],
   },

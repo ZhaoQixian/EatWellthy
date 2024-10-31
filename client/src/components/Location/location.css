@@ -7,7 +7,7 @@
 }
 
 .list-container {
-  width: 30%;
+  width: 25%;
   overflow: scroll;
   padding-top: 20px;
   padding-left: 30px;
@@ -16,5 +16,5 @@
 }
 
 .map-container {
-  width: 70%;
+  width: 75%;
 }

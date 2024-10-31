@@ -1,68 +1,53 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { connect } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+import { addEvent } from "../../actions/eventsActions";
+import "./addEvent.css";
 import "react-datepicker/dist/react-datepicker.css";
-// import { set } from "date-fns";
 
-import { addEventApi } from "../../actions/eventsActions";
-
-//schema to validate event inputs
-const schema = yup
-  .object({
-    title: yup.string().required("Can't Be Empty"),
-    start: yup.date().required("Please specify the time to start"),
-  })
-  .required();
-
-const AddEvents = ({ addEventApi, error }) => {
+const AddEvents = ({ auth, addEvent }) => {
   const navigate = useNavigate();
-  const [rerender, setRerender] = useState(false);
-  const [dbError, setError] = useState(false);
-  const [firstRender, setFirstRender] = useState(true);
-
-  useEffect(() => {
-    if (error && !firstRender) {
-      setError(error);
-    }
-    if (!error.start && !error.end && dbError !== false) {
-      setTimeout(navigate("/"));
-    }
-  }, [rerender]);
-  //using form-hook to register event data
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    control,
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
+  const { register, handleSubmit, control } = useForm({});
 
   const onSubmit = async (values) => {
-    setFirstRender(false);
-    addEventApi(values).then(() => {
-      setRerender(!rerender);
-    });
+    try {
+      // console.log(values);
+      // console.log(auth);
+      const uploadedData = { ...values, userId: auth.user._id };
+      console.log(uploadedData);
+      if (
+        values.title === "" ||
+        values.start === undefined ||
+        values.end === undefined ||
+        values.end < values.start
+      ) {
+        console.error("Empty fields or incorrect date fields");
+        alert(
+          `No empty fields for "Event", "Start Date" or "End Date" and "End Date" must be > "Start Date"`
+        );
+        return;
+      }
+      const res = await addEvent(uploadedData);
+      navigate("/calendar");
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleCancel = () => {
+    navigate("/calendar");
   };
 
   return (
-    <div
-      style={{
-        marginTop: 80,
-        width: "100%",
-        display: "flex",
-        justifyContent: "center",
-      }}
-    >
-      <div style={{ width: "60%" }}>
-        <form onSubmit={handleSubmit(onSubmit)} style={{ margin: 20 }}>
-          <div style={{ marginBottom: 20 }}>
-            <label htmlFor="title" className="form-label">
-              Event Title
+    <div className="main-container">
+      <div className="wrapper">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="event-add">
+            <label htmlFor="title" className="title">
+              Event
             </label>
             <input
               {...register("title")}
@@ -70,77 +55,70 @@ const AddEvents = ({ addEventApi, error }) => {
               placeholder="title"
               id="title"
               aria-describedby="title"
-              style={{ marginLeft: 20, padding: 5 }}
+              className="description text"
             />
-            <p
-              className={`error text-warning position-absolute ${
-                errors.title ? "active" : ""
-              }`}
-            >
-              {errors.title ? <i className="bi bi-info-circle me-2"></i> : ""}
-              {errors.title?.message}
-            </p>
           </div>
-          <div
-            style={{
-              zIndex: "100",
-              marginBottom: 20,
-              display: "flex",
-              flexDirection: "row",
-            }}
-          >
-            <label htmlFor="start">Start Date</label>
+
+          <div className="event-add">
+            <label htmlFor="describe" className="title">
+              Event Description
+            </label>
+            <textarea
+              rows={8}
+              wrap="soft"
+              className="description text"
+              {...register("describe")}
+              type="text"
+              placeholder="describe your event"
+              id="describe"
+              aria-describedby="describe"
+            />
+          </div>
+
+          <div className="event-add">
+            <label htmlFor="start" className="title">
+              Start Date
+            </label>
             {/* controllers are the way you can wrap and use datePicker inside react form-hook*/}
             {/* start date controller*/}
-            <div style={{ marginLeft: 20 }}>
+            <div className="description">
               <Controller
                 control={control}
                 name="start"
                 render={({ field }) => (
                   <DatePicker
+                    style={{ zIndex: "99" }}
+                    toggleCalendarOnIconClick
                     placeholderText="Select date"
                     onChange={(date) => field.onChange(date)}
                     selected={field.value}
                     value={field.value}
                     showTimeSelect
-                    timeFormat="HH:mm"
+                    timeFormat="h:mm a"
                     dateFormat="MMMM d, yyyy h:mm aa"
                     id="start"
                   />
                 )}
               />
             </div>
-
-            {/* error handling */}
-            <p>
-              {errors.start ? <i className=" bi bi-info-circle me-2"></i> : ""}
-              {errors.start?.message}
-            </p>
-            <p>
-              {dbError.start ? <i className=" bi bi-info-circle me-2"></i> : ""}
-              {dbError.start}
-            </p>
           </div>
-          <div
-            style={{
-              zIndex: "100",
-              marginBottom: 20,
-              display: "flex",
-              flexDirection: "row",
-            }}
-          >
-            <label htmlFor="end">End Date</label>
-            <div style={{ marginLeft: 20 }}>
+          <div className="event-add">
+            <label htmlFor="end" className="title">
+              End Date
+            </label>
+            <div className="description">
               <Controller
                 control={control}
                 name="end"
                 render={({ field }) => (
                   <DatePicker
+                    style={{ zIndex: "99" }}
+                    toggleCalendarOnIconClick
                     placeholderText="Select end date"
                     onChange={(date) => field.onChange(date)}
                     selected={field.value}
                     value={field.value}
-                    timeFormat="HH:mm"
+                    timeFormat="h:mm a"
                     dateFormat="MMMM d, yyyy h:mm aa"
                     showTimeSelect
                     id="end"
@@ -149,60 +127,15 @@ const AddEvents = ({ addEventApi, error }) => {
               />
             </div>
             {/* end date controller*/}
+          </div>
 
-            <p>
-              {dbError.end ? <i className=" bi bi-info-circle me-2"></i> : ""}
-              {dbError.end}
-            </p>
-          </div>
-          <div style={{ marginBottom: 40 }}>
-            <label htmlFor="describe">
-              Event Description
-              <span>(optional)</span>
-            </label>
-            <input
-              style={{ marginLeft: 20, padding: 5 }}
-              {...register("describe")}
-              type="text"
-              placeholder="describe your event"
-              id="describe"
-              aria-describedby="describe"
-            />
-          </div>
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <div>
-              <button
-                type="submit"
-                style={{
-                  paddingTop: 10,
-                  paddingBottom: 10,
-                  paddingRight: 30,
-                  paddingLeft: 30,
-                  borderRadius: 8,
-                  borderWidth: 0,
-                  cursor: "pointer",
-                }}
-              >
-                Create
+          <div className="event-add">
+            <div className="title"></div>
+            <div className="description">
+              <button type="submit">Create</button>
+              <button type="button" onClick={handleCancel}>
+                Cancel
               </button>
-            </div>
-            <div>
-              <Link to="/calendar" style={{ marginLeft: 30 }}>
-                <button
-                  type="button"
-                  style={{
-                    paddingTop: 10,
-                    paddingBottom: 10,
-                    paddingRight: 30,
-                    paddingLeft: 30,
-                    borderRadius: 8,
-                    borderWidth: 0,
-                    cursor: "pointer",
-                  }}
-                >
-                  Cancel
-                </button>
-              </Link>
             </div>
           </div>
         </form>
@@ -211,11 +144,8 @@ const AddEvents = ({ addEventApi, error }) => {
   );
 };
 
-function mapStateToProps({ event, error }) {
-  return {
-    error,
-    // event
-  };
-}
+const mapStateToProps = ({ auth }) => ({
+  auth,
+});
 
-export default connect(mapStateToProps, { addEventApi })(AddEvents);
+export default connect(mapStateToProps, { addEvent })(AddEvents);

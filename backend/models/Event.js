@@ -9,27 +9,29 @@ const EventSchema = new mongoose.Schema({
   start: {
     type: Date,
     required: [true, "Please Insert The Start of your event"],
-    min: [new Date(), "can't be before now!!"],
+    // min: [new Date(), "can't be before now!!"],
   },
   end: {
     type: Date,
+    required: [true, "Please Insert The Start of your event"],
     //setting a min function to accept any date one hour ahead of start
-    min: [
-      function () {
-        const date = new Date(this.start);
-        const validDate = new Date(date.setHours(date.getHours() + 1));
-        return validDate;
-      },
-      "Event End must be at least one hour a head of event time",
-    ],
-    default: function () {
-      const date = new Date(this.start);
-      return date.setDate(date.getDate() + 1);
-    },
+    // min: [
+    //   function () {
+    //     const date = new Date(this.start);
+    //     const validDate = new Date(date.setHours(date.getHours() + 1));
+    //     return validDate;
+    //   },
+    //   "Event End must be at least one hour a head of event time",
+    // ],
+    // default: function () {
+    //   const date = new Date(this.start);
+    //   return date.setDate(date.getDate() + 1);
+    // },
   },
   describe: { type: String },
   userId: {
     type: String,
+    required: true,
   },
 });
 

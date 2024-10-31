@@ -1,55 +1,41 @@
 import * as moment from "moment";
-import { addError, removeError } from "./errorsAction";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const apiCall = axios.create({
   baseURL: "http://localhost:5050/events",
 });
 
-export const showEvent = (event) => {
-  console.log("event to be shown on the modal: ", event);
-  return {
-    type: "SHOW_EVENT",
-    payload: event,
-  };
-};
-
-export const showEvents = (events) => {
-  return {
-    type: "SHOW_EVENTS",
-    payload: events,
-  };
-};
-
-export const ShowEventApi = (id) => async (dispatch) => {
+export const getEvent = (id) => async (dispatch) => {
   //i won't get the event from redux store as it is safer to
   //keep updated with db.
-  const result = await apiCall.get(`/${id}/show`);
 
   try {
+    const result = await apiCall.get(`/${id}/show`);
     const { title, _id, start, end, describe } = await result.data;
-    const convertedEvent = {
+    const convertedEvent = await {
       title,
       describe,
       id: _id,
       start: moment(start).format("ddd DD MMM YY LT"),
       end: moment(end).format("ddd DD MMM YY LT"),
     };
-    await dispatch(showEvent(convertedEvent));
+
+    dispatch({
+      type: "SHOW_EVENT",
+      payload: convertedEvent,
+    });
   } catch (err) {
-    const error = await err.data.message;
-    return error;
+    console.log(err.data.message);
   }
 };
 
-export const ShowEventsApi = () => async (dispatch) => {
-  console.log("started fetching the api");
+export const getAllEvents = (id) => async (dispatch) => {
+  // console.log("started fetching the api");
   //i won't get the event from redux store as it is safer to
   //keep updated with db.
-  const result = await apiCall.get("/");
 
   try {
+    const result = await apiCall.get(`/?id=${id}`);
     const convertedDates = await result.data.map((event) => {
       return {
         title: event.title,
@@ -59,76 +45,40 @@ export const ShowEventsApi = () => async (dispatch) => {
         describe: event.describe,
       };
     });
-    await dispatch(showEvents(convertedDates));
+    dispatch({
+      type: "SHOW_EVENTS",
+      payload: convertedDates,
+    });
   } catch (err) {
-    const error = await err.data.message;
-    return error;
+    console.log(err.data.message);
   }
 };
 
-export const deleteEvent = (id) => {
-  return {
-    type: "DELETE_EVENT",
-    payload: id,
-  };
-};
-
-export const deleteEventApi = (id) => async (dispatch) => {
-  console.log("WHAT", id);
-  const result = await apiCall.delete(`/${id}/delete`);
-
+export const deleteEvent = (id) => async (dispatch) => {
   try {
-    const deleted = await result.data;
-    await dispatch(deleteEvent(id));
-    return { deleted };
+    const result = await apiCall.delete(`/${id}/delete`);
+    console.log("DELETE event : ", id);
   } catch (err) {
-    const message = await result.data.message;
-    console.log(message);
-    return { message };
+    console.error(err);
   }
 };
 
-const addEvent = (newEvent) => {
-  return {
-    type: "ADD_EVENT",
-    payload: newEvent,
-  };
-};
-
-export const addEventApi = (values) => async (dispatch) => {
-  const result = await apiCall
-    .post("/", {
+export const addEvent = (values) => async (dispatch) => {
+  try {
+    const result = await apiCall.post("/", {
       title: values.title,
       start: values.start,
       end: values.end,
       describe: values.describe,
-    })
-    .then((res) => {
-      if (res && res.data) {
-        console.log("event from the api going to the reducer: ", res.data);
-        dispatch(addEvent(res.data));
-        dispatch(removeError());
-
-        return "success";
-      }
-    })
-    .catch((res) => {
-      console.log("catch response, ", res);
-      if (res.response.data) {
-        console.log(res.response.data);
-        dispatch(addError(res.response.data));
-      }
+      userId: values.userId,
     });
+    console.log("ADD event : ", result.data.data._id);
+  } catch (e) {
+    console.log(e);
+  }
 };
 
-const updateEvent = (updatedEvent) => {
-  return {
-    type: "UPDATE_EVENT",
-    payload: updatedEvent,
-  };
-};
-
-export const updateEventApi = (values, id) => async (dispatch) => {
+export const updateEvent = (values, id) => async (dispatch) => {
   try {
     const result = await apiCall.put(`/${id}/update`, {
       title: values.title,
@@ -136,26 +86,8 @@ export const updateEventApi = (values, id) => async (dispatch) => {
       end: values.end,
       describe: values.describe,
     });
-    console.log(result);
-    const response = result.data;
-    dispatch(removeError());
-    return "response was successful";
+    console.log("UPDATE event: ", result.data);
   } catch (err) {
-    console.log(err);
-    dispatch(addError(err.response.data));
+    console.error(err);
   }
-
-  //    .then(res=>{
-  //        console.log(res)
-  //     if(res && res.data){
-
-  //         console.log(res.data)
-  //
-  //         return;
-  //     }else{
-  //         if(res.response.data){
-  //             console.log(res.response.data)
-  //         }
-  //     }
-  //    })
 };

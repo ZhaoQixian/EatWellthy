@@ -9,6 +9,7 @@ import "./location.css";
 
 const Location = ({ auth }) => {
   const [clickData, setClickData] = useState("");
+  const [storeList, setStoreList] = useState(null);
 
   console.log("LOCATION/isAuthenticated", auth.isAuthenticated);
   console.log("LOCATION/Loading", auth.loading);
@@ -18,10 +19,14 @@ const Location = ({ auth }) => {
   return (
     <div className="container">
       <div className="list-container">
-        <PlacesList setClickData={setClickData} />
+        <PlacesList storeList={storeList} setClickData={setClickData} />
       </div>
       <div className="map-container">
-        <Map clickData={clickData} />
+        <Map
+          clickData={clickData}
+          setStoreList={setStoreList}
+          storeList={storeList}
+        />
       </div>
     </div>
   );
