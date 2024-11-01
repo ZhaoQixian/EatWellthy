@@ -8,7 +8,7 @@ import "./popping.css";
 const Popping = ({ open, setOpen, event, deleteEvent }) => {
   const navigate = useNavigate();
   const { id, describe, title, start, end } = event;
-  console.log("ID :", id);
+  // console.log("ID :", id);
 
   const handleDelete = async () => {
     await deleteEvent(event.id);
@@ -29,9 +29,7 @@ const Popping = ({ open, setOpen, event, deleteEvent }) => {
       <div className="event-item">
         <div className="title">Description</div>
         <div className="description">
-          <textarea rows={10} readOnly={true}>
-            {describe}
-          </textarea>
+          <textarea rows={10} readOnly={true} value={describe}></textarea>
         </div>
       </div>
       <div className="event-item">

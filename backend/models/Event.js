@@ -1,5 +1,9 @@
 const moment = require("moment");
 const mongoose = require("mongoose");
+const crypto = require("crypto");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 const EventSchema = new mongoose.Schema({
   title: {
@@ -35,4 +39,11 @@ const EventSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Event", EventSchema);
+// Static method to hash user IDs
+EventSchema.statics.hashedUserId = (userId) =>
+  crypto
+    .createHash("sha256")
+    .update(userId.toString() + process.env.HASH_SECRET)
+    .digest("hex");
+
+module.exports = Event = mongoose.model("event", EventSchema);

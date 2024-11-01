@@ -1,6 +1,5 @@
 const router = require("express").Router();
 const Event = require("../models/Event");
-const handleError = require("../middlewares/eventErrors");
 
 //for google calendar integration
 const { google } = require("googleapis");
@@ -49,32 +48,39 @@ async function createGoogleCalendarEvent(event) {
 
 // Route to create a new event
 router.post("/", async (req, res) => {
-  const newEvent = new Event(req.body);
+  // console.log(req.body);
+  const hashedUserId = Event.hashedUserId(req.body.userId);
+  const newBody = { ...req.body, userId: hashedUserId };
+  // console.log("HASHED", newBody);
+
+  const newEvent = new Event(newBody);
 
   try {
     // Save event to the database
-    const savedEvent = await newEvent.save();
+    const data = await newEvent.save();
+    // console.log(data);
 
     // Create Google Calendar event
     // const googleEvent = await createGoogleCalendarEvent(savedEvent);
-    console.log(savedEvent);
+
     return res.status(200).json({
-      success: true,
-      data: savedEvent,
+      sucess: true,
+      data,
+      message: "Event is added",
       // googleCalendarEventId: googleEvent.id,
     });
   } catch (err) {
     console.error("Error:", err);
-    // handleError(err, res);
+    return res.status(400).json({ success: false, error: err });
   }
 });
 
 router.get("/", async (req, res) => {
   const user = req.query;
+  const hashedUserId = Event.hashedUserId(user.id);
 
   const events = await Event.find({});
-
-  const filteredEvents = events.filter((event) => event.userId == user.id);
+  const filteredEvents = events.filter((event) => event.userId == hashedUserId);
   // console.log("ID : ", user.id);
   // console.log("FilteredEvent : ", filteredEvents);
 
@@ -82,7 +88,7 @@ router.get("/", async (req, res) => {
     res.status(200).json(filteredEvents);
   } catch (err) {
     console.error("Error:", err);
-    // handleError(err, res);
+    return res.status(400).json({ success: false, error: err });
   }
 });
 
@@ -97,24 +103,6 @@ router.get("/:id/show", async (req, res) => {
     return res
       .status(400)
       .json({ success: false, message: "Event is not found" });
-
-    // handleError(err, res);
-  }
-});
-
-router.post("/", async (req, res) => {
-  console.log(req.body);
-  const newEvent = await new Event(req.body);
-  console.log(newEvent);
-  try {
-    const data = await newEvent.save();
-    // console.log(data);
-    return res
-      .status(200)
-      .json({ sucess: true, data, message: "Event is added" });
-  } catch (err) {
-    console.error("Error:", err);
-    return res.status(400).json({ success: false, error: err });
   }
 });
 
