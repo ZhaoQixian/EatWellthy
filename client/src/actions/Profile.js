@@ -4,12 +4,12 @@ import {
   PROFILE_ERROR,
   LOADING_PROFILE,
   LOGOUT,
-  CLEAR_PROFILE
+  CLEAR_PROFILE,
 } from "./types";
 
 // Get Profile
 export const getProfile = () => async (dispatch) => {
-  let config = null; // Define config at the top level of the function
+  let config = null;
 
   try {
     dispatch({ type: LOADING_PROFILE });
@@ -18,7 +18,7 @@ export const getProfile = () => async (dispatch) => {
     if (!token) {
       dispatch({
         type: PROFILE_ERROR,
-        payload: "No token found. Please log in again."
+        payload: "No token found. Please log in again.",
       });
       return null;
     }
@@ -29,29 +29,29 @@ export const getProfile = () => async (dispatch) => {
       },
     };
 
-    console.log("Fetching profile..."); // Debug log
+    console.log("Fetching profile...");
     const res = await axios.get("http://localhost:5050/api/profile/me", config);
-    console.log("Profile response:", res.data); // Debug log
+    console.log("Profile response:", res.data);
 
     dispatch({
       type: SET_PROFILE,
-      payload: res.data
+      payload: res.data,
     });
 
     return res.data;
   } catch (err) {
     console.error("Error fetching profile:", err.response?.data || err.message);
-    
+
     if (err.response?.status === 400 && config) {
-      // If profile doesn't exist, try to create a default one
       try {
         const defaultProfile = {
           age: 0,
           height: 0,
           weight: 0,
+          targetWeight: 0, // Add default value for targetWeight
           dailyBudget: 0,
           dietaryPreferences: "",
-          allergies: []
+          allergies: [],
         };
 
         const createRes = await axios.post(
@@ -62,7 +62,7 @@ export const getProfile = () => async (dispatch) => {
 
         dispatch({
           type: SET_PROFILE,
-          payload: createRes.data
+          payload: createRes.data,
         });
 
         return createRes.data;
@@ -70,12 +70,12 @@ export const getProfile = () => async (dispatch) => {
         console.error("Error creating default profile:", createErr);
       }
     }
-    
+
     dispatch({
       type: PROFILE_ERROR,
-      payload: err.response?.data?.msg || "Error fetching profile"
+      payload: err.response?.data?.msg || "Error fetching profile",
     });
-    
+
     return null;
   }
 };
@@ -89,7 +89,7 @@ export const updateProfile = (profileData) => async (dispatch) => {
     if (!token) {
       dispatch({
         type: PROFILE_ERROR,
-        payload: "No token found. Please log in again."
+        payload: "No token found. Please log in again.",
       });
       return false;
     }
@@ -107,37 +107,43 @@ export const updateProfile = (profileData) => async (dispatch) => {
       age: Number(profileData.age) || 0,
       height: Number(profileData.height) || 0,
       weight: Number(profileData.weight) || 0,
+      targetWeight: Number(profileData.targetWeight) || 0, // Process targetWeight
       dailyBudget: Number(profileData.dailyBudget) || 0,
-      allergies: Array.isArray(profileData.allergies) 
-        ? profileData.allergies 
-        : profileData.allergies?.split(',').map(a => a.trim()).filter(Boolean) || []
+      allergies: Array.isArray(profileData.allergies)
+        ? profileData.allergies
+        : profileData.allergies
+            ?.split(",")
+            .map((a) => a.trim())
+            .filter(Boolean) || [],
     };
 
-    console.log("Sending profile data:", processedData); // Debug log
+    console.log("Sending profile data:", processedData);
     const res = await axios.post(
       "http://localhost:5050/api/profile",
       processedData,
       config
     );
-    console.log("Update response:", res.data); // Debug log
+    console.log("Update response:", res.data);
 
     dispatch({
       type: SET_PROFILE,
-      payload: res.data
+      payload: res.data,
     });
 
     return true;
   } catch (err) {
     console.error("Error updating profile:", err.response?.data || err.message);
-    
+
     dispatch({
       type: PROFILE_ERROR,
-      payload: err.response?.data?.msg || "Error updating profile"
+      payload: err.response?.data?.msg || "Error updating profile",
     });
-    
+
     return false;
   }
 };
+
+// Other actions remain unchanged...
 
 // Change Password
 export const changePassword = (newPassword) => async (dispatch) => {
@@ -146,7 +152,7 @@ export const changePassword = (newPassword) => async (dispatch) => {
     if (!token) {
       dispatch({
         type: PROFILE_ERROR,
-        payload: "No token found. Please log in again."
+        payload: "No token found. Please log in again.",
       });
       return false;
     }
@@ -154,7 +160,7 @@ export const changePassword = (newPassword) => async (dispatch) => {
     if (!newPassword || newPassword.length < 6) {
       dispatch({
         type: PROFILE_ERROR,
-        payload: "Password must be at least 6 characters"
+        payload: "Password must be at least 6 characters",
       });
       return false;
     }
@@ -176,13 +182,16 @@ export const changePassword = (newPassword) => async (dispatch) => {
 
     return true;
   } catch (err) {
-    console.error("Error updating password:", err.response?.data || err.message);
-    
+    console.error(
+      "Error updating password:",
+      err.response?.data || err.message
+    );
+
     dispatch({
       type: PROFILE_ERROR,
-      payload: err.response?.data?.msg || "Error updating password"
+      payload: err.response?.data?.msg || "Error updating password",
     });
-    
+
     return false;
   }
 };
@@ -194,7 +203,7 @@ export const deleteAccount = () => async (dispatch) => {
     if (!token) {
       dispatch({
         type: PROFILE_ERROR,
-        payload: "No token found. Please log in again."
+        payload: "No token found. Please log in again.",
       });
       return false;
     }
@@ -214,12 +223,12 @@ export const deleteAccount = () => async (dispatch) => {
     return true;
   } catch (err) {
     console.error("Error deleting account:", err.response?.data || err.message);
-    
+
     dispatch({
       type: PROFILE_ERROR,
-      payload: err.response?.data?.msg || "Error deleting account"
+      payload: err.response?.data?.msg || "Error deleting account",
     });
-    
+
     return false;
   }
 };
