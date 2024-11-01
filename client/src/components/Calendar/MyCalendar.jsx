@@ -34,11 +34,10 @@ const MyCalendar = ({ auth, events, getEvent, getAllEvents }) => {
     getAllEvents(auth.user._id);
   }, [getAllEvents, open, auth.user._id]);
 
-  const openEventClick = (event) => {
+  const openEventClick = async (event) => {
+    // console.log("EVENT : ", event.id);
+    await getEvent(event.id);
     setOpen(true);
-    if (event.id) {
-      getEvent(event.id);
-    }
   };
 
   // const generateGoogleCalendarLink = (event) => {
