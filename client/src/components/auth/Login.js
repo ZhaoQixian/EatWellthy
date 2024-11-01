@@ -141,7 +141,7 @@ const Login = ({ auth, login }) => {
           marginTop: 35,
         }}
       >
-        <div
+        {/* <div
           style={{
             marginRight: 100,
             alignContent: "center",
@@ -150,7 +150,7 @@ const Login = ({ auth, login }) => {
           }}
         >
           Or
-        </div>
+        </div> */}
         <div onClick={handleGoogleAuth} className="google_btn">
           <img src={googleLogo} alt="Google OAuth" />
           <span>Sign in with Google</span>
