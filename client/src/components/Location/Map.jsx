@@ -19,8 +19,8 @@ const mapContainerStyle = {
 };
 const options = {
   // styles: mapStyles,
-  // disableDefaultUI: true,
-  // zoomControl: true,
+  disableDefaultUI: true,
+  zoomControl: true,
 };
 
 const Map = ({ clickData, setStoreList, storeList }) => {
