@@ -36,11 +36,12 @@ router.get("/me", auth, async (req, res) => {
         gender: null,
         height: 0,
         weight: 0,
+        targetWeight: 0,
         dailyBudget: 0,
         dietaryPreferences: "",
         allergies: [],
         activityLevel: "sedentary",
-        dietPlan: "maintenance"
+        dietPlan: "maintenance",
       };
 
       profile = new Profile(defaultProfile);
@@ -66,15 +67,16 @@ router.post("/", auth, async (req, res) => {
       gender,
       height,
       weight,
+      targetWeight,
       dailyBudget,
       dietaryPreferences,
       allergies,
       activityLevel,
-      dietPlan
+      dietPlan,
     } = req.body;
 
     const hashedUserId = Profile.hashUserId(req.user.id);
-    
+
     // Build profile object
     const profileFields = {
       userId: hashedUserId,
@@ -82,11 +84,12 @@ router.post("/", auth, async (req, res) => {
       gender: gender || null,
       height: Number(height) || 0,
       weight: Number(weight) || 0,
+      targetWeight: Number(targetWeight) || 0,
       dailyBudget: Number(dailyBudget) || 0,
       dietaryPreferences: dietaryPreferences || "",
       allergies: processAllergies(allergies),
       activityLevel: activityLevel || "sedentary",
-      dietPlan: dietPlan || "maintenance"
+      dietPlan: dietPlan || "maintenance",
     };
 
     console.log("Processed profile fields:", profileFields); // Debug log
@@ -126,11 +129,12 @@ router.put("/", auth, async (req, res) => {
       gender,
       height,
       weight,
+      targetWeight,
       dailyBudget,
       dietaryPreferences,
       allergies,
       activityLevel,
-      dietPlan
+      dietPlan,
     } = req.body;
 
     const hashedUserId = Profile.hashUserId(req.user.id);
@@ -145,9 +149,12 @@ router.put("/", auth, async (req, res) => {
     if (gender !== undefined) profile.gender = gender;
     if (height !== undefined) profile.height = Number(height);
     if (weight !== undefined) profile.weight = Number(weight);
+    if (targetWeight !== undefined) profile.targetWeight = Number(targetWeight);
     if (dailyBudget !== undefined) profile.dailyBudget = Number(dailyBudget);
-    if (dietaryPreferences !== undefined) profile.dietaryPreferences = dietaryPreferences;
-    if (allergies !== undefined) profile.allergies = processAllergies(allergies);
+    if (dietaryPreferences !== undefined)
+      profile.dietaryPreferences = dietaryPreferences;
+    if (allergies !== undefined)
+      profile.allergies = processAllergies(allergies);
     if (activityLevel !== undefined) profile.activityLevel = activityLevel;
     if (dietPlan !== undefined) profile.dietPlan = dietPlan;
 
@@ -167,7 +174,7 @@ router.delete("/", auth, async (req, res) => {
   try {
     console.log("Deleting profile for user:", req.user.id); // Debug log
     const hashedUserId = Profile.hashUserId(req.user.id);
-    
+
     // Delete the profile
     await Profile.findOneAndDelete({ userId: hashedUserId });
     await User.findByIdAndDelete(req.user.id);

@@ -24,11 +24,12 @@ const Profile = () => {
     gender: "",
     height: "",
     weight: "",
+    targetWeight: "", // Added targetWeight
     dailyBudget: "",
     dietaryPreferences: "",
     allergies: "",
     activityLevel: "sedentary",
-    dietPlan: "maintenance"
+    dietPlan: "maintenance",
   });
 
   const {
@@ -39,11 +40,12 @@ const Profile = () => {
     gender,
     height,
     weight,
+    targetWeight, // Destructure targetWeight
     dailyBudget,
     dietaryPreferences,
     allergies,
     activityLevel,
-    dietPlan
+    dietPlan,
   } = formData;
 
   useEffect(() => {
@@ -57,11 +59,12 @@ const Profile = () => {
           gender: profileData.gender || "",
           height: profileData.height || "",
           weight: profileData.weight || "",
+          targetWeight: profileData.targetWeight || "", // Initialize targetWeight
           dailyBudget: profileData.dailyBudget || "",
           dietaryPreferences: profileData.dietaryPreferences || "",
           allergies: profileData.allergies?.join(", ") || "",
           activityLevel: profileData.activityLevel || "sedentary",
-          dietPlan: profileData.dietPlan || "maintenance"
+          dietPlan: profileData.dietPlan || "maintenance",
         }));
       }
     };
@@ -92,6 +95,7 @@ const Profile = () => {
       gender,
       height: Number(height) || 0,
       weight: Number(weight) || 0,
+      targetWeight: Number(targetWeight) || 0, // Include targetWeight in submission
       dailyBudget: Number(dailyBudget) || 0,
       dietaryPreferences,
       allergies: allergies
@@ -99,7 +103,7 @@ const Profile = () => {
         .map((item) => item.trim())
         .filter(Boolean),
       activityLevel,
-      dietPlan
+      dietPlan,
     };
 
     const success = await dispatch(updateProfile(profileData));
@@ -154,7 +158,11 @@ const Profile = () => {
       </div>
 
       {message.text && (
-        <div className={`message ${message.type === "error" ? "error" : "success"}`}>
+        <div
+          className={`message ${
+            message.type === "error" ? "error" : "success"
+          }`}
+        >
           {message.text}
         </div>
       )}
@@ -208,6 +216,13 @@ const Profile = () => {
             />
             <input
               type="number"
+              name="targetWeight"
+              value={targetWeight}
+              onChange={onChange}
+              placeholder="Target Weight (kg)" // Added target weight input
+            />
+            <input
+              type="number"
               name="dailyBudget"
               value={dailyBudget}
               onChange={onChange}
@@ -219,9 +234,13 @@ const Profile = () => {
               onChange={onChange}
               className="activity-select"
             >
-              <option value="sedentary">Sedentary (little or no exercise)</option>
+              <option value="sedentary">
+                Sedentary (little or no exercise)
+              </option>
               <option value="lightly">Lightly active (1-3 days/week)</option>
-              <option value="moderately">Moderately active (3-5 days/week)</option>
+              <option value="moderately">
+                Moderately active (3-5 days/week)
+              </option>
               <option value="very">Very active (6-7 days/week)</option>
               <option value="super">Super active (physical job)</option>
             </select>
