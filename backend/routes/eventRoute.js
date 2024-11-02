@@ -8,7 +8,7 @@ const { google } = require("googleapis");
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  "/calendar" // replace with your redirect URI
+  "https://accounts.google.com/o/oauth2/auth" // replace with your redirect URI
 );
 
 // Scopes for Google Calendar
