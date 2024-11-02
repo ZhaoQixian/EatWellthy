@@ -48,10 +48,11 @@ export const getProfile = () => async (dispatch) => {
           age: 0,
           height: 0,
           weight: 0,
-          targetWeight: 0, // Add default value for targetWeight
+          targetWeight: 0,
           dailyBudget: 0,
           dietaryPreferences: "",
           allergies: [],
+          profileIcon: "bear" // Add default icon
         };
 
         const createRes = await axios.post(
@@ -107,8 +108,9 @@ export const updateProfile = (profileData) => async (dispatch) => {
       age: Number(profileData.age) || 0,
       height: Number(profileData.height) || 0,
       weight: Number(profileData.weight) || 0,
-      targetWeight: Number(profileData.targetWeight) || 0, // Process targetWeight
+      targetWeight: Number(profileData.targetWeight) || 0,
       dailyBudget: Number(profileData.dailyBudget) || 0,
+      profileIcon: profileData.profileIcon || "bear", // Add profileIcon
       allergies: Array.isArray(profileData.allergies)
         ? profileData.allergies
         : profileData.allergies
@@ -142,8 +144,6 @@ export const updateProfile = (profileData) => async (dispatch) => {
     return false;
   }
 };
-
-// Other actions remain unchanged...
 
 // Change Password
 export const changePassword = (newPassword) => async (dispatch) => {

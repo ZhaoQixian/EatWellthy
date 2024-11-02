@@ -9,6 +9,16 @@ import {
 } from "../actions/Profile";
 import { updateName } from "../actions/auth";
 
+// Import all animal icons
+import bearIcon from "../img/bear.png";
+import capybaraIcon from "../img/capybara.png";
+import catIcon from "../img/cat.png";
+import dogIcon from "../img/dog.png";
+import otterIcon from "../img/otter.png";
+import pandaIcon from "../img/panda.png";
+import rabbitIcon from "../img/rabbit.png";
+import tigerIcon from "../img/tiger.png";
+
 const Profile = () => {
   const dispatch = useDispatch();
   const profileState = useSelector((state) => state.profile);
@@ -24,13 +34,25 @@ const Profile = () => {
     gender: "",
     height: "",
     weight: "",
-    targetWeight: "", // Added targetWeight
+    targetWeight: "",
     dailyBudget: "",
     dietaryPreferences: "",
     allergies: "",
     activityLevel: "sedentary",
     dietPlan: "maintenance",
+    profileIcon: "bear",
   });
+
+  const animalIcons = {
+    bear: bearIcon,
+    capybara: capybaraIcon,
+    cat: catIcon,
+    dog: dogIcon,
+    otter: otterIcon,
+    panda: pandaIcon,
+    rabbit: rabbitIcon,
+    tiger: tigerIcon,
+  };
 
   const {
     name,
@@ -40,12 +62,13 @@ const Profile = () => {
     gender,
     height,
     weight,
-    targetWeight, // Destructure targetWeight
+    targetWeight,
     dailyBudget,
     dietaryPreferences,
     allergies,
     activityLevel,
     dietPlan,
+    profileIcon,
   } = formData;
 
   useEffect(() => {
@@ -59,12 +82,13 @@ const Profile = () => {
           gender: profileData.gender || "",
           height: profileData.height || "",
           weight: profileData.weight || "",
-          targetWeight: profileData.targetWeight || "", // Initialize targetWeight
+          targetWeight: profileData.targetWeight || "",
           dailyBudget: profileData.dailyBudget || "",
           dietaryPreferences: profileData.dietaryPreferences || "",
           allergies: profileData.allergies?.join(", ") || "",
           activityLevel: profileData.activityLevel || "sedentary",
           dietPlan: profileData.dietPlan || "maintenance",
+          profileIcon: profileData.profileIcon || "bear",
         }));
       }
     };
@@ -78,6 +102,10 @@ const Profile = () => {
 
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleIconSelect = (iconName) => {
+    setFormData({ ...formData, profileIcon: iconName });
   };
 
   const onSubmitProfile = async (e) => {
@@ -95,7 +123,7 @@ const Profile = () => {
       gender,
       height: Number(height) || 0,
       weight: Number(weight) || 0,
-      targetWeight: Number(targetWeight) || 0, // Include targetWeight in submission
+      targetWeight: Number(targetWeight) || 0,
       dailyBudget: Number(dailyBudget) || 0,
       dietaryPreferences,
       allergies: allergies
@@ -104,6 +132,7 @@ const Profile = () => {
         .filter(Boolean),
       activityLevel,
       dietPlan,
+      profileIcon,
     };
 
     const success = await dispatch(updateProfile(profileData));
@@ -159,9 +188,7 @@ const Profile = () => {
 
       {message.text && (
         <div
-          className={`message ${
-            message.type === "error" ? "error" : "success"
-          }`}
+          className={`message ${message.type === "error" ? "error" : "success"}`}
         >
           {message.text}
         </div>
@@ -173,6 +200,32 @@ const Profile = () => {
         <div className="profile-form-section">
           <h2>Profile Information</h2>
           <form onSubmit={onSubmitProfile}>
+            {/* Profile Icon Selection */}
+            <div className="profile-icon-section">
+              <h3>Choose Your Profile Icon</h3>
+              <div className="current-icon">
+                <p>Current Icon:</p>
+                <img 
+                  src={animalIcons[profileIcon]} 
+                  alt={profileIcon} 
+                  className="current-icon-preview"
+                />
+              </div>
+              <div className="icon-grid">
+                {Object.entries(animalIcons).map(([name, icon], index) => (
+                  <div
+                    key={name}
+                    className={`icon-option ${profileIcon === name ? 'selected' : ''}`}
+                    onClick={() => handleIconSelect(name)}
+                  >
+                    <img src={icon} alt={name} className="icon-preview" />
+                    <span className="icon-name">{name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Rest of the form fields */}
             <div className="form-group">
               <input
                 type="text"
@@ -219,7 +272,7 @@ const Profile = () => {
               name="targetWeight"
               value={targetWeight}
               onChange={onChange}
-              placeholder="Target Weight (kg)" // Added target weight input
+              placeholder="Target Weight (kg)"
             />
             <input
               type="number"
@@ -234,13 +287,9 @@ const Profile = () => {
               onChange={onChange}
               className="activity-select"
             >
-              <option value="sedentary">
-                Sedentary (little or no exercise)
-              </option>
+              <option value="sedentary">Sedentary (little or no exercise)</option>
               <option value="lightly">Lightly active (1-3 days/week)</option>
-              <option value="moderately">
-                Moderately active (3-5 days/week)
-              </option>
+              <option value="moderately">Moderately active (3-5 days/week)</option>
               <option value="very">Very active (6-7 days/week)</option>
               <option value="super">Super active (physical job)</option>
             </select>
