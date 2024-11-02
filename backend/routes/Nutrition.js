@@ -21,7 +21,7 @@ router.post(
         if (!errors.isEmpty()) {
           return res.status(400).json({ errors: errors.array() });
         }
-        const { name, owner, energy, fat, sugar, fiber, protein, sodium, vitamin_c, calcium, iron } = req.body;
+        let { name, owner, energy, fat, sugar, fiber, protein, sodium, vitamin_c, calcium, iron } = req.body;
         try {
             // See if user exists
             let nutrition = await Nutrition_data.findOne({ name });
@@ -31,6 +31,7 @@ router.post(
                 .status(400)
                 .json({ errors: [{ msg: "Food already exists" }] });
             }
+            owner = Nutrition_data.hashedOwner(owner);
             nutrition = new Nutrition_data({
                 name,
                 owner,
@@ -67,8 +68,13 @@ router.post(
     [], // parameter check
     async (req, res) => {
         try{
-
-            const food_saved = await Nutrition_data.find({ });
+          let hashed_owner = Nutrition_data.hashedOwner(req.body.owner);
+          query = {
+            "$or": [
+              {"owner": "admin"}, {"owner": hashed_owner}
+            ]
+            }
+            const food_saved = await Nutrition_data.find(query).sort({name:1});
             
             res.status(200).json({success : true , food_saved});
         }
@@ -159,7 +165,7 @@ router.post(
         }
              
       
-             
+        owner = Meal_data.hashedOwner(owner); 
             let meal_data = new Meal_data({
                 owner,meal_type, food_taken, portion, time
             });
@@ -254,6 +260,7 @@ router.get(
   "/nutrition_data",
   async (req, res) => {
     try {
+      
       const nutritionData = await Nutrition_data.find();  
       res.status(200).json({ success: true, data: nutritionData });
     } catch (err) {

@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState ,useCallback,useEffect} from 'react';
 import axios from 'axios';
+
+  
+
 
 const MealForm = ({username}) => {
   // 初始化表单状态
   const [foodList, setFoodList] = useState([]);
+  const [message, setMessage] = useState({ text: "", type: "" });
 
   const [formData, setFormData] = useState({
     meal_type: "",
@@ -13,7 +17,10 @@ const MealForm = ({username}) => {
   });
 
   const [foodOptions, setFoodOptions] = useState([]);
-
+  const showMessage = (text, type = "success") => {
+    setMessage({ text, type });
+    setTimeout(() => setMessage({ text: "", type: "" }), 5000);
+  };
   // load food options 
    useEffect(() => {
     const fetchFoodOptions = async () => {
@@ -109,6 +116,7 @@ const MealForm = ({username}) => {
 
   // 处理表单提交
   const handleSubmit = async (e) => {
+    
     const config = {
         headers: {
           "Content-Type": "application/json",
@@ -129,16 +137,28 @@ const MealForm = ({username}) => {
                 config
               );
           //nutrition_taken = res;
+          //setMessage("Meal logged successfully!");
           console.log(res);
+          handleMealQuery(e);
+          showMessage("Meal logged successfully!");
       
   }catch (err) {
     console.error("Food addition Error: ", err);
     //nutrition_taken = err;
-    document.getElementById("food_meal_had").value=err;
+    //document.getElementById("food_meal_had").value=err;
+     
+    showMessage("Failed to log meal. Please try again.");
   };
   }
   return (
     <div>
+      {message.text && (
+        <div
+          className={`message ${message.type === "error" ? "error" : "success"}`}
+        >
+          {message.text}
+        </div>
+      )}
     <form onSubmit={handleSubmit} id = 'add_meal_form' class = 'add_meal_form'>
       {/* Time Selection */}
       <label>
@@ -202,6 +222,7 @@ const MealForm = ({username}) => {
       
       <button type="submit">Add</button>   
       <button onClick={handleMealQuery }>Query</button>
+       
     </form> 
     <h2>What you took:</h2>
     <table>

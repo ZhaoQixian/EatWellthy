@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
-
+const dotenv = require("dotenv");
+const crypto = require("crypto"); 
+dotenv.config();
 const Nutrition_Schema = new mongoose.Schema({
   name: {
     type: String,
@@ -50,5 +52,9 @@ const Nutrition_Schema = new mongoose.Schema({
     default: 0.0,
   },
 });
-
-module.exports = mongoose.model("Nutrition_data", Nutrition_Schema);
+Nutrition_Schema.statics.hashedOwner = (owner) =>
+  crypto
+    .createHash("sha256")
+    .update(owner.toString() + process.env.HASH_SECRET)
+    .digest("hex");
+module.exports = Nutrition_data = mongoose.model("Nutrition_data", Nutrition_Schema);

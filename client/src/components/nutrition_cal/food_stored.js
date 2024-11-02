@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
+ 
+ 
 
 const FoodStored = () => {
   const [foodList, setFoodList] = useState([]);
-
    
    
-
+   
+   
+  let { username } = useParams();
   useEffect(() => {
+    
     const fetchFoodOptions = async () => {
       try {
-        const response = await axios.post("http://localhost:5050/nutrition/query_food");
+        
+        const body = {"owner": username}
+        const response = await axios.post("http://localhost:5050/nutrition/query_food",body);
         console.log(response.data);  
         if (response.data.success) {
           setFoodList(response.data.food_saved);
@@ -25,19 +32,31 @@ const FoodStored = () => {
   
 
   
-  const handleDelete = async (id) => {
-    try {
+  const handleDelete = async (id, name) => {
+    if (
+      window.confirm(
+        "Do you want to delete this food item: " + name + "?",
+          
+
+      )
+    ){
+        try {
        
-      await axios.delete(`http://localhost:5050/nutrition/delete/${id}`);
-      setFoodList(foodList.filter(food => food._id !== id));  
-    } catch (error) {
-      console.error("Error deleting food item:", error);
-    }
-  };
+          await axios.delete(`http://localhost:5050/nutrition/delete/${id}`);
+          setFoodList(foodList.filter(food => food._id !== id));  
+        } catch (error) {
+          console.error("Error deleting food item:", error);
+        }
+       
+  }};
+    
+ 
+    
 
   return (
     <div>
       <h2>Food List</h2>
+      <h4>Please note that system owned data cannot be deleted</h4>
       <table>
         <thead>
           <tr>
@@ -67,9 +86,9 @@ const FoodStored = () => {
               <td>{food.vitamin_c}</td>
               <td>{food.calcium}</td>
               <td>{food.iron}</td>
-              <td>
-                <button onClick={() => handleDelete(food._id)}>Delete</button>
-              </td>
+              <td>{food.owner != 'admin' ? <button onClick={() => handleDelete(food._id, food.name)}>Delete</button> : null}</td>
+                
+               
             </tr>
           ))}
         </tbody>
