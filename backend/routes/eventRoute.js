@@ -13,8 +13,8 @@ const oauth2Client = new google.auth.OAuth2(
 
 // Scopes for Google Calendar
 const SCOPES = ["https://www.googleapis.com/auth/calendar.events"];
-
 // Helper function to create a Google Calendar event
+
 async function createGoogleCalendarEvent(event) {
   const calendar = google.calendar({ version: "v3", auth: oauth2Client });
 
@@ -39,35 +39,32 @@ async function createGoogleCalendarEvent(event) {
       calendarId: "primary",
       resource: calendarEvent,
     });
-    return response.data;
+    return response.data; // Return the created event details
   } catch (error) {
     console.error("Error creating Google Calendar event:", error);
-    throw error;
+    throw error; // Propagate the error for handling in the route
   }
 }
 
 // Route to create a new event
 router.post("/", async (req, res) => {
-  // console.log(req.body);
   const hashedUserId = Event.hashedUserId(req.body.userId);
   const newBody = { ...req.body, userId: hashedUserId };
-  // console.log("HASHED", newBody);
 
   const newEvent = new Event(newBody);
 
   try {
     // Save event to the database
-    const data = await newEvent.save();
-    // console.log(data);
+    const savedEvent = await newEvent.save();
 
     // Create Google Calendar event
-    // const googleEvent = await createGoogleCalendarEvent(savedEvent);
+    const googleEvent = await createGoogleCalendarEvent(savedEvent);
 
     return res.status(200).json({
-      sucess: true,
-      data,
+      success: true,
+      data: savedEvent,
       message: "Event is added",
-      // googleCalendarEventId: googleEvent.id,
+      googleCalendarEventId: googleEvent.id, // Optionally return the Google Calendar event ID
     });
   } catch (err) {
     console.error("Error:", err);
