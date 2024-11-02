@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { connect } from "react-redux";
@@ -11,23 +11,27 @@ import "react-datepicker/dist/react-datepicker.css";
 const AddEvents = ({ auth, addEvent }) => {
   const navigate = useNavigate();
   const { register, handleSubmit, control, watch } = useForm({});
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const validateFields = (values) => {
+    if (!values.title || !values.start || !values.end) {
+      setErrorMessage("Please enter the event details first.");
+      return false;
+    }
+    if (values.end < values.start) {
+      setErrorMessage('The "End Date" must be later than the "Start Date".');
+      return false;
+    }
+    setErrorMessage("");
+    return true;
+  };
 
   const onSubmit = async (values) => {
+    if (!validateFields(values)) return;
+
     try {
       const uploadedData = { ...values, userId: auth.user._id };
-      if (
-        values.title === "" ||
-        values.start === undefined ||
-        values.end === undefined ||
-        values.end < values.start
-      ) {
-        console.error("Empty fields or incorrect date fields");
-        alert(
-          `No empty fields for "Event", "Start Date" or "End Date" and "End Date" must be > "Start Date"`
-        );
-        return;
-      }
-      const res = await addEvent(uploadedData);
+      await addEvent(uploadedData);
       navigate("/calendar");
     } catch (e) {
       console.error(e);
@@ -41,24 +45,13 @@ const AddEvents = ({ auth, addEvent }) => {
       end: watch("end"),
       describe: watch("describe"),
     };
+
+    if (!validateFields(values)) return;
+
     const { title, start, end, describe } = values;
     const startDateTime = new Date(start).toISOString();
     const endDateTime = new Date(end).toISOString();
 
-    const calendarEvent = {
-      summary: title,
-      description: describe,
-      start: {
-        dateTime: startDateTime,
-        timeZone: "Asia/Singapore", // Adjust time zone as necessary
-      },
-      end: {
-        dateTime: endDateTime,
-        timeZone: "Asia/Singapore",
-      },
-    };
-
-    const eventString = encodeURIComponent(JSON.stringify(calendarEvent));
     const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
       title
     )}&details=${encodeURIComponent(describe)}&dates=${startDateTime.replace(
@@ -131,6 +124,7 @@ const AddEvents = ({ auth, addEvent }) => {
               />
             </div>
           </div>
+
           <div className="event-add">
             <label htmlFor="end" className="title">
               End Date
@@ -156,6 +150,8 @@ const AddEvents = ({ auth, addEvent }) => {
               />
             </div>
           </div>
+
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
 
           <div className="event-add">
             <div className="title"></div>
