@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { connect } from "react-redux";
@@ -10,14 +10,11 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const AddEvents = ({ auth, addEvent }) => {
   const navigate = useNavigate();
-  const { register, handleSubmit, control } = useForm({});
+  const { register, handleSubmit, control, watch } = useForm({});
 
   const onSubmit = async (values) => {
     try {
-      // console.log(values);
-      // console.log(auth);
       const uploadedData = { ...values, userId: auth.user._id };
-      console.log(uploadedData);
       if (
         values.title === "" ||
         values.start === undefined ||
@@ -35,6 +32,35 @@ const AddEvents = ({ auth, addEvent }) => {
     } catch (e) {
       console.error(e);
     }
+  };
+
+  const handleGoogleCalendar = () => {
+    const values = {
+      title: watch("title"),
+      start: watch("start"),
+      end: watch("end"),
+      describe: watch("describe"),
+    };
+    const { title, start, end, describe } = values;
+    const startDateTime = new Date(start).toISOString();
+    const endDateTime = new Date(end).toISOString();
+
+    const calendarEvent = {
+      summary: title,
+      description: describe,
+      start: {
+        dateTime: startDateTime,
+        timeZone: "Asia/Singapore", // Adjust time zone as necessary
+      },
+      end: {
+        dateTime: endDateTime,
+        timeZone: "Asia/Singapore",
+      },
+    };
+
+    const eventString = encodeURIComponent(JSON.stringify(calendarEvent));
+    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${eventString}`;
+    window.open(url, "_blank");
   };
 
   const handleCancel = () => {
@@ -79,8 +105,6 @@ const AddEvents = ({ auth, addEvent }) => {
             <label htmlFor="start" className="title">
               Start Date
             </label>
-            {/* controllers are the way you can wrap and use datePicker inside react form-hook*/}
-            {/* start date controller*/}
             <div className="description">
               <Controller
                 control={control}
@@ -126,7 +150,6 @@ const AddEvents = ({ auth, addEvent }) => {
                 )}
               />
             </div>
-            {/* end date controller*/}
           </div>
 
           <div className="event-add">
@@ -135,6 +158,9 @@ const AddEvents = ({ auth, addEvent }) => {
               <button type="submit">Create</button>
               <button type="button" onClick={handleCancel}>
                 Cancel
+              </button>
+              <button type="button" onClick={handleGoogleCalendar}>
+                Add to Google Calendar
               </button>
             </div>
           </div>

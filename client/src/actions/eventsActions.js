@@ -91,3 +91,12 @@ export const updateEvent = (values, id) => async (dispatch) => {
     console.error(err);
   }
 };
+
+export const addGoogleCalendarEvent = (event) => async (dispatch) => {
+  try {
+    const result = await apiCall.post("/google-calendar", event); // Assuming this route in your backend handles Google Calendar events
+    console.log("Google Calendar event added: ", result.data);
+  } catch (e) {
+    console.log("Error adding Google Calendar event: ", e);
+  }
+};
