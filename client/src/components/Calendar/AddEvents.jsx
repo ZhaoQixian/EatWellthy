@@ -59,7 +59,12 @@ const AddEvents = ({ auth, addEvent }) => {
     };
 
     const eventString = encodeURIComponent(JSON.stringify(calendarEvent));
-    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${eventString}`;
+    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
+      title
+    )}&details=${encodeURIComponent(describe)}&dates=${startDateTime.replace(
+      /-|:|\.\d{3}/g,
+      ""
+    )}/${endDateTime.replace(/-|:|\.\d{3}/g, "")}&ctz=Asia/Singapore`;
     window.open(url, "_blank");
   };
 
