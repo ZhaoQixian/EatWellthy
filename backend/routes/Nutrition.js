@@ -186,17 +186,18 @@ router.post(
 router.post(
     "/query_meal",
     async (req, res) => {
-      const { meal_type, time } = req.body;
-      console.log(meal_type, time);
+      const { meal_type, time, owner } = req.body;
+      console.log(meal_type, time, owner);
       try {
         //Take the date and ignore the time
         const date = new Date(time);
         const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
         const endOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
-  
+        let hashedowner = Meal_data.hashedOwner(owner);
         // Only query meals for the specified date and meal type
         const query = {
-          meal_type: meal_type,
+          meal_type: meal_type, 
+          owner: hashedowner,
           time: {
             $gte: startOfDay,  // between start and end of day
             $lt: endOfDay  

@@ -1,5 +1,6 @@
 import React, { useState ,useCallback,useEffect} from 'react';
 import axios from 'axios';
+ 
 
   
 
@@ -8,12 +9,13 @@ const MealForm = ({username}) => {
   // 初始化表单状态
   const [foodList, setFoodList] = useState([]);
   const [message, setMessage] = useState({ text: "", type: "" });
-
+   
   const [formData, setFormData] = useState({
     meal_type: "",
     food_taken: "",
     portion: "",
     time: "",
+    owner: username,
   });
 
   const [foodOptions, setFoodOptions] = useState([]);
@@ -25,7 +27,8 @@ const MealForm = ({username}) => {
    useEffect(() => {
     const fetchFoodOptions = async () => {
       try {
-        const response = await axios.post("http://localhost:5050/nutrition/query_food");
+        const body = {"owner": username}
+        const response = await axios.post("http://localhost:5050/nutrition/query_food",body);
         const foods = response.data.food_saved;   
         setFoodOptions(foods.map(food => food.name));  
       } catch (err) {
@@ -67,6 +70,18 @@ const MealForm = ({username}) => {
   });
   const handleMealQuery = async(e) => {
     e.preventDefault();
+    let newNutritionTotals = {
+      energy: 0,
+      fat: 0,
+      sugar: 0,
+      fiber: 0,
+      protein: 0,
+      sodium: 0,
+      vitamin_c: 0,
+      calcium: 0,
+      iron: 0,
+    };
+    setNutritionTotals(newNutritionTotals);
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -79,17 +94,7 @@ const MealForm = ({username}) => {
       if (response.data.success) {
         const meals = response.data.meals;
         setFoodList(response.data.meals);
-        let newNutritionTotals = {
-          energy: 0,
-          fat: 0,
-          sugar: 0,
-          fiber: 0,
-          protein: 0,
-          sodium: 0,
-          vitamin_c: 0,
-          calcium: 0,
-          iron: 0,
-        };
+        
         meals.forEach(({ meal, nutrition }) => {
           if (nutrition !== "No nutrition data found for this food") {
             newNutritionTotals.energy += nutrition.energy * meal.portion || 0;
@@ -107,9 +112,14 @@ const MealForm = ({username}) => {
         console.log("Total Nutrition Data:", nutritionTotals);
 
         
+      }else{
+        console.log("No meals found for this time period.");
+        showMessage("No meals found for this time period. Please try again.");
+        setFoodList([]);
       }
 
     } catch (err) {
+      setFoodList([]);
       console.error("Error fetching food options: ", err);
     }
   };
@@ -219,7 +229,7 @@ const MealForm = ({username}) => {
       </label>
       <br />
 
-      
+      <input type="hidden" name="owner" value={username} />
       <button type="submit">Add</button>   
       <button onClick={handleMealQuery }>Query</button>
        
