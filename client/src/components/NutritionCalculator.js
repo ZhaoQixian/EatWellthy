@@ -1,14 +1,16 @@
-import React, { useState ,useCallback} from 'react';
+import React, { useState ,useCallback,useEffect} from 'react';
 import MealForm from './nutrition_cal/Meal_form';
 import FoodStored from './nutrition_cal/food_stored';
 import "./NutritionCalculator.css";
 import axios from 'axios';
 import { connect } from "react-redux";
 import {useParams} from 'react-router-dom';
+ 
 
 const NutritionCalculator = () => {
   // 使用状态管理当前选择的表单类型
   const [formType, setFormType] = useState(null);
+  const [message, setMessage] = useState({ text: "", type: "" });
   let { username } = useParams();
   console.log(username);
   const add_nutrition_infor2 = useCallback( 
@@ -42,14 +44,19 @@ const NutritionCalculator = () => {
           config
         );
         console.log(res);
+        showMessage("Food added successfully!");
       } catch (err) {
         console.error("Food addition Error: ", err); 
+        showMessage("Food addition Error: " + err.message);
       }
 
     }
   )
   ;
-
+  const showMessage = (text, type = "success") => {
+    setMessage({ text, type });
+    setTimeout(() => setMessage({ text: "", type: "" }), 5000);
+  };
   return (
     <div style={{paddingTop : "4rem",paddingLeft : "1.2rem" , paddingRight:"1.2rem"}}>
       <h1>NutritionCalculator</h1>
@@ -69,6 +76,15 @@ const NutritionCalculator = () => {
           Remove a Food/Meal
         </li>
       </div>
+      {message.text && (
+        <div
+          className={`message ${message.type === "error" ? "error" : "success"}`}
+        >
+          {message.text}
+        </div>
+      )}
+
+       
 
       <div id="food_meal_forms">
         {formType === 'addFood' && (
