@@ -8,6 +8,11 @@ const ProfileSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    profileIcon: {
+      type: String,
+      enum: ["bear", "capybara", "cat", "dog", "otter", "panda", "rabbit", "tiger"],
+      default: "capybara"
+    },
     age: {
       type: Number,
       min: 0,

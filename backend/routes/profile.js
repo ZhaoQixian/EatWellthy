@@ -42,11 +42,12 @@ router.get("/me", auth, async (req, res) => {
         allergies: [],
         activityLevel: "sedentary",
         dietPlan: "maintenance",
+        profileIcon: "bear" // Add default icon
       };
 
       profile = new Profile(defaultProfile);
       await profile.save();
-      console.log("Created default profile:", profile); // Debug log
+      console.log("Created default profile:", profile);
     }
 
     res.json(profile);
@@ -61,7 +62,7 @@ router.get("/me", auth, async (req, res) => {
 // @access   Private
 router.post("/", auth, async (req, res) => {
   try {
-    console.log("Received profile data:", req.body); // Debug log
+    console.log("Received profile data:", req.body);
     const {
       age,
       gender,
@@ -73,6 +74,7 @@ router.post("/", auth, async (req, res) => {
       allergies,
       activityLevel,
       dietPlan,
+      profileIcon // Add profileIcon
     } = req.body;
 
     const hashedUserId = Profile.hashUserId(req.user.id);
@@ -90,9 +92,10 @@ router.post("/", auth, async (req, res) => {
       allergies: processAllergies(allergies),
       activityLevel: activityLevel || "sedentary",
       dietPlan: dietPlan || "maintenance",
+      profileIcon: profileIcon || "bear" // Add profileIcon with default
     };
 
-    console.log("Processed profile fields:", profileFields); // Debug log
+    console.log("Processed profile fields:", profileFields);
 
     let profile = await Profile.findOne({ userId: hashedUserId });
 
@@ -103,14 +106,14 @@ router.post("/", auth, async (req, res) => {
         { $set: profileFields },
         { new: true }
       );
-      console.log("Updated profile:", profile); // Debug log
+      console.log("Updated profile:", profile);
       return res.json(profile);
     }
 
     // Create new profile
     profile = new Profile(profileFields);
     await profile.save();
-    console.log("Created new profile:", profile); // Debug log
+    console.log("Created new profile:", profile);
     res.json(profile);
   } catch (err) {
     console.error("Profile creation/update error:", err.message);
@@ -123,7 +126,7 @@ router.post("/", auth, async (req, res) => {
 // @access   Private
 router.put("/", auth, async (req, res) => {
   try {
-    console.log("Received update data:", req.body); // Debug log
+    console.log("Received update data:", req.body);
     const {
       age,
       gender,
@@ -135,6 +138,7 @@ router.put("/", auth, async (req, res) => {
       allergies,
       activityLevel,
       dietPlan,
+      profileIcon // Add profileIcon
     } = req.body;
 
     const hashedUserId = Profile.hashUserId(req.user.id);
@@ -157,8 +161,9 @@ router.put("/", auth, async (req, res) => {
       profile.allergies = processAllergies(allergies);
     if (activityLevel !== undefined) profile.activityLevel = activityLevel;
     if (dietPlan !== undefined) profile.dietPlan = dietPlan;
+    if (profileIcon !== undefined) profile.profileIcon = profileIcon; // Add profileIcon update
 
-    console.log("Updated profile data:", profile); // Debug log
+    console.log("Updated profile data:", profile);
     await profile.save();
     res.json(profile);
   } catch (err) {
@@ -172,7 +177,7 @@ router.put("/", auth, async (req, res) => {
 // @access   Private
 router.delete("/", auth, async (req, res) => {
   try {
-    console.log("Deleting profile for user:", req.user.id); // Debug log
+    console.log("Deleting profile for user:", req.user.id);
     const hashedUserId = Profile.hashUserId(req.user.id);
 
     // Delete the profile
