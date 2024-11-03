@@ -3,23 +3,28 @@ import MealForm from './nutrition_cal/Meal_form';
 import FoodStored from './nutrition_cal/food_stored';
 import "./NutritionCalculator.css";
 import axios from 'axios';
-import { connect } from "react-redux";
+import { connect ,useSelector} from "react-redux";
 import {useParams} from 'react-router-dom';
+
  
 
-const NutritionCalculator = () => {
+const NutritionCalculator = ( ) => {
   // 使用状态管理当前选择的表单类型
   const [formType, setFormType] = useState(null);
   const [message, setMessage] = useState({ text: "", type: "" });
   let { username } = useParams();
+  const authState = useSelector((state) => state.auth);
+  console.log('_authstate:',authState.user._id);
+  const userId = authState.user._id;
   console.log(username);
+  console.log('userId',userId);
   const add_nutrition_infor2 = useCallback( 
     async(dispatch) => {
       dispatch.preventDefault();
       console.log("Called add_nutrition_infor2");
       // get the values from form
       const name = document.getElementById("name").value || null;
-      const owner = username;
+      const owner = userId;
       const energy = document.getElementById("food_energy").value || null;
       const  fat = document.getElementById("food_fat").value || null;
       const sugar = document.getElementById("food_sugar").value || null;
@@ -29,6 +34,7 @@ const NutritionCalculator = () => {
       const vitamin_c = document.getElementById("food_vc").value || null;
       const calcium =document.getElementById("food_calcium").value || null;
       const iron = document.getElementById("food_iron").value || null;
+      console.log('owner: ',owner);
       const config = {
         headers: {
           "Content-Type": "application/json",
@@ -36,7 +42,8 @@ const NutritionCalculator = () => {
       };
       const body = JSON.stringify({ name, owner, energy, fat, 
         sugar, fiber, protein, sodium, vitamin_c, calcium, iron });
-
+      console.log(body);
+      console.log(body.owner);
       try {
         const res = await axios.post(
           "http://localhost:5050/nutrition/add",
@@ -113,7 +120,7 @@ const NutritionCalculator = () => {
         )}
 
         {formType === 'addMeal' && (
-          <MealForm username = {username}/>
+          <MealForm userId = {userId}/>
         )}
 
         {formType === 'remove' && (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { connect ,useSelector} from "react-redux";
  
  
 
@@ -9,14 +9,16 @@ const FoodStored = () => {
    
    
    
+  const authState = useSelector((state) => state.auth);
+  console.log('_authstate:',authState.user._id);
+  const userId = authState.user._id;
    
-  let { username } = useParams();
   useEffect(() => {
     
     const fetchFoodOptions = async () => {
       try {
         
-        const body = {"owner": username}
+        const body = {"owner": userId}
         const response = await axios.post("http://localhost:5050/nutrition/query_food",body);
         console.log(response.data);  
         if (response.data.success) {

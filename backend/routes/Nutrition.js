@@ -22,16 +22,23 @@ router.post(
           return res.status(400).json({ errors: errors.array() });
         }
         let { name, owner, energy, fat, sugar, fiber, protein, sodium, vitamin_c, calcium, iron } = req.body;
+        owner = Nutrition_data.hashedOwner(owner);
+        console.log(owner);
         try {
             // See if user exists
-            let nutrition = await Nutrition_data.findOne({ name });
-      
-            if (nutrition) {
+            query = {
+              "$and": [
+                {"owner": owner }, {"name": name}
+              ]
+              }
+            let nutrition = await Nutrition_data.find(query);
+              console.log(nutrition);
+            if (nutrition.length > 0) {
               return res
                 .status(400)
                 .json({ errors: [{ msg: "Food already exists" }] });
             }
-            owner = Nutrition_data.hashedOwner(owner);
+            
             nutrition = new Nutrition_data({
                 name,
                 owner,
@@ -101,8 +108,16 @@ router.post(
         
         let { owner,meal_type, food_taken, portion, time } = req.body;
         console.log('before try');
-        try {
-          let finding = await Nutrition_data.findOne({   name: food_taken });
+      try {
+        owner = Meal_data.hashedOwner(owner); 
+        console.log('afterhash',owner);
+
+        query = {
+          "$and": [
+            {"owner": owner }, {"name": food_taken}
+          ]
+          }
+          let finding = await Nutrition_data.find(query);
           console.log('finding', finding);
           const config = {headers: {
             "x-app-id": process.env.NUTRITIONIX_ID,
@@ -156,23 +171,23 @@ router.post(
             if (!check_exist) {
               await nutrition.save();
           }
-        }
-        else{
-              await nutrition.save();
+          }
+          else{
+                await nutrition.save();
+            
+          }    
+            
+          }
+              
+          }//end if
           
-        }    
-           
-        }
-             
-      
-        owner = Meal_data.hashedOwner(owner); 
-            let meal_data = new Meal_data({
-                owner,meal_type, food_taken, portion, time
-            });
-            console.log(meal_data);
-            await meal_data.save();
-            res.status(200).send('Add successfully');
-        }
+              let meal_data = new Meal_data({
+                  owner,meal_type, food_taken, portion, time
+              });
+              console.log(meal_data);
+              await meal_data.save();
+              res.status(200).send('Add successfully');
+          
         
       }catch (err) {
             console.error(err.message);
@@ -180,16 +195,18 @@ router.post(
         }
         
         
-    }
+  }
 )
 
 router.post(
     "/query_meal",
+    
     async (req, res) => {
       const { meal_type, time, owner } = req.body;
       console.log(meal_type, time, owner);
       try {
         //Take the date and ignore the time
+        
         const date = new Date(time);
         const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
         const endOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
@@ -206,9 +223,17 @@ router.post(
   
          
         const meals = await Meal_data.find(query);
-  
-        if (meals.length > 0) {const mealsWithNutrition = await Promise.all(meals.map(async (meal) => {
-            const nutritionData = await Nutrition_data.findOne({ name: meal.food_taken });
+        
+        if (meals.length > 0) {
+          const mealsWithNutrition = await Promise.all(meals.map(async (meal) => {
+            let query2 = {
+              "$and": [
+                {"$or":[{"owner": 'admin'},{"owner": hashedowner}] }, {"name": meal.food_taken}
+              ]
+
+            };
+            const nutritionData = await Nutrition_data.find(query2);
+            console.log('nutritionData', nutritionData);
             return {
               meal,
               nutrition: nutritionData || "No nutrition data found for this food"
