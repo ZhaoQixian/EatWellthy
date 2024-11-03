@@ -19,6 +19,20 @@ const ProgressTracker = () => {
     dispatch(getProfile());
   }, [dispatch]);
 
+  const adjustCaloriesForPlan = (baseCalories, plan, bmi) => {
+    switch (plan) {
+      case 'weightloss':
+        const deficitPercentage = parseFloat(bmi) > 30 ? 0.25 : 0.20;
+        return baseCalories * (1 - deficitPercentage);
+      case 'keto':
+        return baseCalories * 0.85;
+      case 'maintenance':
+      case 'vegetarian':
+      default:
+        return baseCalories;
+    }
+  };
+
   useEffect(() => {
     if (profile?.height && profile?.weight) {
       const heightInMeters = profile.height / 100;
@@ -52,10 +66,13 @@ const ProgressTracker = () => {
           very: 1.725,
           super: 1.9,
         };
-        const calories =
-          calculatedBMR *
-          activityMultipliers[profile.activityLevel || "sedentary"];
-        setDailyCalories(Math.round(calories));
+        
+        // Calculate base calories
+        const baseCalories = calculatedBMR * activityMultipliers[profile.activityLevel || "sedentary"];
+        
+        // Adjust calories based on diet plan
+        const adjustedCalories = adjustCaloriesForPlan(baseCalories, profile.dietPlan, calculatedBMI);
+        setDailyCalories(Math.round(adjustedCalories));
       }
     }
   }, [profile]);
@@ -100,6 +117,9 @@ const ProgressTracker = () => {
             <p>Daily Caloric Need: {dailyCalories || 0} kcal</p>
             <p>Calories Consumed: {caloriesConsumed} kcal</p>
             <p>Calories Remaining: {caloriesRemaining} kcal</p>
+            {profile.dietPlan && profile.dietPlan !== 'maintenance' && (
+              <p className="plan-note">*Adjusted for {profile.dietPlan} plan</p>
+            )}
           </div>
         </div>
       )}
