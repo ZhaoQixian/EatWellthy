@@ -39,11 +39,30 @@ const DietPlanner = () => {
           very: 1.725,
           super: 1.9
         };
-        const calories = calculatedBMR * activityMultipliers[profile.activityLevel || 'sedentary'];
-        setDailyCalories(Math.round(calories));
+        
+        // Calculate base calories
+        const baseCalories = calculatedBMR * activityMultipliers[profile.activityLevel || 'sedentary'];
+        
+        // Adjust calories based on diet plan
+        const adjustedCalories = adjustCaloriesForPlan(baseCalories, profile.dietPlan, calculatedBMI);
+        setDailyCalories(Math.round(adjustedCalories));
       }
     }
   }, [profile]);
+
+  const adjustCaloriesForPlan = (baseCalories, plan, bmi) => {
+    switch (plan) {
+      case 'weightloss':
+        const deficitPercentage = parseFloat(bmi) > 30 ? 0.25 : 0.20;
+        return baseCalories * (1 - deficitPercentage);
+      case 'keto':
+        return baseCalories * 0.85;
+      case 'maintenance':
+      case 'vegetarian':
+      default:
+        return baseCalories;
+    }
+  };
 
   const getBMICategory = (bmi) => {
     if (bmi < 18.5) return { category: 'Underweight', color: '#FFA500', recommendation: 'Focus on increasing calorie intake with nutrient-rich foods.' };
@@ -67,20 +86,25 @@ const DietPlanner = () => {
     return plans[plan || 'maintenance'];
   };
 
-  const handleActivityChange = async (e) => {
-    const updatedProfile = {
-      ...profile,
-      activityLevel: e.target.value
+  const getActivityLevelDisplay = (level) => {
+    const displays = {
+      sedentary: 'Sedentary (little or no exercise)',
+      lightly: 'Lightly active (1-3 days/week)',
+      moderately: 'Moderately active (3-5 days/week)',
+      very: 'Very active (6-7 days/week)',
+      super: 'Super active (physical job)'
     };
-    await dispatch(updateProfile(updatedProfile));
+    return displays[level] || 'Not specified';
   };
 
-  const handleDietPlanChange = async (e) => {
-    const updatedProfile = {
-      ...profile,
-      dietPlan: e.target.value
+  const getDietPlanDisplay = (plan) => {
+    const displays = {
+      maintenance: 'Maintenance Plan',
+      weightloss: 'Weight Loss Plan',
+      keto: 'Keto Plan',
+      vegetarian: 'Vegetarian Plan'
     };
-    await dispatch(updateProfile(updatedProfile));
+    return displays[plan] || 'Not specified';
   };
 
   if (loading) {
@@ -123,39 +147,27 @@ const DietPlanner = () => {
               <div className="bmr-value">
                 Basal Metabolic Rate (BMR): {bmr} calories/day
               </div>
-              <div className="activity-selector">
+              <div className="activity-display">
                 <label>Activity Level:</label>
-                <select 
-                  value={profile.activityLevel || 'sedentary'} 
-                  onChange={handleActivityChange}
-                >
-                  <option value="sedentary">Sedentary (little or no exercise)</option>
-                  <option value="lightly">Lightly active (1-3 days/week)</option>
-                  <option value="moderately">Moderately active (3-5 days/week)</option>
-                  <option value="very">Very active (6-7 days/week)</option>
-                  <option value="super">Super active (physical job)</option>
-                </select>
+                <span>{getActivityLevelDisplay(profile.activityLevel)}</span>
               </div>
               <div className="daily-calories">
                 Daily Calorie Needs: {dailyCalories} calories/day
+                {profile.dietPlan && profile.dietPlan !== 'maintenance' && (
+                  <div className="calorie-adjustment-note">
+                    (Adjusted for {profile.dietPlan} plan)
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
           <div className="diet-plan">
-            <h2>Diet Plan Selection</h2>
+            <h2>Your Diet Plan</h2>
             <div className="diet-plan-card">
-              <div className="plan-selector">
-                <label>Choose your diet plan:</label>
-                <select 
-                  value={profile.dietPlan || 'maintenance'} 
-                  onChange={handleDietPlanChange}
-                >
-                  <option value="maintenance">Maintenance Plan</option>
-                  <option value="weightloss">Weight Loss Plan</option>
-                  <option value="keto">Keto Plan</option>
-                  <option value="vegetarian">Vegetarian Plan</option>
-                </select>
+              <div className="plan-display">
+                <label>Current Plan:</label>
+                <span>{getDietPlanDisplay(profile.dietPlan)}</span>
               </div>
               <div className="macros">
                 <h3>Recommended Macronutrient Split:</h3>
