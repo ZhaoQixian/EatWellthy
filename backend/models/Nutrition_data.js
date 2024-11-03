@@ -6,7 +6,7 @@ const Nutrition_Schema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    unique: true,
+    unique: false,
   },
   owner: {
     type: String,

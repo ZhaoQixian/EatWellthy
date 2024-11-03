@@ -5,7 +5,8 @@ import axios from 'axios';
   
 
 
-const MealForm = ({username}) => {
+const MealForm = ({userId}) => {
+  console.log('mfuserid',userId);
   // 初始化表单状态
   const [foodList, setFoodList] = useState([]);
   const [message, setMessage] = useState({ text: "", type: "" });
@@ -15,7 +16,7 @@ const MealForm = ({username}) => {
     food_taken: "",
     portion: "",
     time: "",
-    owner: username,
+    owner: userId,
   });
 
   const [foodOptions, setFoodOptions] = useState([]);
@@ -27,7 +28,7 @@ const MealForm = ({username}) => {
    useEffect(() => {
     const fetchFoodOptions = async () => {
       try {
-        const body = {"owner": username}
+        const body = {"owner": userId}
         const response = await axios.post("http://localhost:5050/nutrition/query_food",body);
         const foods = response.data.food_saved;   
         setFoodOptions(foods.map(food => food.name));  
@@ -97,15 +98,15 @@ const MealForm = ({username}) => {
         
         meals.forEach(({ meal, nutrition }) => {
           if (nutrition !== "No nutrition data found for this food") {
-            newNutritionTotals.energy += nutrition.energy * meal.portion || 0;
-            newNutritionTotals.fat += nutrition.fat * meal.portion || 0;
-            newNutritionTotals.sugar += nutrition.sugar * meal.portion || 0;
-            newNutritionTotals.fiber += nutrition.fiber * meal.portion || 0;
-            newNutritionTotals.protein += nutrition.protein * meal.portion || 0;
-            newNutritionTotals.sodium += nutrition.sodium * meal.portion || 0;
-            newNutritionTotals.vitamin_c += nutrition.vitamin_c * meal.portion || 0;
-            newNutritionTotals.calcium += nutrition.calcium * meal.portion || 0;
-            newNutritionTotals.iron += nutrition.iron * meal.portion || 0;
+            newNutritionTotals.energy += nutrition[0].energy * meal.portion || 0;
+            newNutritionTotals.fat += nutrition[0].fat * meal.portion || 0;
+            newNutritionTotals.sugar += nutrition[0].sugar * meal.portion || 0;
+            newNutritionTotals.fiber += nutrition[0].fiber * meal.portion || 0;
+            newNutritionTotals.protein += nutrition[0].protein * meal.portion || 0;
+            newNutritionTotals.sodium += nutrition[0].sodium * meal.portion || 0;
+            newNutritionTotals.vitamin_c += nutrition[0].vitamin_c * meal.portion || 0;
+            newNutritionTotals.calcium += nutrition[0].calcium * meal.portion || 0;
+            newNutritionTotals.iron += nutrition[0].iron * meal.portion || 0;
           }
         });
         setNutritionTotals(newNutritionTotals);
@@ -139,7 +140,7 @@ const MealForm = ({username}) => {
         try {
           const dataToSend = {
             ...formData,
-            owner: username,   
+            owner: userId,   
           };
             const res = await axios.post(
                 "http://localhost:5050/nutrition/log_meal",
@@ -229,7 +230,7 @@ const MealForm = ({username}) => {
       </label>
       <br />
 
-      <input type="hidden" name="owner" value={username} />
+      <input type="hidden" name="owner" value={userId} />
       <button type="submit">Add</button>   
       <button onClick={handleMealQuery }>Query</button>
        
@@ -257,15 +258,15 @@ const MealForm = ({username}) => {
           <tr key={food.meal._id}>
             <td>{food.meal.food_taken}</td>
             <td>{food.meal.portion}</td>
-            <td>{food.meal.portion * food.nutrition.energy}</td>
-            <td>{food.meal.portion * food.nutrition.fat}</td>
-            <td>{food.meal.portion * food.nutrition.sugar}</td>
-            <td>{food.meal.portion * food.nutrition.fiber}</td>
-            <td>{food.meal.portion * food.nutrition.protein}</td>
-            <td>{food.meal.portion * food.nutrition.sodium}</td>
-            <td>{food.meal.portion * food.nutrition.vitamin_c}</td>
-            <td>{food.meal.portion * food.nutrition.calcium}</td>
-            <td>{food.meal.portion * food.nutrition.iron}</td>
+            <td>{food.meal.portion * food.nutrition[0].energy}</td>
+            <td>{food.meal.portion * food.nutrition[0].fat}</td>
+            <td>{food.meal.portion * food.nutrition[0].sugar}</td>
+            <td>{food.meal.portion * food.nutrition[0].fiber}</td>
+            <td>{food.meal.portion * food.nutrition[0].protein}</td>
+            <td>{food.meal.portion * food.nutrition[0].sodium}</td>
+            <td>{food.meal.portion * food.nutrition[0].vitamin_c}</td>
+            <td>{food.meal.portion * food.nutrition[0].calcium}</td>
+            <td>{food.meal.portion * food.nutrition[0].iron}</td>
             <td>
               <button onClick={() => handleMealDelete(food.meal._id)}>Delete</button>
             </td>

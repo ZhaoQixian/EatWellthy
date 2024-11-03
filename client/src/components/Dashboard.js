@@ -37,12 +37,7 @@ const Dashboard = ({ auth }) => {
 
       <div className="dashboard-content">
         <h1>Welcome, {auth.user.name}!</h1>
-        <Link
-          to={`/nutrition-calculator/${auth.user && auth.user.name}`}
-          style={{ marginTop: "2rem", display: "block" }}
-        >
-          Go to Nutrition Calculator
-        </Link>
+         
         <div className="dashboard-sections">
           <div className="section">
             <h2>Daily Nutritional Intake</h2>
