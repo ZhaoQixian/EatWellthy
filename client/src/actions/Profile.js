@@ -232,3 +232,45 @@ export const deleteAccount = () => async (dispatch) => {
     return false;
   }
 };
+
+// Add this to your existing Profile.js actions file
+export const generateDietSuggestions = () => async (dispatch) => {
+  try {
+    dispatch({ type: LOADING_PROFILE });
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      dispatch({
+        type: PROFILE_ERROR,
+        payload: "No token found. Please log in again.",
+      });
+      return null;
+    }
+
+    const config = {
+      headers: {
+        "x-auth-token": token,
+      },
+    };
+
+    console.log("Sending request to generate diet suggestions...");
+    const res = await axios.post(
+      "http://localhost:5050/api/profile/generate-diet",
+      {},
+      config
+    );
+    console.log("Received response:", res.data);
+
+    // Make sure we're dispatching the entire profile
+    await dispatch(getProfile());
+
+    return res.data;
+  } catch (err) {
+    console.error("Error in generateDietSuggestions:", err);
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: err.response?.data?.msg || "Error generating diet suggestions",
+    });
+    return null;
+  }
+};

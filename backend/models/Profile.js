@@ -68,6 +68,24 @@ const ProfileSchema = new mongoose.Schema(
       enum: ["maintenance", "weightloss", "keto", "vegetarian"],
       default: "maintenance",
     },
+    // In ProfileSchema, update the dietSuggestions field
+    dietSuggestions: {
+      type: [{
+        meal: {
+          type: String,
+          enum: ['Breakfast', 'Lunch', 'Snack', 'Dinner']
+        },
+        items: [{
+          food: String,
+          weight: String
+        }]
+      }],
+      default: []
+    },
+    lastDietSuggestionUpdate: {
+      type: Date,
+      default: null
+    },
     createdAt: {
       type: Date,
       default: Date.now,
@@ -75,7 +93,7 @@ const ProfileSchema = new mongoose.Schema(
     updatedAt: {
       type: Date,
       default: Date.now,
-    },
+    }
   },
   {
     timestamps: {

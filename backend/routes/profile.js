@@ -4,6 +4,7 @@ const auth = require("../middlewares/auth");
 const Profile = require("../models/Profile");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
+const axios = require("axios");  // Add this line at the top
 
 // Helper function to process allergies
 const processAllergies = (allergies) => {
@@ -212,6 +213,104 @@ router.put("/updatepassword", auth, async (req, res) => {
   } catch (err) {
     console.error("Password update error:", err.message);
     res.status(500).json({ msg: "Server Error", error: err.message });
+  }
+});
+
+
+
+// Update the generate-diet route
+router.post("/generate-diet", auth, async (req, res) => {
+  try {
+    console.log("Starting diet generation...");
+    const hashedUserId = Profile.hashUserId(req.user.id);
+    const profile = await Profile.findOne({ userId: hashedUserId });
+
+    if (!profile) {
+      console.log("Profile not found");
+      return res.status(404).json({ msg: "Profile not found" });
+    }
+
+    console.log("Found profile:", profile);
+
+    // Prepare prompt for ChatGPT
+    const prompt = `Generate a daily diet plan for a person with:
+      Age: ${profile.age}
+      Gender: ${profile.gender}
+      Height: ${profile.height}cm
+      Weight: ${profile.weight}kg
+      Target Weight: ${profile.targetWeight}kg
+      Dietary Preferences: ${profile.dietaryPreferences}
+      Allergies: ${profile.allergies.join(', ')}
+      Activity Level: ${profile.activityLevel}
+      Diet Plan Type: ${profile.dietPlan}
+
+      Provide exactly 4 meals in this JSON format:
+      {
+        "meals": [
+          {
+            "meal": "Breakfast",
+            "items": [
+              { "food": "Food Name", "weight": "Weight in grams" }
+            ]
+          }
+        ]
+      }
+      
+      Include Breakfast, Lunch, Snack, and Dinner.
+      Only food names and weights, no descriptions.
+      Consider dietary preferences and allergies.`;
+
+    console.log("Sending request to OpenAI...");
+    
+    // Call ChatGPT API with error handling
+    try {
+      const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.7,
+        response_format: { type: "json_object" }
+      }, {
+        headers: {
+          'Authorization': `Bearer ${process.env.OPENAI_KEY}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      console.log("OpenAI Response received");
+      
+      if (!response.data.choices || !response.data.choices[0]) {
+        throw new Error("Invalid response from OpenAI");
+      }
+
+      const suggestions = JSON.parse(response.data.choices[0].message.content);
+      console.log("Parsed suggestions:", suggestions);
+
+      if (!suggestions.meals || !Array.isArray(suggestions.meals)) {
+        throw new Error("Invalid meal format in response");
+      }
+
+      // Update profile with new suggestions
+      profile.dietSuggestions = suggestions.meals;
+      profile.lastDietSuggestionUpdate = new Date();
+      await profile.save();
+
+      console.log("Profile updated with new suggestions");
+      res.json({
+        ...profile.toObject(),
+        dietSuggestions: suggestions.meals
+      });
+
+    } catch (openAiError) {
+      console.error("OpenAI API Error:", openAiError);
+      throw new Error("Failed to generate diet suggestions");
+    }
+
+  } catch (err) {
+    console.error('Error in generate-diet route:', err);
+    res.status(500).json({ 
+      msg: "Error generating diet suggestions",
+      error: err.message 
+    });
   }
 });
 
