@@ -1,3 +1,62 @@
+import React from 'react';
+import './DailyPriceList.css';
+
+const DailyPriceList = () => {
+  const supermarkets = [
+    {
+      id: "fairprice",
+      name: "FairPrice",
+      url: "https://www.fairprice.com.sg/",
+      logo: "/images/fairprice-logo.png"
+    },
+    {
+      id: "giant",
+      name: "Giant",
+      url: "https://giant.sg/",
+      logo: "/images/giant-logo.png"
+    },
+    {
+      id: "coldstorage",
+      name: "Cold Storage",
+      url: "https://coldstorage.com.sg/",
+      logo: "/images/coldstorage-logo.png"
+    },
+    {
+      id: "shengsiong",
+      name: "Sheng Siong",
+      url: "https://shengsiong.com.sg/",
+      logo: "/images/shengsiong-logo.png"
+    }
+  ];
+
+  return (
+    <div className="supermarket-grid">
+      {supermarkets.map(market => (
+        <a 
+          key={market.id}
+          href={market.url} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="supermarket-link"
+        >
+          <img
+            src={market.logo}
+            alt={market.name}
+            className="supermarket-logo"
+          />
+          <span className="supermarket-name">{market.name}</span>
+        </a>
+      ))}
+    </div>
+  );
+};
+
+export default DailyPriceList;
+
+
+
+
+/*
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -56,7 +115,11 @@ const DailyPriceList = ({ getSupermarkets, supermarketState }) => {
 
       <p>Here are the available supermarket brands:</p>
 
-      {/* Show a loading message if still loading */}
+
+
+
+
+
       {loading ? (
         <p>Loading...</p>
       ) : (
@@ -88,4 +151,4 @@ const mapStateToProps = (state) => ({
   supermarketState: state.supermarkets, // Access supermarket state from Redux
 });
 
-export default connect(mapStateToProps, { getSupermarkets })(DailyPriceList);
+export default connect(mapStateToProps, { getSupermarkets })(DailyPriceList);*/
