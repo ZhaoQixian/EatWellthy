@@ -1,136 +1,153 @@
-.supermarket-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  padding: 1rem;
-  max-width: 400px;
+/* Container and Layout */
+.showcase-container {
+  min-height: 100vh;
+  background-color: #f9fafb;
+  padding: 3rem 1rem;
+}
+
+.showcase-content {
+  max-width: 1200px;
   margin: 0 auto;
 }
 
-.supermarket-link {
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  background-color: #ffffff;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-  text-decoration: none;
-  color: inherit;
-  transition: all 0.2s ease-in-out;
+/* Header Styles */
+.showcase-header {
+  text-align: center;
+  margin-bottom: 3rem;
 }
 
-.supermarket-link:hover {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
-              0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  transform: translateY(-2px);
+.showcase-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.showcase-header p {
+  font-size: 1.25rem;
+  color: #6b7280;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Supermarket Grid */
+.supermarket-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 1rem;
+}
+
+/* Card Styles */
+.supermarket-card {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.supermarket-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-content {
+  padding: 2rem;
+}
+
+.logo-link {
+  display: block;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  transition: opacity 0.2s ease;
+}
+
+.logo-link:hover {
+  opacity: 0.8;
 }
 
 .supermarket-logo {
-  width: 280px;
-  height: 176px;
+  max-width: 200px;
+  height: auto;
   object-fit: contain;
-  border-radius: 4px;
-  background-color: #ffffff;
-}
-
-.supermarket-name {
-  font-size: 1.125rem;
-  font-weight: 500;
-  margin-left: 1rem;
-  color: #374151;
-}
-
-/* Loading state styles */
-.loading {
-  text-align: center;
-  padding: 2rem;
-  color: #6b7280;
-}
-
-/* Scraping controls styles */
-.scraping-controls {
-  margin-bottom: 2rem;
-  padding: 1rem;
-  background-color: #f3f4f6;
-  border-radius: 8px;
-}
-
-.scraping-button {
-  padding: 0.5rem 1rem;
-  background-color: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 4px;
   cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.2s;
 }
 
-.scraping-button:disabled {
-  background-color: #9ca3af;
-  cursor: not-allowed;
+.card-body {
+  text-align: center;
 }
 
-.scraping-button:hover:not(:disabled) {
-  background-color: #1d4ed8;
-}
-
-.scrape-result {
-  margin-top: 1rem;
-  padding: 0.75rem;
-  border-radius: 4px;
-}
-
-.scrape-result.success {
-  background-color: #d1fae5;
-  color: #065f46;
-}
-
-.scrape-result.error {
-  background-color: #fee2e2;
-  color: #991b1b;
-}
-
-/* Product list styles */
-.product-list {
-  margin-top: 2rem;
-}
-
-.supermarket-section {
-  margin-bottom: 2rem;
-  padding: 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-}
-
-.supermarket-section h3 {
-  margin-bottom: 1rem;
-  font-size: 1.25rem;
-  font-weight: 600;
+.card-body h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
   color: #1f2937;
+  margin-bottom: 0.75rem;
 }
 
-.product-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #f3f4f6;
+.card-body p {
+  color: #6b7280;
+  line-height: 1.5;
 }
 
-.product-item:last-child {
-  border-bottom: none;
-}
-
-.product-name {
-  flex: 1;
-}
-
-.product-price {
-  font-weight: 500;
-  margin: 0 1rem;
-}
-
-.product-description {
+/* Footer Styles */
+.showcase-footer {
+  text-align: center;
+  margin-top: 4rem;
   color: #6b7280;
   font-size: 0.875rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .showcase-header h1 {
+    font-size: 2rem;
+  }
+
+  .showcase-header p {
+    font-size: 1.125rem;
+  }
+
+  .supermarket-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card-content {
+    padding: 1.5rem;
+  }
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.supermarket-card {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Accessibility */
+.logo-link:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  .showcase-container {
+    background-color: white;
+  }
+
+  .supermarket-card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #e5e7eb;
+  }
 }
