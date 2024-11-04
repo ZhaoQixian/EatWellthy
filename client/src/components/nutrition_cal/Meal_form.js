@@ -92,6 +92,10 @@ const MealForm = ({userId}) => {
         "Content-Type": "application/json",
       },
     };
+    if (formData.time === "" || formData.meal_type === '') {
+      showMessage("Correct date and meal type are required!", "error");
+      return;  
+    }
     try {
       console.log(formData);
       const response = await axios.post("http://localhost:5050/nutrition/query_meal", formData );
@@ -101,7 +105,7 @@ const MealForm = ({userId}) => {
         setFoodList(response.data.meals);
         
         meals.forEach(({ meal, nutrition }) => {
-          if (nutrition !== "No nutrition data found for this food") {
+          if (nutrition !== "No nutrition data found for this meal.") {
             newNutritionTotals.energy += nutrition[0].energy * meal.portion || 0;
             newNutritionTotals.fat += nutrition[0].fat * meal.portion || 0;
             newNutritionTotals.sugar += nutrition[0].sugar * meal.portion || 0;
@@ -112,6 +116,9 @@ const MealForm = ({userId}) => {
             newNutritionTotals.calcium += nutrition[0].calcium * meal.portion || 0;
             newNutritionTotals.iron += nutrition[0].iron * meal.portion || 0;
           }
+          else{
+            window.alert("No nutrition data found for this meal.");
+          }
         });
         setNutritionTotals(newNutritionTotals);
         console.log("Total Nutrition Data:", nutritionTotals);
@@ -119,13 +126,14 @@ const MealForm = ({userId}) => {
         
       }else{
         console.log("No meals found for this time period.");
-        showMessage("No meals found for this time period. Please try again.");
+        showMessage("No meals found for this time period. Please try again.","error");
         setFoodList([]);
       }
 
     } catch (err) {
       setFoodList([]);
       console.error("Error fetching food options: ", err);
+      showMessage("No meals found for this time period. Please try again.","error");
     }
   };
 
@@ -143,6 +151,7 @@ const MealForm = ({userId}) => {
       showMessage("Portion size cannot be negative.", "error");
       return;  
     }
+
     //const body = JSON.stringify({ owner,meal_type, food_taken, portion, time });
     
         try {
@@ -187,6 +196,7 @@ const MealForm = ({userId}) => {
           name="time"
           value={formData.time}
           onChange={handleInputChange}
+          required 
         />
       </label>
       <br />
@@ -197,6 +207,7 @@ const MealForm = ({userId}) => {
           name="meal_type"
           value={formData.meal_type}
           onChange={handleInputChange}
+          required 
         >
           <option value="">-- Select a meal type --</option>
           <option value="breakfast">Breakfast</option>
@@ -262,6 +273,7 @@ const MealForm = ({userId}) => {
         </tr>
       </thead>
       <tbody>
+         
         {foodList.map(food => (
           <tr key={food.meal._id}>
             <td>{food.meal.food_taken}</td>
