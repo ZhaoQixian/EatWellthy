@@ -16,6 +16,8 @@ const scrapeRoutes = require("./routes/scrapeRoutes");
 const wellohRountes = require("./routes/wellohAI");
 const eventRoute = require("./routes/eventRoute");
 
+const nutritionixRoute = require("./routes/nutritionixRoute");
+
 // Load environment variables
 dotenv.config();
 
@@ -65,7 +67,7 @@ app.use("/api/scrape", scrapeRoutes);
 app.use("/welloh", wellohRountes);
 app.use("/api/profile", require("./routes/profile")); // Import the new route
 app.use("/events", eventRoute);
-
+app.use("/api", nutritionixRoute);
 // MongoDB connection
 mongoose
   .connect(process.env.MONGO_URI, {

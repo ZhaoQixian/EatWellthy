@@ -22,6 +22,7 @@ import FAQs from "./components/FAQs";
 import Location from "./components/Location/Location";
 import LogMeal from "./components/NutritionCalculator_U0301";
 import Profile from "./components/Profile";
+import NutritionixAPI from "./components/NutritionixAPI";
 
 function App() {
   if (localStorage.token) {
@@ -36,7 +37,8 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/verify" element={<VerifyEmail />} /> {/* Add this route */}
+          <Route path="/verify" element={<VerifyEmail />} />{" "}
+          {/* Add this route */}
           <Route
             path="/dashboard"
             element={<PrivateRoute element={Dashboard} />}
@@ -56,6 +58,7 @@ function App() {
           <Route path="/faqs" element={<FAQs />} />
           <Route path="/location" element={<Location />} />
           <Route path="*" element={<NotFound />} />
+          <Route path="/nutrition" element={<NutritionixAPI />} />
         </Routes>
       </Router>
     </div>

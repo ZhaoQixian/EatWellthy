@@ -1,0 +1,86 @@
+/* Container styling */
+.NutritionixAPI {
+  font-family: Arial, sans-serif;
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Header styling */
+.NutritionixAPI h1 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+/* Search component styling */
+.NutritionSearch {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.NutritionSearch input[type="text"] {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 70%;
+}
+
+.NutritionSearch button {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #3498db;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.NutritionSearch button:hover {
+  background-color: #2980b9;
+}
+
+/* Details component styling */
+.NutritionDetails {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.NutritionDetails h2 {
+  color: #2c3e50;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.NutritionDetails p {
+  font-size: 16px;
+  color: #333;
+  line-height: 1.5;
+}
+
+/* Data item styling */
+.nutrition-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.nutrition-item:last-child {
+  border-bottom: none;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+  .NutritionSearch input[type="text"] {
+    width: 100%;
+  }
+}
