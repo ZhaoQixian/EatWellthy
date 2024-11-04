@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import "./Profile.css";
 import {
   changePassword,
   deleteAccount,
@@ -8,6 +7,7 @@ import {
   getProfile,
 } from "../actions/Profile";
 import { updateName } from "../actions/auth";
+import "./Profile.css";
 
 // Import all animal icons
 import bearIcon from "../img/bear.png";
@@ -187,9 +187,7 @@ const Profile = () => {
       </div>
 
       {message.text && (
-        <div
-          className={`message ${message.type === "error" ? "error" : "success"}`}
-        >
+        <div className={`message ${message.type === "error" ? "error" : "success"}`}>
           {message.text}
         </div>
       )}
@@ -198,9 +196,135 @@ const Profile = () => {
 
       <div className="profile-form active">
         <div className="profile-form-section">
-          <h2>Profile Information</h2>
+          <h2>Basic Information</h2>
           <form onSubmit={onSubmitProfile}>
-            {/* Profile Icon Selection */}
+            <div className="form-row">
+              <div className="form-field">
+                <label>Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={name}
+                  onChange={onChange}
+                />
+              </div>
+              <div className="form-field">
+                <label>Gender</label>
+                <select
+                  name="gender"
+                  value={gender}
+                  onChange={onChange}
+                >
+                  <option value="">Select Gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+              <div className="form-field">
+                <label>Age</label>
+                <input
+                  type="number"
+                  name="age"
+                  value={age}
+                  onChange={onChange}
+                />
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-field">
+                <label>Height (cm)</label>
+                <input
+                  type="number"
+                  name="height"
+                  value={height}
+                  onChange={onChange}
+                />
+              </div>
+              <div className="form-field">
+                <label>Current Weight (kg)</label>
+                <input
+                  type="number"
+                  name="weight"
+                  value={weight}
+                  onChange={onChange}
+                />
+              </div>
+              <div className="form-field">
+                <label>Target Weight (kg)</label>
+                <input
+                  type="number"
+                  name="targetWeight"
+                  value={targetWeight}
+                  onChange={onChange}
+                />
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-field">
+                <label>Daily Budget (SGD)</label>
+                <input
+                  type="number"
+                  name="dailyBudget"
+                  value={dailyBudget}
+                  onChange={onChange}
+                />
+              </div>
+              <div className="form-field">
+                <label>Activity Level</label>
+                <select
+                  name="activityLevel"
+                  value={activityLevel}
+                  onChange={onChange}
+                >
+                  <option value="sedentary">Sedentary (little or no exercise)</option>
+                  <option value="lightly">Lightly active (1-3 days/week)</option>
+                  <option value="moderately">Moderately active (3-5 days/week)</option>
+                  <option value="very">Very active (6-7 days/week)</option>
+                  <option value="super">Super active (physical job)</option>
+                </select>
+              </div>
+              <div className="form-field">
+                <label>Diet Plan</label>
+                <select
+                  name="dietPlan"
+                  value={dietPlan}
+                  onChange={onChange}
+                >
+                  <option value="maintenance">Maintenance Plan</option>
+                  <option value="weightloss">Weight Loss Plan</option>
+                  <option value="keto">Keto Plan</option>
+                  <option value="vegetarian">Vegetarian Plan</option>
+                </select>
+              </div>
+            </div>
+
+
+            <div className="form-row-full">
+            <div className="form-field">
+              <label>Dietary Preferences</label>
+              <input
+                type="text"
+                name="dietaryPreferences"
+                value={dietaryPreferences}
+                onChange={onChange}
+              />
+            </div>
+          </div>
+
+          <div className="form-row-full">
+            <div className="form-field">
+              <label>Allergies (comma separated)</label>
+              <input
+                type="text"
+                name="allergies"
+                value={allergies}
+                onChange={onChange}
+              />
+            </div>
+          </div>
+
             <div className="profile-icon-section">
               <h3>Choose Your Profile Icon</h3>
               <div className="current-icon">
@@ -212,7 +336,7 @@ const Profile = () => {
                 />
               </div>
               <div className="icon-grid">
-                {Object.entries(animalIcons).map(([name, icon], index) => (
+                {Object.entries(animalIcons).map(([name, icon]) => (
                   <div
                     key={name}
                     className={`icon-option ${profileIcon === name ? 'selected' : ''}`}
@@ -225,99 +349,6 @@ const Profile = () => {
               </div>
             </div>
 
-            {/* Rest of the form fields */}
-            <div className="form-group">
-              <input
-                type="text"
-                name="name"
-                value={name}
-                onChange={onChange}
-                placeholder="Name"
-                className="name-input"
-              />
-            </div>
-            <select
-              name="gender"
-              value={gender}
-              onChange={onChange}
-              className="gender-select"
-            >
-              <option value="">Select Gender</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-            </select>
-            <input
-              type="number"
-              name="age"
-              value={age}
-              onChange={onChange}
-              placeholder="Age"
-            />
-            <input
-              type="number"
-              name="height"
-              value={height}
-              onChange={onChange}
-              placeholder="Height (cm)"
-            />
-            <input
-              type="number"
-              name="weight"
-              value={weight}
-              onChange={onChange}
-              placeholder="Weight (kg)"
-            />
-            <input
-              type="number"
-              name="targetWeight"
-              value={targetWeight}
-              onChange={onChange}
-              placeholder="Target Weight (kg)"
-            />
-            <input
-              type="number"
-              name="dailyBudget"
-              value={dailyBudget}
-              onChange={onChange}
-              placeholder="Daily Budget"
-            />
-            <select
-              name="activityLevel"
-              value={activityLevel}
-              onChange={onChange}
-              className="activity-select"
-            >
-              <option value="sedentary">Sedentary (little or no exercise)</option>
-              <option value="lightly">Lightly active (1-3 days/week)</option>
-              <option value="moderately">Moderately active (3-5 days/week)</option>
-              <option value="very">Very active (6-7 days/week)</option>
-              <option value="super">Super active (physical job)</option>
-            </select>
-            <select
-              name="dietPlan"
-              value={dietPlan}
-              onChange={onChange}
-              className="diet-plan-select"
-            >
-              <option value="maintenance">Maintenance Plan</option>
-              <option value="weightloss">Weight Loss Plan</option>
-              <option value="keto">Keto Plan</option>
-              <option value="vegetarian">Vegetarian Plan</option>
-            </select>
-            <input
-              type="text"
-              name="dietaryPreferences"
-              value={dietaryPreferences}
-              onChange={onChange}
-              placeholder="Dietary Preferences"
-            />
-            <input
-              type="text"
-              name="allergies"
-              value={allergies}
-              onChange={onChange}
-              placeholder="Allergies (comma separated)"
-            />
             <button type="submit">Update Profile</button>
           </form>
         </div>
@@ -325,26 +356,31 @@ const Profile = () => {
         <div className="profile-form-section">
           <h2>Change Password</h2>
           <form onSubmit={onSubmitPassword}>
-            <input
-              type="password"
-              name="newPassword"
-              value={newPassword}
-              onChange={onChange}
-              placeholder="New Password"
-            />
-            <input
-              type="password"
-              name="confirmPassword"
-              value={confirmPassword}
-              onChange={onChange}
-              placeholder="Confirm Password"
-            />
+            <div className="form-field">
+              <label>New Password</label>
+              <input
+                type="password"
+                name="newPassword"
+                value={newPassword}
+                onChange={onChange}
+              />
+            </div>
+            <div className="form-field">
+              <label>Confirm Password</label>
+              <input
+                type="password"
+                name="confirmPassword"
+                value={confirmPassword}
+                onChange={onChange}
+              />
+            </div>
             <button type="submit">Update Password</button>
           </form>
         </div>
 
         <div className="danger-zone">
           <h2>Delete Account</h2>
+          <p className="danger-text">This action cannot be undone. Please be certain.</p>
           <button onClick={handleDelete}>Delete My Account</button>
         </div>
       </div>
