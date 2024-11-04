@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 import { logout } from "../../actions/auth";
-
+import "./Navbar.css";
 const Navbar = ({ auth, logout }) => {
   const navigate = useNavigate();
   const location = useLocation();
