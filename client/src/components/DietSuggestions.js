@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { getProfile, generateDietSuggestions } from "../actions/Profile";
 import { addEvent, getAllEvents } from "../actions/eventsActions";
+import './DietSuggestions.css';
 
 const DietSuggestions = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const profileState = useSelector((state) => state.profile);
   const auth = useSelector((state) => state.auth);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState(null);
+  const [showDialog, setShowDialog] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
 
   useEffect(() => {
     dispatch(getProfile());
@@ -31,9 +32,7 @@ const DietSuggestions = () => {
         setError("Failed to generate diet plan. Please try again.");
       }
     } catch (err) {
-      setError(
-        err.message || "An error occurred while generating the diet plan"
-      );
+      setError(err.message || "An error occurred while generating the diet plan");
     } finally {
       setIsGenerating(false);
     }
@@ -52,47 +51,124 @@ const DietSuggestions = () => {
     return { valid: true };
   };
 
-  const addMealToWebsiteCalendar = async (meal, start, end) => {
+  const getMealTimes = () => {
+    const today = new Date();
+    return {
+      breakfast: {
+        start: new Date(today.setHours(8, 0, 0)),
+        end: new Date(today.setHours(9, 0, 0)),
+      },
+      lunch: {
+        start: new Date(today.setHours(12, 0, 0)),
+        end: new Date(today.setHours(13, 0, 0)),
+      },
+      snack: {
+        start: new Date(today.setHours(15, 0, 0)),
+        end: new Date(today.setHours(15, 30, 0)),
+      },
+      dinner: {
+        start: new Date(today.setHours(18, 0, 0)),
+        end: new Date(today.setHours(19, 0, 0)),
+      },
+    };
+  };
+
+  const addToWebsiteCalendar = async (mealType) => {
     if (!profileState.profile || !auth.user || !auth.user._id) {
       console.error("User ID is not available");
       return;
     }
 
-    const eventDetails = {
-      title: meal.meal,
-      describe: meal.items
-        .map((item) => `${item.food} - ${item.weight}`)
-        .join(", "),
-      start: start.toISOString(),
-      end: end.toISOString(),
-      userId: auth.user._id,
-    };
-
-    const validation = validateFields(eventDetails);
-    if (!validation.valid) {
-      alert(validation.message);
-      return;
-    }
-
+    setIsAdding(true);
+    
     try {
-      await dispatch(addEvent(eventDetails));
-      console.log("Event added to website calendar.");
-      alert("Event added to website calendar successfully!");
+      if (mealType === 'wholeDay') {
+        // Create one event for whole day
+        const mealTimes = getMealTimes();
+        const fullDayEvent = {
+          title: "Full Day Meal Plan",
+          describe: profileState.profile.dietSuggestions
+            .map(meal => `${meal.meal}:\n${meal.items.map(item => `${item.food} - ${item.weight}`).join(", ")}`)
+            .join("\n\n"),
+          start: mealTimes.breakfast.start.toISOString(),
+          end: mealTimes.dinner.end.toISOString(),
+          userId: auth.user._id,
+        };
 
-      // Fetch all events to update the calendar
+        const validation = validateFields(fullDayEvent);
+        if (!validation.valid) {
+          throw new Error(validation.message);
+        }
+
+        await dispatch(addEvent(fullDayEvent));
+        alert("Full day meal plan added to calendar successfully!");
+      } else {
+        await addSingleMealToCalendar(mealType);
+        alert("Meal added to calendar successfully!");
+      }
+
+      setShowDialog(false);
       dispatch(getAllEvents(auth.user._id));
 
-      // Ask if the user wants to add to Google Calendar
       const addToGoogle = window.confirm(
-        "Do you want to add this event to Google Calendar?"
+        "Do you want to add this to Google Calendar as well?"
       );
       if (addToGoogle) {
-        handleGoogleCalendar(eventDetails);
+        if (mealType === 'wholeDay') {
+          // Create one Google Calendar event for whole day
+          const mealTimes = getMealTimes();
+          const fullDayEvent = {
+            title: "Full Day Meal Plan",
+            describe: profileState.profile.dietSuggestions
+              .map(meal => `${meal.meal}:\n${meal.items.map(item => `${item.food} - ${item.weight}`).join(", ")}`)
+              .join("\n\n"),
+            start: mealTimes.breakfast.start.toISOString(),
+            end: mealTimes.dinner.end.toISOString(),
+            userId: auth.user._id,
+          };
+          handleGoogleCalendar(fullDayEvent);
+        } else {
+          handleGoogleCalendar(createEventDetails(mealType));
+        }
       }
     } catch (error) {
-      console.error("Failed to add event to website calendar:", error);
-      alert("Failed to add event to website calendar.");
+      console.error("Failed to add to calendar:", error);
+      alert("Failed to add to calendar.");
+    } finally {
+      setIsAdding(false);
     }
+  };
+
+  const createEventDetails = (mealType) => {
+    const mealTimes = getMealTimes();
+    const timeSlot = mealTimes[mealType];
+    
+    const selectedMeal = profileState.profile.dietSuggestions.find(
+      meal => meal.meal.toLowerCase() === mealType.toLowerCase()
+    );
+
+    if (!selectedMeal) {
+      throw new Error("Meal not found");
+    }
+
+    return {
+      title: selectedMeal.meal,
+      describe: selectedMeal.items.map(item => `${item.food} - ${item.weight}`).join(", "),
+      start: timeSlot.start.toISOString(),
+      end: timeSlot.end.toISOString(),
+      userId: auth.user._id,
+    };
+  };
+
+  const addSingleMealToCalendar = async (mealType) => {
+    const eventDetails = createEventDetails(mealType);
+    const validation = validateFields(eventDetails);
+    
+    if (!validation.valid) {
+      throw new Error(validation.message);
+    }
+
+    await dispatch(addEvent(eventDetails));
   };
 
   const handleGoogleCalendar = (eventDetails) => {
@@ -108,42 +184,6 @@ const DietSuggestions = () => {
     )}/${endDateTime.replace(/-|:|\.\d{3}/g, "")}&ctz=Asia/Singapore`;
 
     window.open(url, "_blank");
-  };
-
-  const handleAddMeal = (meal) => {
-    const mealTimes = {
-      breakfast: { start: "08:00", end: "09:00" },
-      lunch: { start: "12:00", end: "13:00" },
-      dinner: { start: "18:00", end: "19:00" },
-      snack: { start: "15:00", end: "15:30" },
-    };
-
-    const mealTime = mealTimes[meal.meal.toLowerCase()];
-    if (mealTime) {
-      const today = new Date();
-      const startDateTime = new Date(today);
-      const endDateTime = new Date(today);
-
-      const [startHour, startMinute] = mealTime.start.split(":");
-      const [endHour, endMinute] = mealTime.end.split(":");
-
-      startDateTime.setHours(parseInt(startHour), parseInt(startMinute), 0);
-      endDateTime.setHours(parseInt(endHour), parseInt(endMinute), 0);
-
-      return (
-        <div className="mt-4">
-          <button
-            onClick={() =>
-              addMealToWebsiteCalendar(meal, startDateTime, endDateTime)
-            }
-            className="mr-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            Add to Website Calendar
-          </button>
-        </div>
-      );
-    }
-    return null;
   };
 
   return (
@@ -162,18 +202,7 @@ const DietSuggestions = () => {
         </div>
       ) : (
         <div>
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">Your Diet Plan</h2>
-            <button
-              onClick={handleRefresh}
-              disabled={isGenerating}
-              className={`px-4 py-2 bg-red-600 text-white rounded ${
-                isGenerating ? "opacity-50" : "hover:bg-red-700"
-              }`}
-            >
-              {isGenerating ? "Generating..." : "Generate New Plan"}
-            </button>
-          </div>
+          
 
           {profileState.profile.dietSuggestions?.length > 0 ? (
             <div className="space-y-4">
@@ -193,14 +222,86 @@ const DietSuggestions = () => {
                       </div>
                     ))}
                   </div>
-                  {handleAddMeal(suggestion)}
                 </div>
               ))}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setShowDialog(true)}
+                  disabled={isAdding}
+                  className="diet-calendar-button"
+                  style={{width: 'auto'}}
+                >
+                  {isAdding ? 'Adding to Calendar...' : 'Add to Calendar'}
+                </button>
+                <button
+                  onClick={handleRefresh}
+                  disabled={isGenerating}
+                  className="diet-calendar-button"
+                  style={{width: 'auto'}}
+                >
+                  {isGenerating ? "Generating..." : "Generate New Plan"}
+                </button>
+              </div>
             </div>
           ) : (
             <div className="text-center py-4">
               No diet suggestions available. Click "Generate New Plan" to create
               your personalized diet plan.
+            </div>
+          )}
+
+          {/* Calendar Dialog */}
+          {showDialog && (
+            <div className="diet-modal-overlay">
+              <div className="diet-modal">
+                <div className="diet-modal-header">
+                  <h3>Add to Calendar</h3>
+                  <button className="diet-modal-close" onClick={() => setShowDialog(false)}>×</button>
+                </div>
+                <button 
+                  className="diet-calendar-button"
+                  onClick={() => addToWebsiteCalendar('wholeDay')}
+                  disabled={isAdding}
+                >
+                  Add All Meals
+                </button>
+                <button 
+                  className="diet-calendar-button"
+                  onClick={() => addToWebsiteCalendar('breakfast')}
+                  disabled={isAdding}
+                >
+                  Add Breakfast
+                </button>
+                <button 
+                  className="diet-calendar-button"
+                  onClick={() => addToWebsiteCalendar('lunch')}
+                  disabled={isAdding}
+                >
+                  Add Lunch
+                </button>
+                <button 
+                  className="diet-calendar-button"
+                  onClick={() => addToWebsiteCalendar('snack')}
+                  disabled={isAdding}
+                >
+                  Add Snack
+                </button>
+                <button 
+                  className="diet-calendar-button"
+                  onClick={() => addToWebsiteCalendar('dinner')}
+                  disabled={isAdding}
+                >
+                  Add Dinner
+                </button>
+                <div className="diet-modal-footer">
+                  <button 
+                    className="diet-modal-cancel"
+                    onClick={() => setShowDialog(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
             </div>
           )}
         </div>
