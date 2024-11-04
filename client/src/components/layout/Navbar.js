@@ -45,10 +45,13 @@ const Navbar = ({ auth, logout }) => {
 
   return (
     <nav className="navbar bg-dark">
-      <img src="/favicon.ico" width="40" height="45" style={{ marginRight: '-1000px' }}></img>
-      <h1>
-        <Link to="/">HOME</Link>
-      </h1>
+      <img
+        src="/favicon.ico"
+        width="40"
+        height="45"
+        style={{ marginRight: "-1000px" }}
+      ></img>
+      <h1></h1>
       {!auth.loading && (
         <Fragment>
           {auth.isAuthenticated
