@@ -105,45 +105,45 @@ const DietPlanner = () => {
   };
 
   const renderKeyMetrics = () => (
-    <div className="key-metrics-grid">
-      <div className="metric-card daily-calories-card">
-        <h3>Daily Calories</h3>
-        <div className="metric-value">{dailyCalories}</div>
-        <div className="metric-unit">calories/day</div>
-        <div className="metric-label">{getDietPlanDisplay(profile.dietPlan)}</div>
+    <div className="diet-planner__metrics-grid">
+      <div className="diet-planner__metric-card">
+        <h3 className="diet-planner__metric-title">Daily Calories</h3>
+        <div className="diet-planner__metric-value">{dailyCalories}</div>
+        <div className="diet-planner__metric-unit">calories/day</div>
+        <div className="diet-planner__metric-label">{getDietPlanDisplay(profile.dietPlan)}</div>
       </div>
       
-      <div className="metric-card bmi-card">
-        <h3>BMI</h3>
-        <div className="metric-value" style={{ color: getBMICategory(bmi)?.color }}>{bmi}</div>
-        <div className="metric-category">{getBMICategory(bmi)?.category}</div>
-        <div className="metric-label">{getBMICategory(bmi)?.recommendation}</div>
+      <div className="diet-planner__metric-card">
+        <h3 className="diet-planner__metric-title">BMI</h3>
+        <div className="diet-planner__metric-value" style={{ color: getBMICategory(bmi)?.color }}>{bmi}</div>
+        <div className="diet-planner__metric-category">{getBMICategory(bmi)?.category}</div>
+        <div className="diet-planner__metric-label">{getBMICategory(bmi)?.recommendation}</div>
       </div>
 
-      <div className="metric-card bmr-card">
-        <h3>BMR</h3>
-        <div className="metric-value">{bmr}</div>
-        <div className="metric-unit">calories/day</div>
-        <div className="metric-label">Base Metabolic Rate</div>
+      <div className="diet-planner__metric-card">
+        <h3 className="diet-planner__metric-title">BMR</h3>
+        <div className="diet-planner__metric-value">{bmr}</div>
+        <div className="diet-planner__metric-unit">calories/day</div>
+        <div className="diet-planner__metric-label">Base Metabolic Rate</div>
       </div>
     </div>
   );
 
   const renderMacronutrients = () => (
-    <div className="macros-container">
-      <h2>Daily Macronutrient Targets</h2>
-      <div className="macros-grid">
+    <div className="diet-planner__macros">
+      <h2 className="diet-planner__macros-title">Daily Macronutrient Targets</h2>
+      <div className="diet-planner__macros-grid">
         {Object.entries(getDietPlanMacros(profile.dietPlan)).map(([macro, percentage]) => (
-          <div key={macro} className={`macro-card ${macro}-card`}>
-            <div className="macro-header">
-              <h3>{macro.charAt(0).toUpperCase() + macro.slice(1)}</h3>
-              <span className="macro-percentage">{percentage}%</span>
+          <div key={macro} className="diet-planner__macro-card">
+            <div className="diet-planner__macro-header">
+              <h3 className="diet-planner__macro-name">{macro.charAt(0).toUpperCase() + macro.slice(1)}</h3>
+              <span className="diet-planner__macro-percentage">{percentage}%</span>
             </div>
-            <div className="macro-details">
-              <div className="macro-calories">
+            <div className="diet-planner__macro-details">
+              <div className="diet-planner__macro-calories">
                 {calculateMacroCalories(dailyCalories, percentage)} cal
               </div>
-              <div className="macro-grams">
+              <div className="diet-planner__macro-grams">
                 {Math.round(calculateMacroCalories(dailyCalories, percentage) / (macro === 'fats' ? 9 : 4))}g
               </div>
             </div>
@@ -154,53 +154,57 @@ const DietPlanner = () => {
   );
 
   if (loading) {
-    return <div className="diet-planner-loading">Loading...</div>;
+    return <div className="diet-planner__loading">Loading...</div>;
   }
 
   return (
-    <div className="page-wrapper">
-      <div className="diet-planner-container">
-        <div className="diet-planner-header">
-          <h1>Your Nutrition Dashboard</h1>
-          <div className="profile-stats">
-            <span>Height: {profile?.height}cm</span>
-            <span>Weight: {profile?.weight}kg</span>
-            <span>Activity: {getActivityLevelDisplay(profile?.activityLevel)}</span>
-          </div>
-        </div>
-
-        {!profile?.height || !profile?.weight || !profile?.age || !profile?.gender ? (
-          <div className="profile-incomplete-alert">
-            <h2>Complete Your Profile</h2>
-            <p>Please update your profile with height, weight, age, and gender information to see your personalized nutrition plan.</p>
-            <Link to="/profile" className="update-profile-btn">Update Profile</Link>
-          </div>
-        ) : (
-          <div className="dashboard-content">
-            {renderKeyMetrics()}
-            {renderMacronutrients()}
-            
-            <div className="additional-info">
-              {profile?.dietaryPreferences && (
-                <div className="preferences-card info-card">
-                  <h2>Dietary Preferences</h2>
-                  <p>{profile.dietaryPreferences}</p>
-                </div>
-              )}
-
-              {profile?.allergies && profile.allergies.length > 0 && (
-                <div className="allergies-card info-card">
-                  <h2>Allergies</h2>
-                  <div className="allergies-grid">
-                    {profile.allergies.map((allergy, index) => (
-                      <div key={index} className="allergy-tag">{allergy}</div>
-                    ))}
-                  </div>
-                </div>
-              )}
+    <div className="diet-planner">
+      <div className="diet-planner__page-wrapper">
+        <div className="diet-planner__container">
+          <div className="diet-planner__header">
+            <h1 className="diet-planner__title">Your Nutrition Dashboard</h1>
+            <div className="diet-planner__profile-stats">
+              <span className="diet-planner__stat-item">Height: {profile?.height}cm</span>
+              <span className="diet-planner__stat-item">Weight: {profile?.weight}kg</span>
+              <span className="diet-planner__stat-item">Activity: {getActivityLevelDisplay(profile?.activityLevel)}</span>
             </div>
           </div>
-        )}
+
+          {!profile?.height || !profile?.weight || !profile?.age || !profile?.gender ? (
+            <div className="diet-planner__alert">
+              <h2 className="diet-planner__alert-title">Complete Your Profile</h2>
+              <p className="diet-planner__alert-text">
+                Please update your profile with height, weight, age, and gender information to see your personalized nutrition plan.
+              </p>
+              <Link to="/profile" className="diet-planner__update-btn">Update Profile</Link>
+            </div>
+          ) : (
+            <div className="diet-planner__dashboard">
+              {renderKeyMetrics()}
+              {renderMacronutrients()}
+              
+              <div className="diet-planner__additional-info">
+                {profile?.dietaryPreferences && (
+                  <div className="diet-planner__info-card">
+                    <h2 className="diet-planner__info-title">Dietary Preferences</h2>
+                    <p className="diet-planner__info-text">{profile.dietaryPreferences}</p>
+                  </div>
+                )}
+
+                {profile?.allergies && profile.allergies.length > 0 && (
+                  <div className="diet-planner__info-card">
+                    <h2 className="diet-planner__info-title">Allergies</h2>
+                    <div className="diet-planner__allergies-grid">
+                      {profile.allergies.map((allergy, index) => (
+                        <div key={index} className="diet-planner__allergy-tag">{allergy}</div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

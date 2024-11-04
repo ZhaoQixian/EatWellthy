@@ -1,5 +1,10 @@
-/* Page wrapper for full-width background */
-.page-wrapper {
+/* Main component wrapper */
+.diet-planner {
+  width: 100%;
+}
+
+/* Page wrapper */
+.diet-planner__page-wrapper {
   width: 100%;
   min-height: 100vh;
   display: flex;
@@ -7,8 +12,8 @@
   background-color: #f5f5f5;
 }
 
-/* Base container with proper centering */
-.diet-planner-container {
+/* Container */
+.diet-planner__container {
   width: 100%;
   max-width: 900px;
   margin: 80px auto 0;
@@ -18,8 +23,12 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Header */
-.diet-planner-header h1 {
+/* Header section */
+.diet-planner__header {
+  margin-bottom: 30px;
+}
+
+.diet-planner__title {
   text-align: center;
   font-size: 2.5rem;
   color: #2e5e4e;
@@ -27,14 +36,14 @@
 }
 
 /* Profile Stats */
-.profile-stats {
+.diet-planner__profile-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   margin-bottom: 40px;
 }
 
-.profile-stats span {
+.diet-planner__stat-item {
   background-color: #f8f9fa;
   padding: 15px;
   border-radius: 8px;
@@ -44,14 +53,14 @@
 }
 
 /* Key Metrics Grid */
-.key-metrics-grid {
+.diet-planner__metrics-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   margin-bottom: 40px;
 }
 
-.metric-card {
+.diet-planner__metric-card {
   background-color: #f8f9fa;
   padding: 25px;
   border-radius: 8px;
@@ -59,43 +68,39 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.metric-card h3 {
+.diet-planner__metric-title {
   color: #2e5e4e;
   font-size: 1.4rem;
   margin-bottom: 15px;
 }
 
-.metric-value {
+.diet-planner__metric-value {
   font-size: 2.8rem;
   font-weight: bold;
   color: #2e5e4e;
   margin-bottom: 10px;
 }
 
-.bmi-card .metric-value {
-  color: inherit;
-}
-
-.metric-unit {
+.diet-planner__metric-unit {
   color: #666;
   margin-bottom: 10px;
   font-size: 1rem;
 }
 
-.metric-category {
+.diet-planner__metric-category {
   font-weight: 600;
   margin: 10px 0;
   font-size: 1.2rem;
 }
 
-.metric-label {
+.diet-planner__metric-label {
   color: #666;
   line-height: 1.5;
   font-size: 0.95rem;
 }
 
 /* Macronutrients Section */
-.macros-container {
+.diet-planner__macros {
   background-color: #fff;
   padding: 25px;
   margin-bottom: 40px;
@@ -103,27 +108,27 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.macros-container h2 {
+.diet-planner__macros-title {
   text-align: center;
   font-size: 1.8rem;
   color: #2e5e4e;
   margin-bottom: 25px;
 }
 
-.macros-grid {
+.diet-planner__macros-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
 
-.macro-card {
+.diet-planner__macro-card {
   background-color: #f8f9fa;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.macro-header {
+.diet-planner__macro-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -132,36 +137,36 @@
   border-bottom: 2px solid #2e5e4e;
 }
 
-.macro-header h3 {
+.diet-planner__macro-name {
   color: #2e5e4e;
   font-size: 1.2rem;
   margin: 0;
 }
 
-.macro-percentage {
+.diet-planner__macro-percentage {
   font-size: 1.2rem;
   font-weight: bold;
   color: #2e5e4e;
 }
 
-.macro-details {
+.diet-planner__macro-details {
   text-align: center;
 }
 
-.macro-calories {
+.diet-planner__macro-calories {
   font-size: 1.8rem;
   font-weight: bold;
   color: #2e5e4e;
   margin: 10px 0;
 }
 
-.macro-grams {
+.diet-planner__macro-grams {
   color: #666;
   font-size: 0.9rem;
 }
 
-/* Loading state */
-.diet-planner-loading {
+/* Loading State */
+.diet-planner__loading {
   text-align: center;
   padding: 40px;
   font-size: 1.2rem;
@@ -170,7 +175,7 @@
 }
 
 /* Profile Incomplete Alert */
-.profile-incomplete-alert {
+.diet-planner__alert {
   background-color: #f8f9fa;
   padding: 30px;
   border-radius: 8px;
@@ -179,19 +184,19 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.profile-incomplete-alert h2 {
+.diet-planner__alert-title {
   color: #2e5e4e;
   font-size: 1.5rem;
   margin-bottom: 15px;
 }
 
-.profile-incomplete-alert p {
+.diet-planner__alert-text {
   color: #666;
   margin-bottom: 20px;
   line-height: 1.5;
 }
 
-.update-profile-btn {
+.diet-planner__update-btn {
   display: inline-block;
   background-color: #2e5e4e;
   color: #fff;
@@ -201,42 +206,42 @@
   transition: background-color 0.3s;
 }
 
-.update-profile-btn:hover {
+.diet-planner__update-btn:hover {
   background-color: #234439;
 }
 
 /* Additional Info Section */
-.additional-info {
+.diet-planner__additional-info {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
 }
 
-.info-card {
+.diet-planner__info-card {
   background-color: #f8f9fa;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.info-card h2 {
+.diet-planner__info-title {
   color: #2e5e4e;
   font-size: 1.4rem;
   margin-bottom: 15px;
 }
 
-.info-card p {
+.diet-planner__info-text {
   color: #666;
   line-height: 1.6;
 }
 
-.allergies-grid {
+.diet-planner__allergies-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
-.allergy-tag {
+.diet-planner__allergy-tag {
   background-color: #fff;
   padding: 8px 15px;
   border-radius: 5px;
@@ -245,50 +250,50 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
+/* Dashboard Content */
+.diet-planner__dashboard {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
-  .diet-planner-container {
+  .diet-planner__container {
     margin-top: 20px;
     padding: 15px;
   }
 
-  .diet-planner-header h1 {
+  .diet-planner__title {
     font-size: 2rem;
     margin-bottom: 20px;
   }
 
-  .profile-stats {
+  .diet-planner__profile-stats {
     grid-template-columns: 1fr;
     gap: 15px;
     margin-bottom: 30px;
   }
 
-  .key-metrics-grid {
+  .diet-planner__metrics-grid {
     grid-template-columns: 1fr;
     gap: 15px;
   }
 
-  .macros-grid {
+  .diet-planner__macros-grid {
     grid-template-columns: 1fr;
     gap: 15px;
   }
 
-  .metric-value {
+  .diet-planner__metric-value {
     font-size: 2.4rem;
   }
 
-  .macro-calories {
+  .diet-planner__macro-calories {
     font-size: 1.6rem;
   }
 
-  .additional-info {
+  .diet-planner__additional-info {
     grid-template-columns: 1fr;
   }
-}
-
-/* Dashboard Content Wrapper */
-.dashboard-content {
-  width: 100%;
-  max-width: 100%;
-  margin: 0 auto;
 }
