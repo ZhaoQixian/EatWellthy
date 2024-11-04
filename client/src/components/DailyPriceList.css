@@ -1,57 +1,136 @@
 .supermarket-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
-    padding: 4rem 1.2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  .supermarket-link {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-decoration: none;
-    color: inherit;
-    padding: 1rem;
-    border-radius: 8px;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  
-  .supermarket-link:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .supermarket-logo {
-    width: 120px;
-    height: 120px;
-    object-fit: contain;
-    margin-bottom: 1rem;
-  }
-  
-  .supermarket-name {
-    font-size: 1.2rem;
-    font-weight: 500;
-    text-align: center;
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .supermarket-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.5rem;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .supermarket-grid {
-      grid-template-columns: 1fr;
-      gap: 1rem;
-    }
-    
-    .supermarket-logo {
-      width: 100px;
-      height: 100px;
-    }
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.supermarket-link {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease-in-out;
+}
+
+.supermarket-link:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+.supermarket-logo {
+  width: 280px;
+  height: 176px;
+  object-fit: contain;
+  border-radius: 4px;
+  background-color: #ffffff;
+}
+
+.supermarket-name {
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin-left: 1rem;
+  color: #374151;
+}
+
+/* Loading state styles */
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+}
+
+/* Scraping controls styles */
+.scraping-controls {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: #f3f4f6;
+  border-radius: 8px;
+}
+
+.scraping-button {
+  padding: 0.5rem 1rem;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.scraping-button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.scraping-button:hover:not(:disabled) {
+  background-color: #1d4ed8;
+}
+
+.scrape-result {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border-radius: 4px;
+}
+
+.scrape-result.success {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.scrape-result.error {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* Product list styles */
+.product-list {
+  margin-top: 2rem;
+}
+
+.supermarket-section {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.supermarket-section h3 {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.product-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.product-item:last-child {
+  border-bottom: none;
+}
+
+.product-name {
+  flex: 1;
+}
+
+.product-price {
+  font-weight: 500;
+  margin: 0 1rem;
+}
+
+.product-description {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
