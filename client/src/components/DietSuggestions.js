@@ -8,7 +8,7 @@ const DietSuggestions = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const profileState = useSelector((state) => state.profile);
-  const auth = useSelector((state) => state.auth); // Get auth state
+  const auth = useSelector((state) => state.auth);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState(null);
 
@@ -17,7 +17,6 @@ const DietSuggestions = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    // Fetch events when the profile is loaded
     if (profileState.profile && profileState.profile.userId) {
       dispatch(getAllEvents(profileState.profile.userId));
     }
@@ -66,7 +65,7 @@ const DietSuggestions = () => {
         .join(", "),
       start: start.toISOString(),
       end: end.toISOString(),
-      userId: auth.user._id, // Use auth user ID here
+      userId: auth.user._id,
     };
 
     const validation = validateFields(eventDetails);
@@ -81,11 +80,34 @@ const DietSuggestions = () => {
       alert("Event added to website calendar successfully!");
 
       // Fetch all events to update the calendar
-      dispatch(getAllEvents(auth.user._id)); // Ensure you are fetching with the correct user ID
+      dispatch(getAllEvents(auth.user._id));
+
+      // Ask if the user wants to add to Google Calendar
+      const addToGoogle = window.confirm(
+        "Do you want to add this event to Google Calendar?"
+      );
+      if (addToGoogle) {
+        handleGoogleCalendar(eventDetails);
+      }
     } catch (error) {
       console.error("Failed to add event to website calendar:", error);
       alert("Failed to add event to website calendar.");
     }
+  };
+
+  const handleGoogleCalendar = (eventDetails) => {
+    const { title, start, end, describe } = eventDetails;
+    const startDateTime = new Date(start).toISOString();
+    const endDateTime = new Date(end).toISOString();
+
+    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
+      title
+    )}&details=${encodeURIComponent(describe)}&dates=${startDateTime.replace(
+      /-|:|\.\d{3}/g,
+      ""
+    )}/${endDateTime.replace(/-|:|\.\d{3}/g, "")}&ctz=Asia/Singapore`;
+
+    window.open(url, "_blank");
   };
 
   const handleAddMeal = (meal) => {
@@ -93,7 +115,7 @@ const DietSuggestions = () => {
       breakfast: { start: "08:00", end: "09:00" },
       lunch: { start: "12:00", end: "13:00" },
       dinner: { start: "18:00", end: "19:00" },
-      snack: { start: "15:00", end: "15:30" }, // Add snack time
+      snack: { start: "15:00", end: "15:30" },
     };
 
     const mealTime = mealTimes[meal.meal.toLowerCase()];
