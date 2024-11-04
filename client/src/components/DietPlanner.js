@@ -40,10 +40,7 @@ const DietPlanner = () => {
           super: 1.9
         };
         
-        // Calculate base calories
         const baseCalories = calculatedBMR * activityMultipliers[profile.activityLevel || 'sedentary'];
-        
-        // Adjust calories based on diet plan
         const adjustedCalories = adjustCaloriesForPlan(baseCalories, profile.dietPlan, calculatedBMI);
         setDailyCalories(Math.round(adjustedCalories));
       }
@@ -107,144 +104,104 @@ const DietPlanner = () => {
     return displays[plan] || 'Not specified';
   };
 
+  const renderKeyMetrics = () => (
+    <div className="key-metrics-grid">
+      <div className="metric-card daily-calories-card">
+        <h3>Daily Calories</h3>
+        <div className="metric-value">{dailyCalories}</div>
+        <div className="metric-unit">calories/day</div>
+        <div className="metric-label">{getDietPlanDisplay(profile.dietPlan)}</div>
+      </div>
+      
+      <div className="metric-card bmi-card">
+        <h3>BMI</h3>
+        <div className="metric-value" style={{ color: getBMICategory(bmi)?.color }}>{bmi}</div>
+        <div className="metric-category">{getBMICategory(bmi)?.category}</div>
+        <div className="metric-label">{getBMICategory(bmi)?.recommendation}</div>
+      </div>
+
+      <div className="metric-card bmr-card">
+        <h3>BMR</h3>
+        <div className="metric-value">{bmr}</div>
+        <div className="metric-unit">calories/day</div>
+        <div className="metric-label">Base Metabolic Rate</div>
+      </div>
+    </div>
+  );
+
+  const renderMacronutrients = () => (
+    <div className="macros-container">
+      <h2>Daily Macronutrient Targets</h2>
+      <div className="macros-grid">
+        {Object.entries(getDietPlanMacros(profile.dietPlan)).map(([macro, percentage]) => (
+          <div key={macro} className={`macro-card ${macro}-card`}>
+            <div className="macro-header">
+              <h3>{macro.charAt(0).toUpperCase() + macro.slice(1)}</h3>
+              <span className="macro-percentage">{percentage}%</span>
+            </div>
+            <div className="macro-details">
+              <div className="macro-calories">
+                {calculateMacroCalories(dailyCalories, percentage)} cal
+              </div>
+              <div className="macro-grams">
+                {Math.round(calculateMacroCalories(dailyCalories, percentage) / (macro === 'fats' ? 9 : 4))}g
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   if (loading) {
     return <div className="diet-planner-loading">Loading...</div>;
   }
 
   return (
-    <div className="diet-planner-container">
-      <h1>Diet Planner</h1>
-      
-      {!profile?.height || !profile?.weight || !profile?.age || !profile?.gender ? (
-        <div className="diet-planner-alert">
-          <p>Please complete your profile with height, weight, age, and gender information to see your BMI and get diet recommendations.</p>
-          <Link to="/profile" className="update-profile-btn">Update Profile</Link>
+    <div className="page-wrapper">
+      <div className="diet-planner-container">
+        <div className="diet-planner-header">
+          <h1>Your Nutrition Dashboard</h1>
+          <div className="profile-stats">
+            <span>Height: {profile?.height}cm</span>
+            <span>Weight: {profile?.weight}kg</span>
+            <span>Activity: {getActivityLevelDisplay(profile?.activityLevel)}</span>
+          </div>
         </div>
-      ) : (
-        <>
-          <div className="bmi-container">
-            <h2>Your BMI Information</h2>
-            <div className="bmi-card">
-              <div className="bmi-value">
-                BMI: <span style={{ color: getBMICategory(bmi)?.color }}>{bmi}</span>
-              </div>
-              <div className="bmi-category" style={{ color: getBMICategory(bmi)?.color }}>
-                Category: {getBMICategory(bmi)?.category}
-              </div>
-              <div className="bmi-stats">
-                Height: {profile.height} cm<br />
-                Weight: {profile.weight} kg
-              </div>
-              <div className="bmi-recommendation">
-                {getBMICategory(bmi)?.recommendation}
-              </div>
-            </div>
-          </div>
 
-          <div className="metabolic-info">
-            <h2>Metabolic Information</h2>
-            <div className="metabolic-card">
-              <div className="bmr-value">
-                Basal Metabolic Rate (BMR): {bmr} calories/day
-              </div>
-              <div className="activity-display">
-                <label>Activity Level:</label>
-                <span>{getActivityLevelDisplay(profile.activityLevel)}</span>
-              </div>
-              <div className="daily-calories">
-                Daily Calorie Needs: {dailyCalories} calories/day
-                {profile.dietPlan && profile.dietPlan !== 'maintenance' && (
-                  <div className="calorie-adjustment-note">
-                    (Adjusted for {profile.dietPlan} plan)
-                  </div>
-                )}
-              </div>
-            </div>
+        {!profile?.height || !profile?.weight || !profile?.age || !profile?.gender ? (
+          <div className="profile-incomplete-alert">
+            <h2>Complete Your Profile</h2>
+            <p>Please update your profile with height, weight, age, and gender information to see your personalized nutrition plan.</p>
+            <Link to="/profile" className="update-profile-btn">Update Profile</Link>
           </div>
+        ) : (
+          <div className="dashboard-content">
+            {renderKeyMetrics()}
+            {renderMacronutrients()}
+            
+            <div className="additional-info">
+              {profile?.dietaryPreferences && (
+                <div className="preferences-card info-card">
+                  <h2>Dietary Preferences</h2>
+                  <p>{profile.dietaryPreferences}</p>
+                </div>
+              )}
 
-          <div className="diet-plan">
-            <h2>Your Diet Plan</h2>
-            <div className="diet-plan-card">
-              <div className="plan-display">
-                <label>Current Plan:</label>
-                <span>{getDietPlanDisplay(profile.dietPlan)}</span>
-              </div>
-              <div className="macros">
-                <h3>Recommended Macronutrient Split:</h3>
-                <div className="macros-breakdown">
-                  <div className="macro-item">
-                    <div className="macro-percentage">
-                      Carbohydrates: {getDietPlanMacros(profile.dietPlan).carbs}%
-                    </div>
-                    <div className="macro-calories">
-                      {calculateMacroCalories(dailyCalories, getDietPlanMacros(profile.dietPlan).carbs)} calories
-                      ({Math.round(calculateMacroCalories(dailyCalories, getDietPlanMacros(profile.dietPlan).carbs) / 4)}g)
-                    </div>
-                  </div>
-                  <div className="macro-item">
-                    <div className="macro-percentage">
-                      Proteins: {getDietPlanMacros(profile.dietPlan).protein}%
-                    </div>
-                    <div className="macro-calories">
-                      {calculateMacroCalories(dailyCalories, getDietPlanMacros(profile.dietPlan).protein)} calories
-                      ({Math.round(calculateMacroCalories(dailyCalories, getDietPlanMacros(profile.dietPlan).protein) / 4)}g)
-                    </div>
-                  </div>
-                  <div className="macro-item">
-                    <div className="macro-percentage">
-                      Fats: {getDietPlanMacros(profile.dietPlan).fats}%
-                    </div>
-                    <div className="macro-calories">
-                      {calculateMacroCalories(dailyCalories, getDietPlanMacros(profile.dietPlan).fats)} calories
-                      ({Math.round(calculateMacroCalories(dailyCalories, getDietPlanMacros(profile.dietPlan).fats) / 9)}g)
-                    </div>
+              {profile?.allergies && profile.allergies.length > 0 && (
+                <div className="allergies-card info-card">
+                  <h2>Allergies</h2>
+                  <div className="allergies-grid">
+                    {profile.allergies.map((allergy, index) => (
+                      <div key={index} className="allergy-tag">{allergy}</div>
+                    ))}
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
-
-          <div className="bmi-categories">
-            <h2>BMI Categories Reference</h2>
-            <div className="category-grid">
-              <div className="category-item" style={{ borderColor: '#FFA500' }}>
-                <h3>Underweight</h3>
-                <p>BMI less than 18.5</p>
-              </div>
-              <div className="category-item" style={{ borderColor: '#4CAF50' }}>
-                <h3>Normal Weight</h3>
-                <p>BMI 18.5 to 24.9</p>
-              </div>
-              <div className="category-item" style={{ borderColor: '#FF6B6B' }}>
-                <h3>Overweight</h3>
-                <p>BMI 25 to 29.9</p>
-              </div>
-              <div className="category-item" style={{ borderColor: '#FF0000' }}>
-                <h3>Obese</h3>
-                <p>BMI 30 or greater</p>
-              </div>
-            </div>
-          </div>
-
-          {profile?.dietaryPreferences && (
-            <div className="preferences-section">
-              <h2>Your Dietary Preferences</h2>
-              <p>{profile.dietaryPreferences}</p>
-            </div>
-          )}
-
-          {profile?.allergies && profile.allergies.length > 0 && (
-            <div className="allergies-section">
-              <h2>Allergies to Consider</h2>
-              <ul>
-                {profile.allergies.map((allergy, index) => (
-                  <li key={index}>{allergy}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </>
-      )}
+        )}
+      </div>
     </div>
   );
 };
