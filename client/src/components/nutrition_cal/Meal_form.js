@@ -43,6 +43,10 @@ const MealForm = ({userId}) => {
   // 处理输入变化
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    // if (name === 'portion' && value < 0) {
+    //   setMessage({ text: "Portion size cannot be negative", type: "error" });
+    //   return; // Do not update formData if value is negative
+    // }
     setFormData({
       ...formData,
       [name]: value,
@@ -135,6 +139,10 @@ const MealForm = ({userId}) => {
       };
     e.preventDefault();
     console.log("Form Data: ", formData);
+    if (formData.portion < 0) {
+      showMessage("Portion size cannot be negative.", "error");
+      return;  
+    }
     //const body = JSON.stringify({ owner,meal_type, food_taken, portion, time });
     
         try {
