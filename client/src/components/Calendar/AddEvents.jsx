@@ -155,13 +155,13 @@ const AddEvents = ({ auth, addEvent }) => {
 
           <div className="event-add">
             <div className="title"></div>
-            <div className="description">
+            <div className="description buttons-container">
               <button type="submit">Create</button>
-              <button type="button" onClick={handleCancel}>
-                Cancel
-              </button>
               <button type="button" onClick={handleGoogleCalendar}>
                 Add to Google Calendar
+              </button>
+              <button type="button" onClick={handleCancel}>
+                Cancel
               </button>
             </div>
           </div>

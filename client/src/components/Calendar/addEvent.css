@@ -21,33 +21,39 @@
   padding: 10px 0;
   font-weight: 600;
 }
+
 .description {
   width: 70%;
   padding: 10px 0;
   font-size: 20px;
 }
 
-.text {
-  padding-left: 20px;
+.buttons-container {
+  display: flex; /* Flex container for buttons */
+  justify-content: flex-start; /* Align buttons to the start */
 }
 
-.event-add button {
+.buttons-container button {
   margin-top: 20px;
-  margin-right: 60px;
+  margin-right: 20px; /* Adjust margin for spacing */
   background-color: darkgreen;
   font-size: 20px;
   font-weight: 600;
-  padding: 15px 40px;
+  padding: 15px 20px; /* Adjusted padding for buttons */
   border-radius: 10px;
   border: none;
   cursor: pointer;
 }
 
-.event-add button:active {
+.buttons-container button:last-child {
+  margin-right: 0; /* No right margin for the last button */
+}
+
+.buttons-container button:active {
   transform: scale(1.1);
 }
 
-.event-add button:hover {
+.buttons-container button:hover {
   background-color: lightgreen;
   color: darkgreen;
 }
