@@ -3,6 +3,7 @@
   padding: 2rem 1.2rem;
   max-width: 1200px;
   margin: 0 auto;
+  margin-top: 5rem; /* Adjust this value depending on your navbar height */
 }
 
 .diet-planner-container h1 {
@@ -43,7 +44,9 @@
 }
 
 /* Card containers */
-.bmi-container, .metabolic-info, .diet-plan {
+.bmi-container,
+.metabolic-info,
+.diet-plan {
   background-color: #fff;
   border-radius: 8px;
   padding: 1.5rem;
@@ -51,7 +54,9 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
-.bmi-card, .metabolic-card, .diet-plan-card {
+.bmi-card,
+.metabolic-card,
+.diet-plan-card {
   background-color: #f8f9fa;
   border-radius: 6px;
   padding: 1rem;
@@ -83,7 +88,8 @@
 }
 
 /* Form elements */
-.activity-selector, .plan-selector {
+.activity-selector,
+.plan-selector {
   margin: 0.8rem 0;
 }
 
@@ -103,7 +109,8 @@
 }
 
 /* Metabolic info styles */
-.bmr-value, .daily-calories {
+.bmr-value,
+.daily-calories {
   font-size: 1.1rem;
   font-weight: bold;
   color: #2e5e4e;
