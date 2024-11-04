@@ -3,7 +3,7 @@ import fairpriceLogo from '../img/fairprice-logo.jpg';
 import giantLogo from '../img/giant-logo.png';
 import coldstorageLogo from '../img/coldstorage-logo.png';
 import shengsiongLogo from '../img/shengsiong-logo.png';
-import amazonfreshLogo from '../img/amazonfresh-logo.png';
+import primeLogo from '../img/prime-logo.jpg';
 import moreLogo from '../img/more.png';
 import './DailyPriceList.css';
 
@@ -42,11 +42,11 @@ const SupermarketShowcase = () => {
       isClickable: true
     },
     {
-      id: "amazonfresh",
-      name: "Amazon Fresh",
+      id: "prime",
+      name: "Amazon Prime",
       url: "https://www.amazon.sg/",
-      description: "Convenient online grocery shopping with fresh and healthy options.",
-      logo: amazonfreshLogo,
+      description: "Fast delivery of groceries and fresh products right to your doorstep.",
+      logo: primeLogo,
       isClickable: true
     },
     {
