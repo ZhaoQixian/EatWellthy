@@ -2,9 +2,9 @@ import React, { Fragment } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-
 import { logout } from "../../actions/auth";
 import "./Navbar.css";
+
 const Navbar = ({ auth, logout }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,12 +18,6 @@ const Navbar = ({ auth, logout }) => {
 
   const authLinks = (
     <ul className="nav-links">
-      <li>
-        <Link to="/dashboard">
-          <i className="fas fa-user"></i>
-          <span className="hide-sm">Dashboard</span>
-        </Link>
-      </li>
       <li onClick={handleLogout}>
         <Link>
           <i className="fas fa-sign-out-alt"></i>{" "}
@@ -32,6 +26,7 @@ const Navbar = ({ auth, logout }) => {
       </li>
     </ul>
   );
+
   const guestLinks = (
     <ul className="nav-links">
       <li>
@@ -45,12 +40,25 @@ const Navbar = ({ auth, logout }) => {
 
   return (
     <nav className="navbar bg-dark">
-      <img
-        src="/favicon.ico"
-        width="40"
-        height="45"
-        style={{ marginRight: "-1000px" }}
-      ></img>
+      <div className="left-section">
+        <div className="icon-container">
+          <img
+            src="/favicon.ico"
+            width="35"
+            height="35"
+            style={{ marginRight: "-500px" }}
+            alt="Logo"
+          />
+        </div>
+        {auth.isAuthenticated && (
+          <li>
+            <Link to="/dashboard">
+              <i className="fas fa-user"></i>
+              <span className="hide-sm">Dashboard</span>
+            </Link>
+          </li>
+        )}
+      </div>
       <h1></h1>
       {!auth.loading && (
         <Fragment>
