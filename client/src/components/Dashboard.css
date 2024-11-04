@@ -1,15 +1,19 @@
+/* Dashboard Container Layout */
 .dashboard-container {
   display: flex;
-  height: (100vh-60px);
+  height: calc(100vh - 60px);
   margin-top: 60px;
   font-family: Arial, sans-serif;
 }
+
+/* Date Display */
 .date-display {
   font-size: 1rem;
   color: #666;
   margin-bottom: 20px;
 }
 
+/* Sidebar Styles */
 .sidebar {
   width: 250px;
   background-color: #f4f4f4;
@@ -23,6 +27,7 @@
   bottom: 0;
 }
 
+/* Wello Sidebar */
 .wellohbar {
   width: 250px;
   background-color: #2e5e4e;
@@ -36,9 +41,10 @@
   bottom: 0;
 }
 
+/* Profile Section */
 .profile-section {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 15px;  /* Reduced from 30px to 15px */
 }
 
 .user-avatar {
@@ -48,6 +54,7 @@
   margin-bottom: 10px;
 }
 
+/* Menu Styles */
 .menu {
   list-style: none;
   padding: 0;
@@ -55,40 +62,70 @@
 }
 
 .menu li {
-  margin: 10px 0;
+  margin: 5px 0;  /* Reduced from 10px to 5px */
   width: 100%;
 }
 
+/* Regular menu items */
 .menu li a {
   display: block;
-  padding: 10px;
+  padding: 15px;
   text-decoration: none;
   color: #333;
   background-color: #e9e9e9;
   text-align: center;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-}
-
-.menu li a.wellohli {
-  display: block;
-  padding: 15px;
-  text-decoration: none;
-  color: #fbeeee;
-  background-color: #2e5e4e;
-  text-align: center;
   border-radius: 8px;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
 }
 
 .menu li a:hover {
   background-color: #ccc;
 }
 
-.menu li a.wellohli:hover {
-  background-color: #0a3b2a;
+/* Rainbow Text Animation */
+@keyframes rainbow-text {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
 }
 
+.menu li a.wellohli {
+  position: relative;
+  background-color: #e9e9e9;
+  z-index: 1;
+}
+
+.menu li a.wellohli::before {
+  content: "Welloh";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: linear-gradient(
+    to right,
+    #ff0000,
+    #ff8000,
+    #ffff00,
+    #00ff00,
+    #0000ff,
+    #8000ff,
+    #ff0000
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: rainbow-text 3s linear infinite;
+}
+
+.menu li a.wellohli:hover {
+  background-color: #ccc;
+}
+
+/* Dashboard Content Area */
 .dashboard-content {
   flex-grow: 1;
   padding: 30px;
@@ -101,6 +138,7 @@
   margin-bottom: 20px;
 }
 
+/* Dashboard Sections */
 .dashboard-sections {
   display: flex;
   justify-content: space-between;
@@ -119,6 +157,7 @@
   margin-bottom: 10px;
 }
 
+/* Responsive Design */
 @media screen and (max-width: 768px) {
   .dashboard-sections {
     flex-direction: column;
@@ -128,6 +167,7 @@
     width: 100%;
     margin-bottom: 20px;
   }
+
   .dashboard-content {
     margin-left: 0;
     padding-top: 80px;

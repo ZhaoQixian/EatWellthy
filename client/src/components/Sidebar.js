@@ -47,13 +47,13 @@ const Sidebar = ({ user }) => {
           <Link to="/profile">Profile</Link>
         </li>
         <li>
-          <Link to={`/nutrition-calculator/${user && user.name}`}>Nutrition Calculator</Link>
+          <Link to={`/nutrition-calculator/${user && user.name}`}>Tracker</Link>
         </li>
         <li>
-          <Link to="/diet-planner">Diet Planner</Link>
+          <Link to="/diet-planner">Analysis</Link>
         </li>
         <li>
-          <Link to="/daily-price-list">Daily Price List</Link>
+          <Link to="/daily-price-list">Grocery</Link>
         </li>
         <li>
           <Link to="/calendar">Calendar</Link>
@@ -65,7 +65,7 @@ const Sidebar = ({ user }) => {
           <Link to="/location">Location</Link>
         </li>
         <li>
-          <Link to="/Welloh" className="wellohli">Talk to Welloh</Link>
+          <Link to="/Welloh" className="wellohli">Welloh</Link>
         </li>
       </ul>
     </div>

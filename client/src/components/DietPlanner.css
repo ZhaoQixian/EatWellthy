@@ -16,7 +16,7 @@
 .diet-planner__container {
   width: 100%;
   max-width: 900px;
-  margin: 80px auto 0;
+  margin: 20px auto 0;
   padding: 20px;
   background-color: white;
   border-radius: 12px;
@@ -260,8 +260,8 @@
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
   .diet-planner__container {
-    margin-top: 20px;
-    padding: 15px;
+    margin-top: 15px;
+    padding: 10px;
   }
 
   .diet-planner__title {
