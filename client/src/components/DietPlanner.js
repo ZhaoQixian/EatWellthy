@@ -162,7 +162,7 @@ const DietPlanner = () => {
       <div className="diet-planner__page-wrapper">
         <div className="diet-planner__container">
           <div className="diet-planner__header">
-            <h1 className="diet-planner__title">Your Nutrition Dashboard</h1>
+            <h1 className="diet-planner__title">Your Nutrition Analysis Report</h1>
             <div className="diet-planner__profile-stats">
               <span className="diet-planner__stat-item">Height: {profile?.height}cm</span>
               <span className="diet-planner__stat-item">Weight: {profile?.weight}kg</span>
@@ -210,4 +210,4 @@ const DietPlanner = () => {
   );
 };
 
-export default DietPlanner;
+export default DietPlanner; 
