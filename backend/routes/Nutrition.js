@@ -230,7 +230,7 @@ router.post(
         };
         let meals = [];
         if (meal_type === ""){
-          meals = await Meal_data.find(query_no_mealtype).sort({ meal_type: 1 });
+          meals = await Meal_data.find(query_no_mealtype).sort({ meal_type: -1 });
         } else {
           meals = await Meal_data.find(query) ;
         }

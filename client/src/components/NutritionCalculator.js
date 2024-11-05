@@ -1,5 +1,6 @@
 import React, { useState ,useCallback,useEffect} from 'react';
 import MealForm from './nutrition_cal/Meal_form';
+import RecentMeals from './nutrition_cal/Recent_meals';
 import FoodStored from './nutrition_cal/food_stored';
 import "./NutritionCalculator.css";
 import axios from 'axios';
@@ -16,7 +17,7 @@ const NutritionCalculator = ( ) => {
   const userId = params.userId;
   const username =params.username;
   console.log("userinfor" , params);
-   
+  let currentDate = new Date();
   console.log(username);
   console.log('userId',userId);
   const add_nutrition_infor2 = useCallback( 
@@ -85,13 +86,23 @@ const NutritionCalculator = ( ) => {
     setMessage({ text, type });
     setTimeout(() => setMessage({ text: "", type: "" }), 5000);
   };
+
+  useEffect(() => {
+    setFormType('recent_meal');  
+  }, []);
   return (
+    
     <div style={{paddingTop : "4rem",paddingLeft : "1.2rem" , paddingRight:"1.2rem"}}>
       <h1>NutritionCalculator</h1>
       <p>Hi,{ username} ! Welcome to the NutritionCalculator page!</p>
     
       <h3>Select an option:</h3>
+       
       <div id="food_meal_buttons" className="select">
+      <li id="recent_meal" onClick={() => {   setFormType('recentMeal'); 
+          window.location.reload()}}>
+          Recent meals
+        </li>
         <li id="add_food" onClick={() => setFormType('addFood')}>
           Add/Update a Food
         </li>
@@ -143,7 +154,10 @@ const NutritionCalculator = ( ) => {
         {formType === 'addMeal' && (
           <MealForm userId = {userId}/>
         )}
-
+        {formType === 'recent_meal' && (
+           
+          <RecentMeals userId={userId}  />
+        )}
         {formType === 'remove' && (
           <FoodStored/>
         )}

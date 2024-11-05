@@ -97,7 +97,7 @@ const MealForm = ({userId}) => {
       return;  
     }
     try {
-      console.log(formData);
+      console.log("formData",formData);
       const response = await axios.post("http://localhost:5050/nutrition/query_meal", formData );
       console.log(response.data);  
       if (response.data.success) {
@@ -178,6 +178,7 @@ const MealForm = ({userId}) => {
     showMessage("Failed to log meal. Please try again.");
   };
   }
+  
   return (
     <div>
       {message.text && (
