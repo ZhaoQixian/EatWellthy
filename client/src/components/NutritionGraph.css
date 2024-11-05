@@ -1,0 +1,10 @@
+.macro-info {
+  margin-top: 80px; /* Space between chart and text */
+  font-size: 16px; /* Set a readable font size */
+  color: #333; /* Dark color for readability */
+}
+
+.macro-info h3 {
+  font-size: 20px; /* Larger size for the heading */
+  margin-bottom: 10px; /* Space below the heading */
+}

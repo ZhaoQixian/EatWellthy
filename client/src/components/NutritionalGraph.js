@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useDispatch, useSelector } from "react-redux";
-import { getProfile, updateProfile } from "../actions/Profile";
+import { getProfile } from "../actions/Profile";
+import "./NutritionGraph.css";
 
 // Register the required elements with Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -65,10 +66,17 @@ const NutritionalGraph = () => {
       const dietPlan = profile.dietPlan || "maintenance";
       const macroSplit = getDietPlanMacros(dietPlan);
 
+      const carbsCal = calculateMacroCalories(dailyCalories, macroSplit.carbs);
+      const fatCal = calculateMacroCalories(dailyCalories, macroSplit.fats);
+      const proteinCal = calculateMacroCalories(
+        dailyCalories,
+        macroSplit.protein
+      );
+
       setMacroData({
-        carbs: calculateMacroCalories(dailyCalories, macroSplit.carbs),
-        fat: calculateMacroCalories(dailyCalories, macroSplit.fats),
-        protein: calculateMacroCalories(dailyCalories, macroSplit.protein),
+        carbs: carbsCal,
+        fat: fatCal,
+        protein: proteinCal,
       });
     }
   }, [dailyCalories, profile]);
@@ -92,6 +100,20 @@ const NutritionalGraph = () => {
   const hasCompleteProfile =
     profile?.height && profile?.weight && profile?.age && profile?.gender;
 
+  // Calculate the gram values for each macronutrient
+  const getMacroGrams = (calories, macro) => {
+    switch (macro) {
+      case "carbs":
+        return Math.round(calories / 4); // 4 calories per gram of carbohydrates
+      case "fat":
+        return Math.round(calories / 9); // 9 calories per gram of fat
+      case "protein":
+        return Math.round(calories / 4); // 4 calories per gram of protein
+      default:
+        return 0;
+    }
+  };
+
   const data = {
     labels: ["Carbohydrates", "Fat", "Protein"],
     datasets: [
@@ -111,7 +133,23 @@ const NutritionalGraph = () => {
           <p>Please update your profile to see your nutritional data.</p>
         </div>
       ) : (
-        <Doughnut data={data} />
+        <div>
+          <Doughnut data={data} />
+          <div className="macro-info">
+            <h3>Nutritional Information</h3>
+            <p>
+              Carbohydrates: {macroData.carbs} Cal (
+              {getMacroGrams(macroData.carbs, "carbs")}g)
+            </p>
+            <p>
+              Fat: {macroData.fat} Cal ({getMacroGrams(macroData.fat, "fat")}g)
+            </p>
+            <p>
+              Protein: {macroData.protein} Cal (
+              {getMacroGrams(macroData.protein, "protein")}g)
+            </p>
+          </div>
+        </div>
       )}
     </div>
   );
