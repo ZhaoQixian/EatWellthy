@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProfile, generateDietSuggestions } from "../actions/Profile";
 import { addEvent, getAllEvents } from "../actions/eventsActions";
-import './DietSuggestions.css';
+import "./DietSuggestions.css";
 
 const DietSuggestions = () => {
   const dispatch = useDispatch();
@@ -32,7 +32,9 @@ const DietSuggestions = () => {
         setError("Failed to generate diet plan. Please try again.");
       }
     } catch (err) {
-      setError(err.message || "An error occurred while generating the diet plan");
+      setError(
+        err.message || "An error occurred while generating the diet plan"
+      );
     } finally {
       setIsGenerating(false);
     }
@@ -80,15 +82,20 @@ const DietSuggestions = () => {
     }
 
     setIsAdding(true);
-    
+
     try {
-      if (mealType === 'wholeDay') {
+      if (mealType === "wholeDay") {
         // Create one event for whole day
         const mealTimes = getMealTimes();
         const fullDayEvent = {
           title: "Full Day Meal Plan",
           describe: profileState.profile.dietSuggestions
-            .map(meal => `${meal.meal}:\n${meal.items.map(item => `${item.food} - ${item.weight}`).join(", ")}`)
+            .map(
+              (meal) =>
+                `${meal.meal}:\n${meal.items
+                  .map((item) => `${item.food} - ${item.weight}`)
+                  .join(", ")}`
+            )
             .join("\n\n"),
           start: mealTimes.breakfast.start.toISOString(),
           end: mealTimes.dinner.end.toISOString(),
@@ -114,13 +121,18 @@ const DietSuggestions = () => {
         "Do you want to add this to Google Calendar as well?"
       );
       if (addToGoogle) {
-        if (mealType === 'wholeDay') {
+        if (mealType === "wholeDay") {
           // Create one Google Calendar event for whole day
           const mealTimes = getMealTimes();
           const fullDayEvent = {
             title: "Full Day Meal Plan",
             describe: profileState.profile.dietSuggestions
-              .map(meal => `${meal.meal}:\n${meal.items.map(item => `${item.food} - ${item.weight}`).join(", ")}`)
+              .map(
+                (meal) =>
+                  `${meal.meal}:\n${meal.items
+                    .map((item) => `${item.food} - ${item.weight}`)
+                    .join(", ")}`
+              )
               .join("\n\n"),
             start: mealTimes.breakfast.start.toISOString(),
             end: mealTimes.dinner.end.toISOString(),
@@ -142,9 +154,9 @@ const DietSuggestions = () => {
   const createEventDetails = (mealType) => {
     const mealTimes = getMealTimes();
     const timeSlot = mealTimes[mealType];
-    
+
     const selectedMeal = profileState.profile.dietSuggestions.find(
-      meal => meal.meal.toLowerCase() === mealType.toLowerCase()
+      (meal) => meal.meal.toLowerCase() === mealType.toLowerCase()
     );
 
     if (!selectedMeal) {
@@ -153,7 +165,9 @@ const DietSuggestions = () => {
 
     return {
       title: selectedMeal.meal,
-      describe: selectedMeal.items.map(item => `${item.food} - ${item.weight}`).join(", "),
+      describe: selectedMeal.items
+        .map((item) => `${item.food} - ${item.weight}`)
+        .join(", "),
       start: timeSlot.start.toISOString(),
       end: timeSlot.end.toISOString(),
       userId: auth.user._id,
@@ -163,7 +177,7 @@ const DietSuggestions = () => {
   const addSingleMealToCalendar = async (mealType) => {
     const eventDetails = createEventDetails(mealType);
     const validation = validateFields(eventDetails);
-    
+
     if (!validation.valid) {
       throw new Error(validation.message);
     }
@@ -202,108 +216,113 @@ const DietSuggestions = () => {
         </div>
       ) : (
         <div>
-          
-
-          {profileState.profile.dietSuggestions?.length > 0 ? (
-            <div className="space-y-4">
-              {profileState.profile.dietSuggestions.map((suggestion, index) => (
-                <div key={index} className="bg-white p-4 rounded shadow">
-                  <h3 className="font-bold text-lg text-blue-600">
-                    {suggestion.meal}
-                  </h3>
-                  <div className="mt-2">
-                    {suggestion.items.map((item, itemIndex) => (
-                      <div
-                        key={itemIndex}
-                        className="flex justify-between py-1"
-                      >
-                        <span>{item.food}</span>
-                        <span className="text-gray-600">{item.weight}</span>
+          <div className="space-y-4">
+            {profileState.profile.dietSuggestions?.length > 0 ? (
+              <div className="space-y-4">
+                {profileState.profile.dietSuggestions.map(
+                  (suggestion, index) => (
+                    <div key={index} className="bg-white p-4 rounded shadow">
+                      <h3 className="font-bold text-lg text-blue-600">
+                        {suggestion.meal}
+                      </h3>
+                      <div className="mt-2">
+                        {suggestion.items.map((item, itemIndex) => (
+                          <div
+                            key={itemIndex}
+                            className="flex justify-between py-1"
+                          >
+                            <span>{item.food}</span>
+                            <span className="text-gray-600">{item.weight}</span>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setShowDialog(true)}
-                  disabled={isAdding}
-                  className="diet-calendar-button"
-                  style={{width: 'auto'}}
-                >
-                  {isAdding ? 'Adding to Calendar...' : 'Add to Calendar'}
-                </button>
-                <button
-                  onClick={handleRefresh}
-                  disabled={isGenerating}
-                  className="diet-calendar-button"
-                  style={{width: 'auto'}}
-                >
-                  {isGenerating ? "Generating..." : "Generate New Plan"}
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="text-center py-4">
-              No diet suggestions available. Click "Generate New Plan" to create
-              your personalized diet plan.
-            </div>
-          )}
-
-          {/* Calendar Dialog */}
-          {showDialog && (
-            <div className="diet-modal-overlay">
-              <div className="diet-modal">
-                <div className="diet-modal-header">
-                  <h3>Add to Calendar</h3>
-                  <button className="diet-modal-close" onClick={() => setShowDialog(false)}>×</button>
-                </div>
-                <button 
-                  className="diet-calendar-button"
-                  onClick={() => addToWebsiteCalendar('wholeDay')}
-                  disabled={isAdding}
-                >
-                  Add All Meals
-                </button>
-                <button 
-                  className="diet-calendar-button"
-                  onClick={() => addToWebsiteCalendar('breakfast')}
-                  disabled={isAdding}
-                >
-                  Add Breakfast
-                </button>
-                <button 
-                  className="diet-calendar-button"
-                  onClick={() => addToWebsiteCalendar('lunch')}
-                  disabled={isAdding}
-                >
-                  Add Lunch
-                </button>
-                <button 
-                  className="diet-calendar-button"
-                  onClick={() => addToWebsiteCalendar('snack')}
-                  disabled={isAdding}
-                >
-                  Add Snack
-                </button>
-                <button 
-                  className="diet-calendar-button"
-                  onClick={() => addToWebsiteCalendar('dinner')}
-                  disabled={isAdding}
-                >
-                  Add Dinner
-                </button>
-                <div className="diet-modal-footer">
-                  <button 
-                    className="diet-modal-cancel"
-                    onClick={() => setShowDialog(false)}
+                    </div>
+                  )
+                )}
+                <div className="diet-button-container">
+                  <button
+                    onClick={() => setShowDialog(true)}
+                    disabled={isAdding}
+                    className="diet-calendar-button"
                   >
-                    Cancel
+                    {isAdding ? "Adding to Calendar..." : "Add to Calendar"}
+                  </button>
+                  <button
+                    onClick={handleRefresh}
+                    disabled={isGenerating}
+                    className="diet-calendar-button"
+                  >
+                    {isGenerating ? "Generating..." : "Generate New Plan"}
                   </button>
                 </div>
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="text-center py-4">
+                No diet suggestions available. Click "Generate New Plan" to
+                create your personalized diet plan.
+              </div>
+            )}
+
+            {/* Calendar Dialog */}
+            {showDialog && (
+              <div className="diet-modal-overlay">
+                <div className="diet-modal">
+                  <div className="diet-modal-header">
+                    <h3>Add to Calendar</h3>
+                    <button
+                      className="diet-modal-close"
+                      onClick={() => setShowDialog(false)}
+                    >
+                      ×
+                    </button>
+                  </div>
+                  <button
+                    className="diet-calendar-button"
+                    onClick={() => addToWebsiteCalendar("wholeDay")}
+                    disabled={isAdding}
+                  >
+                    Add All Meals
+                  </button>
+                  <button
+                    className="diet-calendar-button"
+                    onClick={() => addToWebsiteCalendar("breakfast")}
+                    disabled={isAdding}
+                  >
+                    Add Breakfast
+                  </button>
+                  <button
+                    className="diet-calendar-button"
+                    onClick={() => addToWebsiteCalendar("lunch")}
+                    disabled={isAdding}
+                  >
+                    Add Lunch
+                  </button>
+                  <button
+                    className="diet-calendar-button"
+                    onClick={() => addToWebsiteCalendar("snack")}
+                    disabled={isAdding}
+                  >
+                    Add Snack
+                  </button>
+                  <button
+                    className="diet-calendar-button"
+                    onClick={() => addToWebsiteCalendar("dinner")}
+                    disabled={isAdding}
+                  >
+                    Add Dinner
+                  </button>
+                  <div className="diet-modal-footer">
+                    <button
+                      className="diet-modal-cancel"
+                      onClick={() => setShowDialog(false)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
