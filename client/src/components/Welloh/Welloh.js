@@ -231,7 +231,7 @@ const Welloh = () => {
           <h1 className="faqs__title">Welloh</h1>
         </div>
         <div className="faq-item">
-          <h3>What is welloh?</h3>
+          <h3>What is Welloh?</h3>
           <p>
             Welloh , your personal health assistant
           </p>
