@@ -1,3 +1,4 @@
+/* Container for the progress tracker */
 .progress-tracker {
   display: flex;
   flex-direction: column;
@@ -6,8 +7,11 @@
   background-color: #f8f9fa;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px; /* Ensures tracker container has a fixed max-width */
 }
 
+/* Weight information */
 .weight-info {
   text-align: left;
   margin-bottom: 20px;
@@ -22,19 +26,20 @@
   gap: 8px;
 }
 
-/* Style for the label part */
+/* Style for label part */
 .weight-info p::before {
   content: attr(data-label);
-  color: #2e7d32; /* Updated to match diet modal green */
+  color: #2e7d32;
   font-weight: 600;
 }
 
-/* Style for the value part */
+/* Style for value part */
 .weight-info p span {
   color: #333;
   font-weight: 500;
 }
 
+/* Calorie information */
 .calorie-info {
   text-align: center;
   margin-top: 20px;
@@ -46,17 +51,21 @@
   color: #666;
 }
 
+/* Plan note */
 .plan-note {
   font-size: 0.9rem;
-  color: #2e7d32; /* Updated to match diet modal green */
+  color: #2e7d32;
 }
 
+/* Doughnut chart styling */
 .doughnut-chart {
-  margin: 20px 0;
   width: 100%;
-  max-width: 400px;
+  max-width: 300px; /* Sets a fixed max-width for the doughnut chart */
+  height: auto; /* Keeps the chart responsive */
+  margin: 20px 0;
 }
 
+/* Nutrition prompt */
 .nutrition-prompt {
   text-align: center;
   margin-top: 20px;
@@ -65,25 +74,67 @@
 .nutrition-prompt p {
   font-size: 1rem;
   color: #333;
-  margin-bottom: 10px; /* Space between text and button */
+  margin-bottom: 10px;
 }
 
 .nutrition-prompt button {
-  background-color: #4caf50; /* Green background */
-  color: white; /* White text */
-  font-size: 1rem; /* Adjusted font size */
-  font-weight: bold; /* Bold for emphasis */
-  padding: 12px 25px; /* Space around text */
-  border-radius: 8px; /* Rounded corners */
-  border: none; /* No border */
-  cursor: pointer; /* Pointer cursor */
-  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transition */
+  background-color: #4caf50;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 12px 25px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .nutrition-prompt button:hover {
-  background-color: #45a049; /* Slightly darker green on hover */
+  background-color: #45a049;
 }
 
 .nutrition-prompt button:active {
-  transform: scale(0.98); /* Slight shrink on click */
+  transform: scale(0.98);
+}
+
+/* Responsive adjustments for screens 768px and below */
+@media (max-width: 768px) {
+  .progress-tracker {
+    padding: 10px;
+    width: 90%;
+  }
+
+  .weight-info p {
+    font-size: 0.8rem;
+  }
+
+  .doughnut-chart {
+    max-width: 250px; /* Shrinks chart slightly on smaller screens */
+  }
+
+  .nutrition-prompt button {
+    font-size: 0.85rem;
+    padding: 8px 16px;
+  }
+}
+
+/* Responsive adjustments for screens 480px and below */
+@media (max-width: 480px) {
+  .progress-tracker {
+    padding: 8px;
+    width: 95%;
+  }
+
+  .weight-info p {
+    font-size: 0.75rem;
+  }
+
+  .doughnut-chart {
+    max-width: 200px; /* Smaller chart for very small screens */
+  }
+
+  .nutrition-prompt button {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+  }
 }
