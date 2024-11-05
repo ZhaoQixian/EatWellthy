@@ -43,7 +43,7 @@ function App() {
           />
           <Route path="/profile" element={<PrivateRoute element={Profile} />} />
           <Route
-            path="/nutrition-calculator/:username"
+            path="/nutrition-calculator/:userId/:username"
             element={<NutritionCalculator />}
           />
           <Route path="/log-meal" element={<LogMeal />} />

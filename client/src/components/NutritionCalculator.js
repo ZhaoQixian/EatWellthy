@@ -3,7 +3,7 @@ import MealForm from './nutrition_cal/Meal_form';
 import FoodStored from './nutrition_cal/food_stored';
 import "./NutritionCalculator.css";
 import axios from 'axios';
-import { connect ,useSelector} from "react-redux";
+import { connect  } from "react-redux";
 import {useParams} from 'react-router-dom';
 
  
@@ -12,10 +12,11 @@ const NutritionCalculator = ( ) => {
   // 使用状态管理当前选择的表单类型
   const [formType, setFormType] = useState(null);
   const [message, setMessage] = useState({ text: "", type: "" });
-  let { username } = useParams();
-  const authState = useSelector((state) => state.auth);
-  console.log('_authstate:',authState.user._id);
-  const userId = authState.user._id;
+  const params = useParams();
+  const userId = params.userId;
+  const username =params.username;
+  console.log("userinfor" , params);
+   
   console.log(username);
   console.log('userId',userId);
   const add_nutrition_infor2 = useCallback( 
@@ -23,7 +24,7 @@ const NutritionCalculator = ( ) => {
       dispatch.preventDefault();
       console.log("Called add_nutrition_infor2");
       // get the values from form
-      const name = document.getElementById("name").value || null;
+      const name = document.getElementById("name").value;
       const owner = userId;
       const energy = document.getElementById("food_energy").value || null;
       const  fat = document.getElementById("food_fat").value || null;
@@ -34,29 +35,49 @@ const NutritionCalculator = ( ) => {
       const vitamin_c = document.getElementById("food_vc").value || null;
       const calcium =document.getElementById("food_calcium").value || null;
       const iron = document.getElementById("food_iron").value || null;
-      console.log('owner: ',owner);
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-      const body = JSON.stringify({ name, owner, energy, fat, 
-        sugar, fiber, protein, sodium, vitamin_c, calcium, iron });
-      console.log(body);
-      console.log(body.owner);
-      try {
-        const res = await axios.post(
-          "http://localhost:5050/nutrition/add",
-          body,
-          config
-        );
-        console.log(res);
-        showMessage("Food added successfully!");
-      } catch (err) {
-        console.error("Food addition Error: ", err); 
-        showMessage("Food addition Error: " + err.message);
+      console.log(!(energy === null || energy.trim() === "" ));
+      if (name === null || name.trim() === ""){
+        showMessage("Please enter a name for the food");
+        
       }
+      else if (!(energy === null || energy.trim() === "" )||
+        !(fat === null || fat.trim() === "" )||
+        !(sugar === null || sugar.trim() === "" )||
+        !(fiber === null || fiber.trim() === "" )||
+        !(protein === null || protein.trim() === "" )||
+        !(sodium === null || sodium.trim() === "" )||
+        !(vitamin_c === null || vitamin_c.trim() === "" )||
+        !(calcium === null || calcium.trim() === "") ||
+        !(iron === null || iron.trim() === "")){
+          console.log('owner: ',owner);
+        const config = {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
+        const body = JSON.stringify({ name, owner, energy, fat, 
+          sugar, fiber, protein, sodium, vitamin_c, calcium, iron });
+        console.log(body);
+        console.log(body.owner);
+        try {
+          const res = await axios.post(
+            "http://localhost:5050/nutrition/add",
+            body,
+            config
+          );
+          console.log(res);
+          showMessage("Food added successfully!");
+        } catch (err) {
+          console.error("Food addition Error: ", err); 
+          showMessage("Food addition Error: " + err.message);
+        }
+      }
+      else{
+        showMessage("Please enter the nutrition values for the food");
+        
 
+      }
+      
     }
   )
   ;
@@ -98,7 +119,7 @@ const NutritionCalculator = ( ) => {
           <div className="add_food_form">
             <form id="add_food_form" onSubmit={add_nutrition_infor2}>
               <h3>Provide the following data for your food to add it to the registry:</h3>
-              <p>Name: <input type="text" id="name" name='name' autoComplete="off" /></p>
+              <p>Name: <input type="text" id="name" name='name' autoComplete="off" required/></p>
               <p>Unit of Measurement: <input type="text" id="food_measurement_unit" autoComplete="off" /></p>
               <p>Serving Size: <input type="text" id="food_serving_size" autoComplete="off" /></p>
               <p>Energy (in kcal): <input type="text" id="food_energy" autoComplete="off" /></p>

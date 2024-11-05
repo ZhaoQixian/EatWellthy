@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { connect ,useSelector} from "react-redux";
- 
- 
+import { connect  } from "react-redux";
+import {useParams} from 'react-router-dom';
+
 
 const FoodStored = () => {
   const [foodList, setFoodList] = useState([]);
+  
    
    
-   
-  const authState = useSelector((state) => state.auth);
-  console.log('_authstate:',authState.user._id);
-  const userId = authState.user._id;
+  const params = useParams();
+  const userId = params.userId;
+  const username =params.username;
    
   useEffect(() => {
     
