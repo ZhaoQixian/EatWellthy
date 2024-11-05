@@ -59,6 +59,7 @@ const FoodStored = () => {
     <div>
       <h2>Food List</h2>
       <h4>Please note that system owned data cannot be deleted</h4>
+      <div style =  {{ overflowX: "auto", width: "100%" }}>
       <table>
         <thead>
           <tr>
@@ -95,6 +96,7 @@ const FoodStored = () => {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 };
