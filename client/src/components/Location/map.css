@@ -69,3 +69,25 @@ code {
   color: gray;
   font-weight: 100;
 }
+
+.locate {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.locate img {
+  width: 60px;
+  cursor: pointer;
+  filter: none;  /* Ensures no color filters are applied */
+  -webkit-filter: none;  /* For Safari support */
+}
+
+.locate img:hover {
+  transform: scale(1.1);  /* Optional: adds a slight zoom effect on hover */
+  transition: transform 0.2s ease;
+}
