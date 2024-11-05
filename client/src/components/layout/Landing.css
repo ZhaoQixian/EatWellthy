@@ -1,0 +1,89 @@
+/* Landing Page Styles */
+.landing {
+  height: calc(
+    100vh - 60px
+  ); /* Full height for the landing section minus navbar height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-top: 60px; /* Space below fixed navbar */
+}
+
+.dark-overlay {
+  background: rgba(0, 0, 0, 0.6); /* Dark overlay for contrast */
+  padding: 40px; /* Padding for the overlay */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Shadow for depth */
+}
+
+.landing-inner {
+  position: relative;
+  z-index: 1; /* Ensure text is above the overlay */
+}
+
+/* Header Styles */
+h1 {
+  font-size: 4rem; /* Increase font size */
+  font-family: "Montserrat", sans-serif; /* Modern font */
+  color: #fff; /* Light color for text */
+  letter-spacing: 1px; /* Space between letters */
+  animation: fadeIn 1s ease-out; /* Animation for entrance effect */
+}
+
+/* Keyframes for fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Button Container Styles */
+.buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center; /* Center the buttons within the container */
+  gap: 30px; /* Space between buttons */
+  padding: 10px; /* Add padding for a more spacious feel */
+  width: 100%; /* Make the button container full width */
+  max-width: 600px; /* Limit the maximum width to prevent stretching too far */
+  margin-left: auto; /* Center the container */
+  margin-right: auto; /* Center the container */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Optional shadow for depth */
+  border-radius: 10px; /* Optional rounded corners for aesthetics */
+}
+
+/* Individual Button Styles */
+.btn {
+  padding: 15px 30px; /* Increase button padding for a larger clickable area */
+  font-size: 1rem; /* Adjust font size */
+  border: none; /* Ensure no border for a cleaner look */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Change cursor to pointer */
+  transition: background-color 0.3s ease; /* Smooth background change on hover */
+}
+
+.btn:hover {
+  background-color: rgba(255, 255, 255, 0.2); /* Light hover effect */
+}
+
+/* Responsive Layout */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.5rem; /* Adjust heading size for smaller screens */
+  }
+
+  .dark-overlay {
+    padding: 20px; /* Add padding for smaller screens */
+  }
+
+  .landing {
+    height: calc(
+      100vh - 50px
+    ); /* Adjust height for smaller screens if necessary */
+  }
+}
