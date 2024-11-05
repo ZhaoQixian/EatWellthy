@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loadUser } from "./actions/auth";
+import RecentMeals from "./components/nutrition_cal/Recent_meals"; // Add this import
 
 import "./App.css";
 import Navbar from "./components/layout/Navbar";
@@ -69,9 +70,14 @@ function App() {
             element={<PrivateRoute element={() => withLayout(Profile)} />}
           />
           <Route
-  path="/nutrition-calculator"
-  element={<PrivateRoute element={() => withLayout(NutritionCalculator)} />}
-/>
+            path="/nutrition-calculator"
+            element={<PrivateRoute element={() => withLayout(NutritionCalculator)} />}
+          />
+          {/* Add this new route */}
+          <Route
+            path="/recent-meals"
+            element={<PrivateRoute element={() => withLayout(RecentMeals)} />}
+          />
           <Route path="/log-meal" element={withLayout(LogMeal)} />
           <Route path="/diet-planner" element={withLayout(DietPlanner)} />
           <Route
@@ -92,7 +98,6 @@ function App() {
             element={<PrivateRoute element={() => withLayout(UpdateEvent)} />}
           />
           <Route path="/nutrition" element={<NutritionixAPI />} />
-
           <Route path="/faqs" element={withLayout(FAQs)} />
           <Route path="/location" element={<Location />} />
           <Route path="*" element={<NotFound />} />
