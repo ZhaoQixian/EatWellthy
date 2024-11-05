@@ -1,3 +1,4 @@
+/* Diet Modal Overlay */
 .diet-modal-overlay {
   position: fixed;
   top: 0;
@@ -11,14 +12,18 @@
   z-index: 1000;
 }
 
+/* Diet Modal Styling */
 .diet-modal {
   background: white;
   padding: 20px;
   border-radius: 8px;
-  width: 300px;
+  width: 90%; /* Use 90% of screen width on smaller screens */
+  max-width: 400px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  font-family: "Arial", sans-serif;
 }
 
+/* Diet Modal Header */
 .diet-modal-header {
   display: flex;
   justify-content: space-between;
@@ -33,10 +38,11 @@
   font-size: 20px;
 }
 
+/* Diet Calendar Button Styling */
 .diet-calendar-button {
   width: 100%;
-  padding: 8px 12px; /* Smaller padding */
-  margin: 5px 0; /* Smaller margin */
+  padding: 8px 12px;
+  margin: 5px 0;
   background: #4caf50;
   border: none;
   border-radius: 4px;
@@ -44,7 +50,7 @@
   text-align: center;
   color: white;
   font-weight: bold;
-  font-size: 14px; /* Smaller font */
+  font-size: 14px;
   transition: background-color 0.2s;
 }
 
@@ -57,6 +63,7 @@
   cursor: not-allowed;
 }
 
+/* Diet Modal Footer */
 .diet-modal-footer {
   margin-top: 15px;
   display: flex;
@@ -77,54 +84,39 @@
   background: #666666;
 }
 
+/* Diet Button Container */
 .diet-button-container {
   display: flex;
-  flex-direction: column; /* Stacks buttons vertically */
-  gap: 10px; /* Adds space between buttons */
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
 }
 
-/* Updated styling for the meal items */
+/* Updated Meal Item Styling */
 h3 {
   font-size: 18px;
-  color: #388e3c; /* A deeper blue for better contrast */
-  margin-bottom: 8px; /* Adds space under the meal title */
+  color: #388e3c;
+  margin-bottom: 8px;
 }
 
 .text-gray-600 {
-  color: #6b7280; /* Updated gray color for a softer look */
-  font-size: 14px; /* Slightly smaller font for the description */
-  line-height: 1.4; /* Increased line height for better readability */
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.4;
 }
 
 .flex-1 {
-  font-size: 16px; /* More consistent font size for the food item */
-  font-weight: 500; /* Medium weight to make the food item stand out */
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .bg-white {
-  border: 1px solid #e5e7eb; /* Adds a subtle border for better distinction */
-  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1); /* Soft shadow for a lifted look */
-  padding: 15px; /* Adjust padding for more comfortable spacing */
+  border: 1px solid #e5e7eb;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 15px;
 }
 
-.diet-button-container {
-  display: flex;
-  flex-direction: column; /* Stacks buttons vertically */
-  gap: 10px; /* Adds space between buttons */
-  margin-top: 15px; /* Adds a bit more space above the button container */
-}
-
-.diet-modal {
-  max-width: 400px; /* Increases width for a less cramped modal */
-  font-family: "Arial", sans-serif; /* Uses a clean and readable font */
-}
-
-.diet-modal-header h3 {
-  font-size: 20px; /* Larger header for better emphasis */
-  color: #333; /* Darker text for better readability */
-  margin: 0; /* Removes default margin for cleaner layout */
-}
-
+/* Modal Responsive Styles */
 .modal {
   position: fixed;
   top: 0;
@@ -135,36 +127,63 @@ h3 {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000; /* Ensure it's above other content */
+  z-index: 1000;
 }
 
 .modal-content {
   background: white;
   padding: 20px;
   border-radius: 8px;
-  width: 300px;
+  width: 90%; /* Fit smaller screens */
+  max-width: 400px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Styles for buttons in modal */
 .modal-content button {
-  width: 100%; /* Makes the buttons full width */
+  width: 100%;
   padding: 8px 12px;
-  background: #4caf50; /* Green background */
+  background: #4caf50;
   border: none;
   border-radius: 4px;
   color: white;
   cursor: pointer;
   font-size: 14px;
-  margin: 5px 0; /* Space between buttons */
+  margin: 5px 0;
   transition: background-color 0.2s;
 }
 
 .modal-content button:hover {
-  background: #45a049; /* Darker green on hover */
+  background: #45a049;
 }
 
 .modal-content button:disabled {
-  background: #808080; /* Disabled button color */
+  background: #808080;
   cursor: not-allowed;
+}
+
+/* Responsive Adjustments for Smaller Screens */
+@media screen and (max-width: 480px) {
+  .diet-modal,
+  .modal-content {
+    padding: 15px; /* Reduce padding */
+    width: 95%; /* Make the modal almost full-width */
+  }
+
+  .diet-calendar-button,
+  .diet-modal-cancel {
+    font-size: 13px; /* Adjust font size for better fit */
+    padding: 6px 10px; /* Smaller padding */
+  }
+
+  .diet-modal-header h3 {
+    font-size: 18px; /* Adjust title size for mobile */
+  }
+
+  h3 {
+    font-size: 16px; /* Smaller font for headers */
+  }
+
+  .text-gray-600 {
+    font-size: 13px; /* Slightly smaller font */
+  }
 }
