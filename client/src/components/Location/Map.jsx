@@ -6,9 +6,7 @@ import {
   InfoWindowF,
   CircleF,
 } from "@react-google-maps/api";
-
 import { Search, getAddress, getStoreList } from "./mapUtility";
-// import "@reach/combobox/styles.css";
 import mapStyles from "./mapStyles";
 import "./map.css";
 
@@ -17,8 +15,14 @@ const mapContainerStyle = {
   height: "100%",
   width: "100%",
 };
+
+const defaultCenter = {
+  lat: 1.29027, // Singapore default coordinates
+  lng: 103.851959,
+};
+
 const options = {
-  // styles: mapStyles,
+  styles: mapStyles,
   disableDefaultUI: true,
   zoomControl: true,
 };
@@ -28,9 +32,11 @@ const Map = ({ clickData, setStoreList, storeList }) => {
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries,
   });
+
   const [selected, setSelected] = useState(null);
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState(defaultCenter);
   const [address, setAddress] = useState(null);
+  const mapRef = useRef();
 
   const circleOptions = {
     strokeColor: "#90daee",
@@ -42,102 +48,107 @@ const Map = ({ clickData, setStoreList, storeList }) => {
     draggable: false,
     editable: false,
     visible: true,
-    radius: 1000, // Radius in meters
+    radius: 1000,
     center: location,
   };
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        console.log("Position is", position);
-        setLocation({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
-
-        getAddress(position.coords.latitude, position.coords.longitude)
-          .then((res) => setAddress({ ...res.data.address }))
-          .catch((err) => {
-            console.error(err);
-          });
-      },
-      () => null
-    );
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const newLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          setLocation(newLocation);
+          updateAddress(newLocation.lat, newLocation.lng);
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+          setLocation(defaultCenter);
+          updateAddress(defaultCenter.lat, defaultCenter.lng);
+        }
+      );
+    }
   }, []);
 
   useEffect(() => {
-    getAddress(location.lat, location.lng)
-      .then((res) => setAddress({ ...res.data.address }))
-      .catch((err) => {
-        console.error(err);
-      });
+    if (location) {
+      updateAddress(location.lat, location.lng);
+      updateStoreList();
+    }
   }, [location]);
 
   useEffect(() => {
-    if (clickData !== "") {
-      // console.log("DATA", clickData);
+    if (clickData) {
       setSelected(clickData);
     }
   }, [clickData]);
 
-  useEffect(() => {
-    getStoreList(location)
-      .then((data) => setStoreList(data))
-      .catch((err) => console.error(err));
-  }, [location]);
+  const updateAddress = async (lat, lng) => {
+    try {
+      const res = await getAddress(lat, lng);
+      setAddress(res.data.address);
+    } catch (err) {
+      console.error("Error fetching address:", err);
+    }
+  };
+
+  const updateStoreList = async () => {
+    try {
+      const data = await getStoreList(location);
+      setStoreList(data);
+    } catch (err) {
+      console.error("Error fetching stores:", err);
+    }
+  };
 
   const onMapClick = useCallback((e) => {
-    // console.log("Click", e.latLng);
-
-    setLocation({
+    const newLocation = {
       lat: e.latLng.lat(),
       lng: e.latLng.lng(),
-    });
-    panTo({
-      lat: e.latLng.lat(),
-      lng: e.latLng.lng(),
-    });
+    };
+    setLocation(newLocation);
+    panTo(newLocation);
   }, []);
 
-  const mapRef = useRef();
   const onMapLoad = useCallback((map) => {
     mapRef.current = map;
   }, []);
 
   const panTo = useCallback(({ lat, lng }) => {
-    if (lat !== "" && lng !== "") {
+    if (mapRef.current && lat && lng) {
       mapRef.current.panTo({ lat, lng });
       mapRef.current.setZoom(15);
     }
   }, []);
 
-  const Locate = () => {
-    return (
-      <div
+  const Locate = () => (
+    <div className="locate">
+      <img 
+        src={require("./compass.png")} 
+        alt="compass" 
         onClick={() => {
           navigator.geolocation.getCurrentPosition(
             (position) => {
-              panTo({
+              const newLocation = {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude,
-              });
-              setLocation({
-                lat: position.coords.latitude,
-                lng: position.coords.longitude,
-              });
-              // console.log(address);
+              };
+              panTo(newLocation);
+              setLocation(newLocation);
             },
-            () => null
+            (error) => {
+              console.error("Error getting location:", error);
+            }
           );
         }}
-      >
-        <img src={require("./compass.png")} alt="compass" />
-      </div>
-    );
-  };
+      />
+    </div>
+  );
 
-  if (loadError) return "Error";
-  if (!isLoaded) return "Loading...";
+  if (loadError) return <div>Error loading maps</div>;
+  if (!isLoaded) return <div>Loading maps...</div>;
 
   return (
     <div className="wrapper">
@@ -149,15 +160,18 @@ const Map = ({ clickData, setStoreList, storeList }) => {
         onClick={onMapClick}
         onLoad={onMapLoad}
       >
-        <MarkerF
-          position={location}
-          icon={{
-            url: "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
-            origin: new window.google.maps.Point(0, 0),
-            anchor: new window.google.maps.Point(30, 30),
-            scaledSize: new window.google.maps.Size(60, 60),
-          }}
-        />
+        {location && (
+          <MarkerF
+            position={location}
+            icon={{
+              url: "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
+              origin: new window.google.maps.Point(0, 0),
+              anchor: new window.google.maps.Point(30, 30),
+              scaledSize: new window.google.maps.Size(60, 60),
+            }}
+          />
+        )}
+
         {storeList?.map((item, index) => (
           <MarkerF
             key={index}
@@ -165,9 +179,7 @@ const Map = ({ clickData, setStoreList, storeList }) => {
               lat: Number(item.geometry.location.lat),
               lng: Number(item.geometry.location.lng),
             }}
-            onClick={() => {
-              setSelected(item);
-            }}
+            onClick={() => setSelected(item)}
             icon={{
               url: require("./grocery.png"),
               origin: new window.google.maps.Point(0, 0),
@@ -179,42 +191,36 @@ const Map = ({ clickData, setStoreList, storeList }) => {
 
         <CircleF options={circleOptions} />
 
-        {selected ? (
+        {selected && (
           <InfoWindowF
             position={{
-              lat: selected.geometry.location.lat,
-              lng: selected.geometry.location.lng,
+              lat: Number(selected.geometry.location.lat),
+              lng: Number(selected.geometry.location.lng),
             }}
-            onCloseClick={() => {
-              setSelected(null);
-            }}
+            onCloseClick={() => setSelected(null)}
           >
             <div style={{ fontSize: "16px", fontWeight: "600" }}>
               {selected.name}
             </div>
           </InfoWindowF>
-        ) : null}
-        <div className="locate">
-          <Locate />
-        </div>
+        )}
+
+        <Locate />
+        
         <div className="search">
           <Search panTo={panTo} setLocation={setLocation} />
         </div>
 
-        {address !== null ? (
+        {address && (
           <div className="address">
             <div>
-              <span style={{ fontWeight: 800, fontSize: 20 }}>
-                Current Address
-              </span>
+              <span>Current Address</span>
               <br />
               {address.house_number} {address.road} {address.shop}
               <br />
               {address.postcode} {address.city}
             </div>
           </div>
-        ) : (
-          ""
         )}
       </GoogleMap>
     </div>
