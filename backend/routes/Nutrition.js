@@ -221,9 +221,20 @@ router.post(
             $lt: endOfDay  
           }
         };
-  
-         
-        const meals = await Meal_data.find(query);
+        const query_no_mealtype = {
+          owner: hashedowner,
+          time: {
+            $gte: startOfDay,  // between start and end of day
+            $lt: endOfDay  
+          }
+        };
+        let meals = [];
+        if (meal_type === ""){
+          meals = await Meal_data.find(query_no_mealtype).sort({ meal_type: -1 });
+        } else {
+          meals = await Meal_data.find(query) ;
+        }
+      
         
         if (meals.length > 0) {
           const mealsWithNutrition = await Promise.all(meals.map(async (meal) => {
