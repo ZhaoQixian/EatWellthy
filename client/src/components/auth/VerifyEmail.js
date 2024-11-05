@@ -1,18 +1,23 @@
 // client/src/components/auth/VerifyEmail.js
 
-import React, { useState } from 'react';
-import { connect } from 'react-redux';
-import { Link, Navigate, useLocation } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { verifyEmail, resendVerification } from '../../actions/auth';
-import { setAlert } from '../../actions/alert';
-import Alert from '../layout/Alert';
+import React, { useState } from "react";
+import { connect } from "react-redux";
+import { Link, Navigate, useLocation } from "react-router-dom";
+import PropTypes from "prop-types";
+import { verifyEmail, resendVerification } from "../../actions/auth";
+import { setAlert } from "../../actions/alert";
+import Alert from "../layout/Alert";
 
-const VerifyEmail = ({ verifyEmail, resendVerification, setAlert, isAuthenticated }) => {
+const VerifyEmail = ({
+  verifyEmail,
+  resendVerification,
+  setAlert,
+  isAuthenticated,
+}) => {
   const location = useLocation();
   const [formData, setFormData] = useState({
-    email: location.state?.email || '',
-    code: ''
+    email: location.state?.email || "",
+    code: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -20,13 +25,13 @@ const VerifyEmail = ({ verifyEmail, resendVerification, setAlert, isAuthenticate
 
   const { email, code } = formData;
 
-  const onChange = e =>
+  const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const onSubmit = async e => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     if (!email || !code) {
-      return setAlert('Please fill in all fields', 'danger');
+      return setAlert("Please fill in all fields", "danger");
     }
     setLoading(true);
     try {
@@ -35,33 +40,34 @@ const VerifyEmail = ({ verifyEmail, resendVerification, setAlert, isAuthenticate
         setVerified(true);
       }
     } catch (err) {
-      console.error('Verification error:', err);
+      console.error("Verification error:", err);
     }
     setLoading(false);
   };
 
   const handleResendCode = async () => {
     if (!email) {
-      return setAlert('Please enter your email address', 'danger');
+      return setAlert("Please enter your email address", "danger");
     }
     setLoading(true);
     try {
       await resendVerification(email);
     } catch (err) {
-      console.error('Resend error:', err);
+      console.error("Resend error:", err);
     }
     setLoading(false);
   };
 
   if (verified) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/dashboard" />;
   }
 
   return (
     <div className="register-form">
       <h1 className="heading">Verify Your Email</h1>
       <p className="lead">
-        <i className="fas fa-envelope"></i> Enter the verification code sent to your email
+        <i className="fas fa-envelope"></i> Enter the verification code sent to
+        your email
       </p>
       <Alert />
       <form className="form" onSubmit={onSubmit}>
@@ -99,7 +105,7 @@ const VerifyEmail = ({ verifyEmail, resendVerification, setAlert, isAuthenticate
           className="btn btn-light"
           onClick={handleResendCode}
           disabled={loading}
-          style={{ marginLeft: '10px' }}
+          style={{ marginLeft: "10px" }}
         >
           Resend Code
         </button>
@@ -115,14 +121,15 @@ VerifyEmail.propTypes = {
   verifyEmail: PropTypes.func.isRequired,
   resendVerification: PropTypes.func.isRequired,
   setAlert: PropTypes.func.isRequired,
-  isAuthenticated: PropTypes.bool
+  isAuthenticated: PropTypes.bool,
 };
 
-const mapStateToProps = state => ({
-  isAuthenticated: state.auth.isAuthenticated
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
 });
 
-export default connect(
-  mapStateToProps,
-  { verifyEmail, resendVerification, setAlert }
-)(VerifyEmail);
+export default connect(mapStateToProps, {
+  verifyEmail,
+  resendVerification,
+  setAlert,
+})(VerifyEmail);
