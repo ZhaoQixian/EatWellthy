@@ -3,13 +3,15 @@ import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useDispatch, useSelector } from "react-redux";
 import { getProfile } from "../actions/Profile";
+import { useNavigate } from "react-router-dom"; // useNavigate instead of useHistory
 import "./ProgressTracker.css"; // Import the CSS file
 
-// Register the required elements with Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const ProgressTracker = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // Using useNavigate
+
   const { profile, loading } = useSelector((state) => state.profile);
   const [bmi, setBmi] = useState(null);
   const [bmr, setBmr] = useState(null);
@@ -80,7 +82,7 @@ const ProgressTracker = () => {
     }
   }, [profile]);
 
-  const [caloriesConsumed, setCaloriesConsumed] = useState(1350); // Placeholder value
+  const [caloriesConsumed, setCaloriesConsumed] = useState(1350);
   const caloriesRemaining = dailyCalories
     ? Math.max(dailyCalories - caloriesConsumed, 0)
     : 0;
@@ -97,6 +99,10 @@ const ProgressTracker = () => {
     ],
   };
 
+  const handleNavigateToNutrition = () => {
+    navigate("/nutrition"); // Navigate to /nutrition route
+  };
+
   return (
     <div className="progress-tracker">
       {loading ? (
@@ -108,19 +114,23 @@ const ProgressTracker = () => {
       ) : (
         <div>
           <div className="weight-info">
-  <p data-label="WEIGHT:"><span>{profile.weight} kg</span></p>
-  <p data-label="GOAL:"><span>{profile.targetWeight} kg</span></p>
-  <p data-label="TO GO:"><span>{Math.max(profile.weight - profile.targetWeight, 0)} kg</span></p>
-</div>
+            <p data-label="WEIGHT:">
+              <span>{profile.weight} kg</span>
+            </p>
+            <p data-label="GOAL:">
+              <span>{profile.targetWeight} kg</span>
+            </p>
+            <p data-label="TO GO:">
+              <span>
+                {Math.max(profile.weight - profile.targetWeight, 0)} kg
+              </span>
+            </p>
+          </div>
           <Doughnut data={data} />
-          {/* <div className="calorie-info">
-            <p>Daily Caloric Need: {dailyCalories || 0} kcal</p>
-            <p>Calories Consumed: {caloriesConsumed} kcal</p>
-            <p>Calories Remaining: {caloriesRemaining} kcal</p>
-            {profile.dietPlan && profile.dietPlan !== "maintenance" && (
-              <p className="plan-note">*Adjusted for {profile.dietPlan} plan</p>
-            )}
-          </div> */}
+          <div className="nutrition-prompt">
+            <p>Curious about meal nutrition? Just search it up!</p>
+            <button onClick={handleNavigateToNutrition}>Go to Nutrition</button>
+          </div>
         </div>
       )}
     </div>
