@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 
 import PlacesList from "./PlacesList";
 import Map from "./Map";
+import Sidebar from "../Sidebar";
 import "./location.css";
 
 const Location = ({ auth }) => {
@@ -17,16 +18,19 @@ const Location = ({ auth }) => {
   console.log("LOCATION/Google status", auth.googleAuto);
 
   return (
-    <div className="container">
-      <div className="list-container">
-        <PlacesList storeList={storeList} setClickData={setClickData} />
-      </div>
-      <div className="map-container">
-        <Map
-          clickData={clickData}
-          setStoreList={setStoreList}
-          storeList={storeList}
-        />
+    <div className="location-page">
+      {auth.user && <Sidebar user={auth.user} />}
+      <div className="container">
+        <div className="list-container">
+          <PlacesList storeList={storeList} setClickData={setClickData} />
+        </div>
+        <div className="map-container">
+          <Map
+            clickData={clickData}
+            setStoreList={setStoreList}
+            storeList={storeList}
+          />
+        </div>
       </div>
     </div>
   );
