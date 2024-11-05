@@ -3,7 +3,7 @@ import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useDispatch, useSelector } from "react-redux";
 import { getProfile } from "../actions/Profile";
-import "./NutritionGraph.css";
+import "./NutritionGraph.css"; // Import the CSS file
 
 // Register the required elements with Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -96,11 +96,9 @@ const NutritionalGraph = () => {
     return plans[plan || "maintenance"];
   };
 
-  // Check for missing profile data
   const hasCompleteProfile =
     profile?.height && profile?.weight && profile?.age && profile?.gender;
 
-  // Calculate the gram values for each macronutrient
   const getMacroGrams = (calories, macro) => {
     switch (macro) {
       case "carbs":
