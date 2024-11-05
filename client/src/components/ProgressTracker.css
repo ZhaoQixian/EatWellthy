@@ -1,0 +1,49 @@
+.progress-tracker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #f8f9fa; /* Light background for better contrast */
+  border-radius: 8px; /* Softened corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.weight-info {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.weight-info p {
+  font-size: 1.25rem; /* Slightly larger font size */
+  font-weight: 600; /* Bold for emphasis */
+  margin: 5px 0; /* Spacing between paragraphs */
+  color: #333; /* Darker color for better readability */
+}
+
+.calorie-info {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.calorie-info p {
+  font-size: 1.1rem; /* A bit smaller than weight info */
+  margin: 5px 0; /* Spacing */
+  color: #666; /* Medium gray for secondary info */
+}
+
+.plan-note {
+  font-size: 0.9rem; /* Smaller font for notes */
+  color: #ff9800; /* A noticeable color for emphasis */
+}
+
+.doughnut-chart {
+  margin: 20px 0; /* Space around the chart */
+  width: 100%; /* Responsive chart width */
+  max-width: 400px; /* Limit max width */
+}
+
+/* Optional: Add a hover effect for interactivity */
+.progress-tracker p:hover {
+  text-decoration: underline; /* Underline on hover for interaction */
+  cursor: pointer; /* Cursor change to indicate interactivity */
+}
