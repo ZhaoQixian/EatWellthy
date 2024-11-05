@@ -13,62 +13,118 @@ let uuidv4 = require("uuid");
 const Nutrition_data = require("../models/Nutrition_data");
 const Meal_data = require("../models/Meal_data")
  
-router.post(
-    // "/nutrition/add",
-    "/add",
-    [], // parameter check
-    async (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-          return res.status(400).json({ errors: errors.array() });
-        }
-        let { name, owner, energy, fat, sugar, fiber, protein, sodium, vitamin_c, calcium, iron } = req.body;
-        owner = Nutrition_data.hashedOwner(owner);
-        console.log(owner);
-        try {
-            // See if user exists
-            query = {
-              "$and": [
-                {"owner": owner }, {"name": name}
-              ]
-              }
-            let nutrition = await Nutrition_data.find(query);
-              console.log(nutrition);
-            if (nutrition.length > 0) {
-              return res
-                .status(400)
-                .json({ errors: [{ msg: "Food already exists" }] });
-            }
-            
-            nutrition = new Nutrition_data({
-                name,
-                owner,
-                energy,
-                fat,
-                sugar,
-                fiber,
-                protein,
-                sodium,
-                vitamin_c,
-                calcium,
-                iron,
-            });
-            
-            await nutrition.save();
-            res.status(200).send('Add successfully');
-        }
-        
-        
-        catch (err) {
-            console.error(err.message);
-            res.status(500).send("Server error");
-        }
-        
-        
+router.post("/add", [], async (req, res) => {
+  try {
+    let { name, owner, energy, fat, sugar, fiber, protein, sodium, vitamin_c, calcium, iron } = req.body;
+    
+    // Check required fields
+    if (!name || !energy) {
+      return res.status(400).json({ msg: "Name and Energy are required fields" });
     }
-)
 
+    // Hash the owner ID
+    owner = Nutrition_data.hashedOwner(owner);
 
+    // Check for existing food with same name for this user
+    const existingFood = await Nutrition_data.findOne({
+      name: new RegExp(`^${name}$`, 'i'), // Case insensitive match
+      owner
+    });
+
+    if (existingFood) {
+      return res.status(400).json({ msg: "Food already exists in your list" });
+    }
+
+    // Create new food with defaults for optional fields
+    const nutrition = new Nutrition_data({
+      name,
+      owner,
+      energy,
+      fat: fat || 0,
+      sugar: sugar || 0,
+      fiber: fiber || 0,
+      protein: protein || 0,
+      sodium: sodium || 0,
+      vitamin_c: vitamin_c || 0,
+      calcium: calcium || 0,
+      iron: iron || 0,
+    });
+
+    await nutrition.save();
+    res.status(200).json(nutrition);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+// In your nutrition route (query_food endpoint)
+router.post("/query_food", [], async (req, res) => {
+  try {
+    let hashed_owner = Nutrition_data.hashedOwner(req.body.owner);
+    query = {
+      owner: hashed_owner  // Remove the $or with admin, only show user's foods
+    };
+    const food_saved = await Nutrition_data.find(query).sort({name:1});
+    res.status(200).json({success : true , food_saved});
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+router.put("/update/:id", [], async (req, res) => {
+  try {
+    const { 
+      owner, 
+      energy, 
+      fat, 
+      sugar, 
+      fiber, 
+      protein, 
+      sodium, 
+      vitamin_c, 
+      calcium, 
+      iron 
+    } = req.body;
+
+    // Find the food first
+    let food = await Nutrition_data.findById(req.params.id);
+    
+    if (!food) {
+      return res.status(404).json({ msg: "Food not found" });
+    }
+
+    // Verify ownership
+    const hashedOwner = Nutrition_data.hashedOwner(owner);
+    if (food.owner !== hashedOwner) {
+      return res.status(401).json({ msg: "Not authorized to update this food" });
+    }
+
+    // Update fields
+    const updateFields = {
+      energy,
+      fat,
+      sugar,
+      fiber,
+      protein,
+      sodium,
+      vitamin_c,
+      calcium,
+      iron
+    };
+
+    // Update the food
+    food = await Nutrition_data.findByIdAndUpdate(
+      req.params.id,
+      { $set: updateFields },
+      { new: true }
+    );
+
+    res.json(food);
+  } catch (err) {
+    console.error('Update error:', err);
+    res.status(500).json({ msg: "Server Error", error: err.message });
+  }
+});
 //query
 router.post(
     // "/nutrition/add",

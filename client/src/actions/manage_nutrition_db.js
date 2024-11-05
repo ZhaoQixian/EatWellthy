@@ -1,59 +1,45 @@
-import axios from "axios";
-import { setAlert } from "./alert";
-import { ADD_NUTRITION_INFOR_SUCCESS,
-        ADD_NUTRITION_INFOR_FAIL
-} from "./types"
+import { 
+  ADD_NUTRITION_INFOR_SUCCESS,
+  ADD_NUTRITION_INFOR_FAIL 
+} from "../actions/types";
 
-export const add_nutrition_infor =
-  ({ name, owner, energy, fat, sugar, fiber, protein, sodium, vitamin_c, calcium, iron }) =>
-  async (dispatch) => {
-    dispatch.preventDefault();
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    console.log("Called add_nutrition_infor");
-    const body = JSON.stringify({ name, owner, energy, fat, sugar, fiber, protein, sodium, vitamin_c, calcium, iron });
+const initialState = {
+  foods: [],
+  loading: true,
+  error: null
+};
 
-    try {
-      const res = await axios.post(
-        "http://localhost:5050/nutrition/add",
-        body,
-        config
-      );
+export default function nutritionReducer(state = initialState, action) {
+  const { type, payload } = action;
 
-      console.log(res);
-      dispatch({
-        type: ADD_NUTRITION_INFOR_SUCCESS,
-        payload: res.data || {}, // Fallback to an empty object
-      });
-
-    //   dispatch(loadUser());
-    } catch (err) {
-      console.error("Food addition Error: ", err); // Log the entire error
-
-      // If err.response is undefined, that indicates a network error or the server is unreachable.
-      if (err.response) {
-        const errors = err.response.data.errors; // Check for validation errors
-
-        if (errors) {
-          errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
-        } else {
-          dispatch(
-            setAlert(
-              "Registration failed: " + err.response.data.message ||
-                "Unknown error",
-              "danger"
-            )
-          ); // Show server message
-        }
-      } else {
-        dispatch(setAlert("Network error: Unable to reach server", "danger"));
-      }
-
-      dispatch({
-        type: ADD_NUTRITION_INFOR_FAIL,
-      });
-    }
-  };
+  switch (type) {
+    case 'FETCH_FOODS_SUCCESS':
+      return {
+        ...state,
+        foods: payload,
+        loading: false
+      };
+    case ADD_NUTRITION_INFOR_SUCCESS:
+      return {
+        ...state,
+        foods: [...state.foods, payload],
+        loading: false
+      };
+    case 'DELETE_FOOD_SUCCESS':
+      return {
+        ...state,
+        foods: state.foods.filter(food => food._id !== payload),
+        loading: false
+      };
+    case 'FETCH_FOODS_FAIL':
+    case 'DELETE_FOOD_FAIL':
+    case ADD_NUTRITION_INFOR_FAIL:
+      return {
+        ...state,
+        error: payload,
+        loading: false
+      };
+    default:
+      return state;
+  }
+}
