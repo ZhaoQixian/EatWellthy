@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useDispatch, useSelector } from "react-redux";
-import { getProfile, updateProfile } from "../actions/Profile";
-import { Link } from "react-router-dom";
+import { getProfile } from "../actions/Profile";
+import "./ProgressTracker.css"; // Import the CSS file
 
 // Register the required elements with Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -21,13 +21,13 @@ const ProgressTracker = () => {
 
   const adjustCaloriesForPlan = (baseCalories, plan, bmi) => {
     switch (plan) {
-      case 'weightloss':
-        const deficitPercentage = parseFloat(bmi) > 30 ? 0.25 : 0.20;
+      case "weightloss":
+        const deficitPercentage = parseFloat(bmi) > 30 ? 0.25 : 0.2;
         return baseCalories * (1 - deficitPercentage);
-      case 'keto':
+      case "keto":
         return baseCalories * 0.85;
-      case 'maintenance':
-      case 'vegetarian':
+      case "maintenance":
+      case "vegetarian":
       default:
         return baseCalories;
     }
@@ -66,12 +66,15 @@ const ProgressTracker = () => {
           very: 1.725,
           super: 1.9,
         };
-        
-        // Calculate base calories
-        const baseCalories = calculatedBMR * activityMultipliers[profile.activityLevel || "sedentary"];
-        
-        // Adjust calories based on diet plan
-        const adjustedCalories = adjustCaloriesForPlan(baseCalories, profile.dietPlan, calculatedBMI);
+
+        const baseCalories =
+          calculatedBMR *
+          activityMultipliers[profile.activityLevel || "sedentary"];
+        const adjustedCalories = adjustCaloriesForPlan(
+          baseCalories,
+          profile.dietPlan,
+          calculatedBMI
+        );
         setDailyCalories(Math.round(adjustedCalories));
       }
     }
@@ -82,7 +85,6 @@ const ProgressTracker = () => {
     ? Math.max(dailyCalories - caloriesConsumed, 0)
     : 0;
 
-  // Check for missing profile data
   const hasCompleteProfile = profile?.weight && profile?.targetWeight;
 
   const data = {
@@ -117,7 +119,7 @@ const ProgressTracker = () => {
             <p>Daily Caloric Need: {dailyCalories || 0} kcal</p>
             <p>Calories Consumed: {caloriesConsumed} kcal</p>
             <p>Calories Remaining: {caloriesRemaining} kcal</p>
-            {profile.dietPlan && profile.dietPlan !== 'maintenance' && (
+            {profile.dietPlan && profile.dietPlan !== "maintenance" && (
               <p className="plan-note">*Adjusted for {profile.dietPlan} plan</p>
             )}
           </div>
