@@ -30,15 +30,29 @@ const MyCalendar = ({ auth, events, getEvent, getAllEvents }) => {
     locales,
   });
 
+  // In your MyCalendar.jsx, modify just the useEffect:
   useEffect(() => {
-    getAllEvents(auth.user._id);
-  }, [getAllEvents, open, auth.user._id]);
+    if (auth?.user?._id) {  // Add this optional chaining
+      getAllEvents(auth.user._id);
+    }
+  }, [getAllEvents, open, auth?.user?._id]);  // Add optional chaining here too
 
   const openEventClick = async (event) => {
     // console.log("EVENT : ", event.id);
     await getEvent(event.id);
     setOpen(true);
   };
+
+  // Add at the start of your MyCalendar component, right after const declarations:
+if (!auth.user) {
+  return (
+    <div className="main-calendar">
+      <div style={{ textAlign: 'center', padding: '20px' }}>
+        Loading calendar...
+      </div>
+    </div>
+  );
+}
 
   // const generateGoogleCalendarLink = (event) => {
   //   const { title, start, end, describe } = event;
