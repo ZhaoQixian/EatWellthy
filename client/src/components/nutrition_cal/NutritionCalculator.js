@@ -19,7 +19,7 @@ const NutritionCalculator = () => {
   const username = user?.name;
 
   useEffect(() => {
-    if (userId && formType === 'addFood') {
+    if (userId && formType === 'customisedFood') {
       dispatch(fetchFoods(userId));
     }
   }, [userId, formType, dispatch]);
@@ -47,18 +47,19 @@ const NutritionCalculator = () => {
         calcium: parseFloat(document.getElementById(`food_calcium_${food._id}`).value) || 0,
         iron: parseFloat(document.getElementById(`food_iron_${food._id}`).value) || 0,
       };
-  
-      console.log("Attempting to update food:", updatedFood);
-  
+
       await dispatch(updateFood(food._id, updatedFood));
       setEditingFood(null);
       dispatch(fetchFoods(userId));
+      showMessage("Food updated successfully");
       
     } catch (err) {
       console.error("Error in handleEdit:", err);
       showMessage("Error updating food: " + (err.response?.data?.msg || "Unknown error"), "error");
     }
   };
+
+  
 
   const add_nutrition_infor2 = useCallback(async(e) => {
     e.preventDefault();
@@ -110,7 +111,7 @@ const NutritionCalculator = () => {
   };
 
   useEffect(() => {
-    setFormType('recent_meal');
+    setFormType('recentMeal');
   }, []);
 
   const renderCustomFoodTable = () => (
@@ -223,20 +224,20 @@ const NutritionCalculator = () => {
 
   return (
     <div>
-      <h1>NutritionCalculator</h1>
+      <h1>Nutrition Tracker</h1>
 
       <div id="food_meal_buttons" className="select">
         <li id="recent_meal" onClick={() => setFormType('recentMeal')}>
           Recent meals
         </li>
-        <li id="add_food" onClick={() => setFormType('addFood')}>
-          Customised food
+        <li id="tracker" onClick={() => setFormType('tracker')}>
+          Tracker
         </li>
-        <li id="add_meal" onClick={() => setFormType('addMeal')}>
-          Meal Update
+        <li id="history_search" onClick={() => setFormType('historySearch')}>
+          History Search
         </li>
-        <li id="remove" onClick={() => setFormType('remove')}>
-          Remove a Food/Meal
+        <li id="customised_food" onClick={() => setFormType('customisedFood')}>
+          Customised Food
         </li>
       </div>
 
@@ -247,20 +248,22 @@ const NutritionCalculator = () => {
       )}
 
       <div id="food_meal_forms">
-        {formType === 'addFood' && (
-          <div>
-            {renderCustomFoodTable()}
-          </div>
-        )}
-
-        {formType === 'addMeal' && (
-          <MealForm userId={userId} />
-        )}
         {formType === 'recentMeal' && (
           <RecentMeals userId={userId} />
         )}
-        {formType === 'remove' && (
-          <FoodStored />
+
+        {formType === 'tracker' && (
+          <MealForm userId={userId} mode="tracker" />
+        )}
+
+        {formType === 'historySearch' && (
+          <MealForm userId={userId} mode="historySearch" />
+        )}
+
+        {formType === 'customisedFood' && (
+          <div>
+            {renderCustomFoodTable()}
+          </div>
         )}
       </div>
     </div>

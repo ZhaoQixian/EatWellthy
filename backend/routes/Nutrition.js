@@ -365,3 +365,47 @@ router.get(
 );
 
 module.exports = router;
+
+
+router.put(
+  "/meal_update/:id",
+  [],
+  async (req, res) => {
+    try {
+      const { owner, meal_type, food_taken, portion, time } = req.body;
+      
+      // Find the meal first
+      let meal = await Meal_data.findById(req.params.id);
+      
+      if (!meal) {
+        return res.status(404).json({ msg: "Meal not found" });
+      }
+
+      // Verify ownership
+      const hashedOwner = Meal_data.hashedOwner(owner);
+      if (meal.owner !== hashedOwner) {
+        return res.status(401).json({ msg: "Not authorized to update this meal" });
+      }
+
+      // Update fields
+      const updateFields = {
+        meal_type,
+        food_taken,
+        portion,
+        time: meal.time // keep original time
+      };
+
+      // Update the meal
+      meal = await Meal_data.findByIdAndUpdate(
+        req.params.id,
+        { $set: updateFields },
+        { new: true }
+      );
+
+      res.json({ success: true, meal });
+    } catch (err) {
+      console.error('Update error:', err);
+      res.status(500).json({ msg: "Server Error", error: err.message });
+    }
+  }
+);
