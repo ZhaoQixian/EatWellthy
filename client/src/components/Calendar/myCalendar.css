@@ -8,6 +8,29 @@
 .button-wrapper {
   width: "100%";
 }
+.calendar-title {
+  text-align: center;
+  font-size: 2.5rem; /* Slightly larger for emphasis */
+  color: #2e5e4e; /* Matching your theme */
+  margin-bottom: 30px; /* More space below the title for better separation */
+  font-weight: 700; /* Bold font weight */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Adding subtle shadow for depth */
+  background: linear-gradient(
+    to bottom,
+    rgba(46, 94, 78, 0.05),
+    transparent
+  ); /* Similar background style */
+  padding: 20px; /* Add padding for more breathing room */
+  border-radius: 10px; /* Rounded corners for a softer look */
+  animation: fadeIn 0.5s ease-out forwards; /* Animation for the title */
+}
+
+/* Optional: Enhanced Focus States for Accessibility */
+.calendar-title:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(46, 94, 78, 0.3);
+  border-radius: 10px; /* Match the border radius */
+}
 
 .button-wrapper button {
   background-color: darkgreen;
