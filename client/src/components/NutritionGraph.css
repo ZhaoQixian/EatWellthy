@@ -1,10 +1,36 @@
+.nutritional-graph {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #f8f9fa; /* Light background for better contrast */
+  border-radius: 8px; /* Softened corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
 .macro-info {
-  margin-top: 80px; /* Space between chart and text */
-  font-size: 16px; /* Set a readable font size */
-  color: #333; /* Dark color for readability */
+  text-align: center;
+  margin-top: 20px;
+  padding: 15px; /* Increased padding for better spacing */
+  border-radius: 8px; /* Rounded corners for the info box */
+  width: 100%; /* Make it responsive */
+  max-width: 400px; /* Limit max width */
 }
 
 .macro-info h3 {
-  font-size: 20px; /* Larger size for the heading */
+  font-size: 1.5rem; /* Heading size */
+  color: #388e3c; /* Dark green for the heading */
   margin-bottom: 10px; /* Space below the heading */
+}
+
+.macro-info p {
+  font-size: 1.1rem; /* Text size for the nutritional info */
+  color: #333; /* Dark color for nutritional values */
+  margin: 5px 0; /* Spacing between paragraphs */
+}
+
+/* Optional: Add hover effect for interactivity */
+.macro-info p:hover {
+  text-decoration: underline; /* Underline on hover for interaction */
+  cursor: pointer; /* Change cursor to indicate interactivity */
 }
