@@ -1,9 +1,9 @@
 // src/components/layout/Layout.js
-import React from 'react';
-import { Navigate } from 'react-router-dom';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import Sidebar from '../Sidebar';
+import React from "react";
+import { Navigate } from "react-router-dom";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import Sidebar from "./Sidebar";
 
 const Layout = ({ auth, children }) => {
   // Check authentication
@@ -19,9 +19,7 @@ const Layout = ({ auth, children }) => {
   return (
     <div className="dashboard-container">
       <Sidebar user={auth.user} />
-      <div className="dashboard-content">
-        {children}
-      </div>
+      <div className="dashboard-content">{children}</div>
     </div>
   );
 };

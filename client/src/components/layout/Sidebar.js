@@ -1,24 +1,24 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { getProfile } from "../actions/Profile";
+import { getProfile } from "../../actions/Profile";
 
 // Import all animal icons
-import bearIcon from "../img/bear.png";
-import capybaraIcon from "../img/capybara.png";
-import catIcon from "../img/cat.png";
-import dogIcon from "../img/dog.png";
-import otterIcon from "../img/otter.png";
-import pandaIcon from "../img/panda.png";
-import rabbitIcon from "../img/rabbit.png";
-import tigerIcon from "../img/tiger.png";
+import bearIcon from "../../img/bear.png";
+import capybaraIcon from "../../img/capybara.png";
+import catIcon from "../../img/cat.png";
+import dogIcon from "../../img/dog.png";
+import otterIcon from "../../img/otter.png";
+import pandaIcon from "../../img/panda.png";
+import rabbitIcon from "../../img/rabbit.png";
+import tigerIcon from "../../img/tiger.png";
 
 const Sidebar = ({ user }) => {
   const dispatch = useDispatch();
   const profileState = useSelector((state) => state.profile);
   const authState = useSelector((state) => state.auth);
   const userId = authState.user._id;
-  
+
   useEffect(() => {
     dispatch(getProfile());
   }, [dispatch]);
@@ -34,7 +34,7 @@ const Sidebar = ({ user }) => {
     tiger: tigerIcon,
   };
 
-  const userIcon = profileState?.profile?.profileIcon 
+  const userIcon = profileState?.profile?.profileIcon
     ? animalIcons[profileState.profile.profileIcon]
     : bearIcon; // Default to bear if no icon is selected
 
@@ -49,7 +49,9 @@ const Sidebar = ({ user }) => {
           <Link to="/profile">Profile</Link>
         </li>
         <li>
-          <Link to={`/nutrition-calculator/${userId}/${user && user.name}`}>Tracker</Link>
+          <Link to={`/nutrition-calculator/${userId}/${user && user.name}`}>
+            Tracker
+          </Link>
         </li>
         <li>
           <Link to="/diet-planner">Analysis</Link>
@@ -67,7 +69,9 @@ const Sidebar = ({ user }) => {
           <Link to="/location">Location</Link>
         </li>
         <li>
-          <Link to="/Welloh" className="wellohli">Welloh</Link>
+          <Link to="/Welloh" className="wellohli">
+            Welloh
+          </Link>
         </li>
       </ul>
     </div>
