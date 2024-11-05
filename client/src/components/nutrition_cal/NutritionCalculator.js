@@ -10,7 +10,6 @@ const NutritionCalculator = () => {
   const [formType, setFormType] = useState(null);
   const [message, setMessage] = useState({ text: "", type: "" });
   
-  // Get user from Redux instead of URL params
   const { user } = useSelector((state) => state.auth);
   const userId = user?._id;
   const username = user?.name;
@@ -88,24 +87,18 @@ const NutritionCalculator = () => {
   }, []);
 
   return (
-    <div style={{ paddingTop: "4rem", paddingLeft: "1.2rem", paddingRight: "1.2rem" }}>
+    <div>
       <h1>NutritionCalculator</h1>
-      <p>Hi, {username}! Welcome to the NutritionCalculator page!</p>
-
-      <h3>Select an option:</h3>
 
       <div id="food_meal_buttons" className="select">
-        <li id="recent_meal" onClick={() => {
-          setFormType('recentMeal');
-          window.location.reload()
-        }}>
+        <li id="recent_meal" onClick={() => setFormType('recentMeal')}>
           Recent meals
         </li>
         <li id="add_food" onClick={() => setFormType('addFood')}>
-          Add/Update a Food
+          Customised food
         </li>
         <li id="add_meal" onClick={() => setFormType('addMeal')}>
-          Add/Update a Meal
+          Meal Update
         </li>
         <li id="remove" onClick={() => setFormType('remove')}>
           Remove a Food/Meal
@@ -147,7 +140,7 @@ const NutritionCalculator = () => {
         {formType === 'addMeal' && (
           <MealForm userId={userId} />
         )}
-        {formType === 'recent_meal' && (
+        {formType === 'recentMeal' && (
           <RecentMeals userId={userId} />
         )}
         {formType === 'remove' && (

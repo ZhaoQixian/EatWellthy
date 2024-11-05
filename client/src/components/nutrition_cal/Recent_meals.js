@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import "./Recent_meals.css";
-
 const RecentMeals = ({ userId }) => {
   const [mealData, setMealData] = useState({
     today: { meals: [], totals: {} },
@@ -17,8 +15,8 @@ const RecentMeals = ({ userId }) => {
     return date;
   };
 
-  const formatMacro = (value) => Math.round(value);
-  const formatMicro = (value) => value.toFixed(3);
+  // Updated to format all numbers with 0 decimal places
+  const formatNumber = (value) => Math.round(value);
 
   const calculateDayTotals = (meals) => {
     const totals = {
@@ -117,28 +115,28 @@ const RecentMeals = ({ userId }) => {
                     <td>{meal.meal_type}</td>
                     <td>{meal.food_taken}</td>
                     <td>{meal.portion}</td>
-                    <td>{formatMacro(meal.portion * nutrition[0].energy)}</td>
-                    <td>{formatMacro(meal.portion * nutrition[0].fat)}</td>
-                    <td>{formatMacro(meal.portion * nutrition[0].sugar)}</td>
-                    <td>{formatMacro(meal.portion * nutrition[0].fiber)}</td>
-                    <td>{formatMacro(meal.portion * nutrition[0].protein)}</td>
-                    <td>{formatMicro(meal.portion * nutrition[0].sodium)}</td>
-                    <td>{formatMicro(meal.portion * nutrition[0].vitamin_c)}</td>
-                    <td>{formatMicro(meal.portion * nutrition[0].calcium)}</td>
-                    <td>{formatMicro(meal.portion * nutrition[0].iron)}</td>
+                    <td>{formatNumber(meal.portion * nutrition[0].energy)}</td>
+                    <td>{formatNumber(meal.portion * nutrition[0].fat)}</td>
+                    <td>{formatNumber(meal.portion * nutrition[0].sugar)}</td>
+                    <td>{formatNumber(meal.portion * nutrition[0].fiber)}</td>
+                    <td>{formatNumber(meal.portion * nutrition[0].protein)}</td>
+                    <td>{formatNumber(meal.portion * nutrition[0].sodium)}</td>
+                    <td>{formatNumber(meal.portion * nutrition[0].vitamin_c)}</td>
+                    <td>{formatNumber(meal.portion * nutrition[0].calcium)}</td>
+                    <td>{formatNumber(meal.portion * nutrition[0].iron)}</td>
                   </tr>
                 ))}
                 <tr className="totals-row">
                   <td colSpan="3">Daily Totals:</td>
-                  <td>{formatMacro(dayData.totals.energy)}</td>
-                  <td>{formatMacro(dayData.totals.fat)}</td>
-                  <td>{formatMacro(dayData.totals.sugar)}</td>
-                  <td>{formatMacro(dayData.totals.fiber)}</td>
-                  <td>{formatMacro(dayData.totals.protein)}</td>
-                  <td>{formatMicro(dayData.totals.sodium)}</td>
-                  <td>{formatMicro(dayData.totals.vitamin_c)}</td>
-                  <td>{formatMicro(dayData.totals.calcium)}</td>
-                  <td>{formatMicro(dayData.totals.iron)}</td>
+                  <td>{formatNumber(dayData.totals.energy)}</td>
+                  <td>{formatNumber(dayData.totals.fat)}</td>
+                  <td>{formatNumber(dayData.totals.sugar)}</td>
+                  <td>{formatNumber(dayData.totals.fiber)}</td>
+                  <td>{formatNumber(dayData.totals.protein)}</td>
+                  <td>{formatNumber(dayData.totals.sodium)}</td>
+                  <td>{formatNumber(dayData.totals.vitamin_c)}</td>
+                  <td>{formatNumber(dayData.totals.calcium)}</td>
+                  <td>{formatNumber(dayData.totals.iron)}</td>
                 </tr>
               </>
             )}
