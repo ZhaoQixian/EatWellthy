@@ -50,7 +50,7 @@ font-weight: bold;
 }
 
 .message {
-  padding: 40px;
+
   border-radius: 6px;
   margin-bottom: 10px;
 }
@@ -62,6 +62,7 @@ font-weight: bold;
 }
 
 .message.assistant {
+  padding-left: 20px;
   background-color: #ffffff;
   align-self: flex-start; 
   text-align: left;
