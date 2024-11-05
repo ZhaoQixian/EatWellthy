@@ -1,7 +1,7 @@
 import React, { useState ,useCallback,useEffect} from 'react';
-import MealForm from './nutrition_cal/Meal_form';
-import RecentMeals from './nutrition_cal/Recent_meals';
-import FoodStored from './nutrition_cal/food_stored';
+import MealForm from './Meal_form';
+import RecentMeals from './Recent_meals';
+import FoodStored from './food_stored';
 import "./NutritionCalculator.css";
 import axios from 'axios';
 import { connect  } from "react-redux";
