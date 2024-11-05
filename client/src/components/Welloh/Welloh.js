@@ -268,8 +268,8 @@ const Welloh = () => {
           (index !== 0 && index !== 1) && (
             <div key={index} className={`message ${message.role}`}>
               {message.role !== "user" 
-                ? message.content 
-                : message.content.slice(0, -enhance.length)}
+                ? <ReactMarkdown>{message.content}</ReactMarkdown>
+                : <ReactMarkdown>{message.content.slice(0, -enhance.length)}</ReactMarkdown>}
             </div>
           )
         ))}
