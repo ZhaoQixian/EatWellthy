@@ -3,7 +3,6 @@ import { useNavigate, Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import "./Dashboard.css";
-import Sidebar from "./Sidebar";
 import NutritionalGraph from "./NutritionalGraph";
 import ProgressTracker from "./ProgressTracker";
 import DietSuggestions from "./DietSuggestions";
@@ -34,30 +33,26 @@ const Dashboard = ({ auth }) => {
   });
 
   return (
-    <div className="dashboard-container">
-      <Sidebar user={auth.user} />
-
-      <div className="dashboard-content">
+    <>
       <h1 className="welcome-message">Welcome, {auth.user.name}!</h1>
-        <p className="date-display">{currentDate}</p> {/* Display the date */}
-        <div className="dashboard-sections">
-          <div className="section">
-            <h2>Daily Nutritional Intake</h2>
-            <NutritionalGraph />
-          </div>
+      <p className="date-display">{currentDate}</p>
+      <div className="dashboard-sections">
+        <div className="section">
+          <h2>Daily Nutritional Intake</h2>
+          <NutritionalGraph />
+        </div>
 
-          <div className="section">
-            <h2>Progress Tracking</h2>
-            <ProgressTracker />
-          </div>
+        <div className="section">
+          <h2>Progress Tracking</h2>
+          <ProgressTracker />
+        </div>
 
-          <div className="section">
-            <h2>Diet Suggestions</h2>
-            <DietSuggestions />
-          </div>
+        <div className="section">
+          <h2>Diet Suggestions</h2>
+          <DietSuggestions />
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
@@ -66,7 +61,7 @@ Dashboard.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  auth: state.auth, // Ensure this matches your Redux structure
+  auth: state.auth,
 });
 
 export default connect(mapStateToProps)(Dashboard);
