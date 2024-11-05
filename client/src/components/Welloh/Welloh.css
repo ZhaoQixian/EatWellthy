@@ -50,19 +50,21 @@ font-weight: bold;
 }
 
 .message {
-  padding: 8px;
+  padding: 40px;
   border-radius: 6px;
   margin-bottom: 10px;
 }
 
 .message.user {
   background-color: #d8e7df;
-  align-self: flex-end;
+  align-self: flex-end; 
+  text-align: right;
 }
 
 .message.assistant {
   background-color: #ffffff;
-  align-self: flex-start;
+  align-self: flex-start; 
+  text-align: left;
 }
 
 .message.system {
