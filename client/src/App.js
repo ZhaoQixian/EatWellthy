@@ -11,21 +11,21 @@ import Register from "./components/auth/Register";
 import VerifyEmail from "./components/auth/VerifyEmail";
 import PrivateRoute from "./routing/PrivateRoute";
 import NotFound from "./components/NotFound";
-import Dashboard from "./components/Dashboard";
+import Dashboard from "./components/Dashboard/Dashboard";
 import setAuthToken from "./utils/setAuthToken";
 import NutritionCalculator from "./components/NutritionCalculator";
-import DietPlanner from "./components/DietPlanner";
+import DietPlanner from "./components/Analysis/DietPlanner";
 import DailyPriceList from "./components/DailyPriceList";
 import Welloh from "./components/Welloh";
 import MyCalendar from "./components/Calendar/MyCalendar";
 import AddEvents from "./components/Calendar/AddEvents";
 import UpdateEvent from "./components/Calendar/UpdateEvent";
-import FAQs from "./components/FAQs";
+import FAQs from "./components/FAQ/FAQs";
 import Location from "./components/Location/Location";
 import LogMeal from "./components/NutritionCalculator_U0301";
 import Profile from "./components/Profile";
 import Layout from "./components/layout/Layout";
-import NutritionixAPI from "./components/NutritionixAPI";
+import NutritionixAPI from "./components/Dashboard/NutritionixAPI";
 
 function App() {
   const dispatch = useDispatch();

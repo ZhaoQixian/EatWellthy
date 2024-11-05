@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import PropTypes from 'prop-types';
-import { getProfile, generateDietSuggestions } from "../actions/Profile";
-import { addEvent, getAllEvents } from "../actions/eventsActions";
+import PropTypes from "prop-types";
+import { getProfile, generateDietSuggestions } from "../../actions/Profile";
+import { addEvent, getAllEvents } from "../../actions/eventsActions";
 import "./DietSuggestions.css";
 
 const DietSuggestions = ({ setDashboardLoading }) => {
@@ -36,7 +36,9 @@ const DietSuggestions = ({ setDashboardLoading }) => {
         setError("Failed to generate diet plan. Please try again.");
       }
     } catch (err) {
-      setError(err.message || "An error occurred while generating the diet plan");
+      setError(
+        err.message || "An error occurred while generating the diet plan"
+      );
     } finally {
       setDashboardLoading(false);
     }
@@ -306,7 +308,7 @@ const DietSuggestions = ({ setDashboardLoading }) => {
 };
 
 DietSuggestions.propTypes = {
-  setDashboardLoading: PropTypes.func.isRequired
+  setDashboardLoading: PropTypes.func.isRequired,
 };
 
 export default DietSuggestions;

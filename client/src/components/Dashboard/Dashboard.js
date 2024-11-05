@@ -6,7 +6,7 @@ import "./Dashboard.css";
 import NutritionalGraph from "./NutritionalGraph";
 import ProgressTracker from "./ProgressTracker";
 import DietSuggestions from "./DietSuggestions";
-import FoodTransformLoading from "./FoodTransformLoading";
+import FoodTransformLoading from "../FoodTransformLoading";
 
 const Dashboard = ({ auth }) => {
   const navigate = useNavigate();
@@ -54,7 +54,7 @@ const Dashboard = ({ auth }) => {
           <DietSuggestions setDashboardLoading={setIsGenerating} />
         </div>
       </div>
-      
+
       {isGenerating && <FoodTransformLoading />}
     </>
   );

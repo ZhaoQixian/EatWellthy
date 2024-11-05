@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useDispatch, useSelector } from "react-redux";
-import { getProfile } from "../actions/Profile";
+import { getProfile } from "../../actions/Profile";
 import { useNavigate } from "react-router-dom"; // useNavigate instead of useHistory
 import "./ProgressTracker.css"; // Import the CSS file
 
