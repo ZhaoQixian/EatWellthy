@@ -1,56 +1,92 @@
+/* Base styling for the nutritional graph container */
 .nutritional-graph {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  background-color: #f8f9fa; /* Light background for better contrast */
-  border-radius: 8px; /* Softened corners */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px; /* Set a max-width to contain the layout */
 }
 
-.macro-info {
-  text-align: center;
-  margin-top: 20px;
-  padding: 15px; /* Increased padding for better spacing */
-  border-radius: 8px; /* Rounded corners for the info box */
-  width: 100%; /* Make it responsive */
-  max-width: 400px; /* Limit max width */
-}
-
-.macro-info h3 {
-  font-size: 1.5rem; /* Heading size */
-  color: #388e3c; /* Dark green for the heading */
-  margin-bottom: 10px; /* Space below the heading */
-}
-
-.macro-info p {
-  font-size: 1.1rem; /* Text size for the nutritional info */
-  color: #333; /* Dark color for nutritional values */
-  margin: 5px 0; /* Spacing between paragraphs */
-}
-
-/* Optional: Add hover effect for interactivity */
-.macro-info p:hover {
-  text-decoration: underline; /* Underline on hover for interaction */
-  cursor: pointer; /* Change cursor to indicate interactivity */
-}
+/* Macro and caloric information sections */
+.macro-info,
 .caloric-summary {
   text-align: center;
   margin-top: 20px;
-  padding: 15px; /* Add padding for spacing */
-  border-radius: 8px; /* Rounded corners */
-  width: 100%; /* Make it responsive */
-  max-width: 400px; /* Limit max width */
+  padding: 15px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
 }
 
+/* Headings and paragraph text */
+.macro-info h3,
 .caloric-summary h3 {
-  font-size: 1.5rem; /* Heading size */
-  color: #388e3c; /* Dark green for the heading */
-  margin-bottom: 10px; /* Space below the heading */
+  font-size: 1.5rem;
+  color: #388e3c;
+  margin-bottom: 10px;
 }
 
+.macro-info p,
 .caloric-summary p {
-  font-size: 1.1rem; /* Text size for caloric summary */
-  color: #333; /* Dark color for text */
-  margin: 5px 0; /* Spacing between paragraphs */
+  font-size: 1.1rem;
+  color: #333;
+  margin: 5px 0;
+}
+
+/* Hover effect */
+.macro-info p:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Responsive adjustments for tablets and smaller screens */
+@media (max-width: 768px) {
+  .nutritional-graph {
+    padding: 15px; /* Reduced padding */
+    max-width: 90%; /* Adjust max-width to fit smaller screens */
+  }
+
+  .macro-info,
+  .caloric-summary {
+    padding: 10px; /* Reduce padding for better fit */
+    max-width: 90%; /* Allow sections to fill most of the screen */
+  }
+
+  .macro-info h3,
+  .caloric-summary h3 {
+    font-size: 1.3rem; /* Reduce heading size */
+  }
+
+  .macro-info p,
+  .caloric-summary p {
+    font-size: 1rem; /* Reduce font size for readability */
+  }
+}
+
+/* Additional adjustments for very small screens (mobile) */
+@media (max-width: 480px) {
+  .nutritional-graph {
+    padding: 10px; /* Further reduce padding for mobile */
+    max-width: 95%; /* Maximize use of screen width */
+  }
+
+  .macro-info,
+  .caloric-summary {
+    padding: 8px; /* Compact padding for mobile */
+    max-width: 100%; /* Fill screen width */
+  }
+
+  .macro-info h3,
+  .caloric-summary h3 {
+    font-size: 1.1rem; /* Further reduce heading size */
+  }
+
+  .macro-info p,
+  .caloric-summary p {
+    font-size: 0.9rem; /* Smaller font for mobile */
+  }
 }
