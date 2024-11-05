@@ -8,11 +8,13 @@
 }
 
 /* Individual Link Styles */
-.nav-links li, .left-section li {
+.nav-links li,
+.left-section li {
   display: inline-block;
 }
 
-.nav-links li a, .left-section li a {
+.nav-links li a,
+.left-section li a {
   color: #fff; /* Keeps link color white */
   text-decoration: none;
   font-weight: 600;
@@ -22,7 +24,8 @@
 }
 
 /* Hover Effect */
-.nav-links li a:hover, .left-section li a:hover {
+.nav-links li a:hover,
+.left-section li a:hover {
   background-color: rgba(255, 255, 255, 0.2); /* Light hover overlay */
   transform: scale(1.05); /* Slightly enlarges on hover */
 }
@@ -70,6 +73,23 @@ body,
   height: 35px;
   border-radius: 50%;
   overflow: hidden;
+  position: relative; /* Needed for pseudo-element */
+  transition: transform 0.3s ease; /* Smooth transform for container */
+}
+
+/* Icon Hover Effect */
+.icon-container:hover {
+  transform: rotateY(180deg); /* 3D rotation effect on hover */
+}
+
+/* Adding a shadow effect to the icon on hover */
+.icon-container img {
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for image */
+}
+
+.icon-container:hover img {
+  transform: scale(1.1); /* Slightly enlarge the icon */
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); /* Glow effect */
 }
 
 /* Left Section */
