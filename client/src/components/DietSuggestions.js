@@ -226,19 +226,15 @@ const DietSuggestions = () => {
                         {suggestion.meal}
                       </h3>
                       <div className="mt-2">
-                        {suggestion.items.map((item, itemIndex) => (
-                          <div
-                            key={itemIndex}
-                            className="flex justify-between py-1"
-                          >
-                            {/* Updated to add spacing between food item and weight */}
-                            <span className="flex-1">{item.food}</span>
-                            <div></div>
-                            <span className="text-gray-600 mt-2 ml-2">
-                              Quantity - {item.weight}
-                            </span>
-                          </div>
-                        ))}
+                      {suggestion.items.map((item, itemIndex) => (
+  <div
+    key={itemIndex}
+    className="flex items-center py-1"
+  >
+    <span className="text-black font-medium">{item.food}</span>
+    <span className="text-gray-600 ml-2">- {item.weight}</span>
+  </div>
+))}
                       </div>
                     </div>
                   )
