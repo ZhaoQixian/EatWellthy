@@ -296,5 +296,18 @@
   .diet-planner__additional-info {
     grid-template-columns: 1fr;
   }
+
+
+  .dashboard-sections {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .section {
+    position: relative;
+    z-index: 1;
+  }
 }
+
+
 

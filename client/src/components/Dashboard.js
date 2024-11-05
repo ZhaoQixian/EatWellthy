@@ -1,14 +1,16 @@
-import React from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import "./Dashboard.css";
 import NutritionalGraph from "./NutritionalGraph";
 import ProgressTracker from "./ProgressTracker";
 import DietSuggestions from "./DietSuggestions";
+import FoodTransformLoading from "./FoodTransformLoading";
 
 const Dashboard = ({ auth }) => {
   const navigate = useNavigate();
+  const [isGenerating, setIsGenerating] = useState(false);
 
   // Debugging: Log auth object
   console.log("DASHBOARD/isAuthenticated", auth.isAuthenticated);
@@ -49,9 +51,11 @@ const Dashboard = ({ auth }) => {
 
         <div className="section">
           <h2>Diet Suggestions</h2>
-          <DietSuggestions />
+          <DietSuggestions setDashboardLoading={setIsGenerating} />
         </div>
       </div>
+      
+      {isGenerating && <FoodTransformLoading />}
     </>
   );
 };

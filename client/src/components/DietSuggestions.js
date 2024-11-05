@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import PropTypes from 'prop-types';
 import { getProfile, generateDietSuggestions } from "../actions/Profile";
 import { addEvent, getAllEvents } from "../actions/eventsActions";
 import "./DietSuggestions.css";
 
-const DietSuggestions = () => {
+const DietSuggestions = ({ setDashboardLoading }) => {
   const dispatch = useDispatch();
   const profileState = useSelector((state) => state.profile);
   const auth = useSelector((state) => state.auth);
-  const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
-  const [showMealSelection, setShowMealSelection] = useState(false); // New state for meal selection modal
+  const [showMealSelection, setShowMealSelection] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [mealDetails, setMealDetails] = useState(null);
@@ -27,19 +27,18 @@ const DietSuggestions = () => {
   }, [profileState.profile, dispatch]);
 
   const handleRefresh = async () => {
-    setIsGenerating(true);
+    setDashboardLoading(true);
     setError(null);
+
     try {
       const result = await dispatch(generateDietSuggestions());
       if (!result) {
         setError("Failed to generate diet plan. Please try again.");
       }
     } catch (err) {
-      setError(
-        err.message || "An error occurred while generating the diet plan"
-      );
+      setError(err.message || "An error occurred while generating the diet plan");
     } finally {
-      setIsGenerating(false);
+      setDashboardLoading(false);
     }
   };
 
@@ -186,12 +185,10 @@ const DietSuggestions = () => {
     setShowSuccessModal(false);
   };
 
-  // Function to open the meal selection modal
   const openMealSelection = () => {
     setShowMealSelection(true);
   };
 
-  // Function to handle the meal selection
   const handleMealSelection = (mealType) => {
     setShowMealSelection(false);
     if (mealType) {
@@ -252,12 +249,10 @@ const DietSuggestions = () => {
                   </button>
                   <button
                     onClick={handleRefresh}
-                    disabled={isGenerating}
+                    disabled={isAdding}
                     className="diet-calendar-button"
                   >
-                    {isGenerating
-                      ? "Generating..."
-                      : "Refresh Diet Suggestions"}
+                    {isAdding ? "Generating..." : "Refresh Diet Suggestions"}
                   </button>
                 </div>
               </div>
@@ -308,6 +303,10 @@ const DietSuggestions = () => {
       )}
     </div>
   );
+};
+
+DietSuggestions.propTypes = {
+  setDashboardLoading: PropTypes.func.isRequired
 };
 
 export default DietSuggestions;
