@@ -34,3 +34,23 @@
   text-decoration: underline; /* Underline on hover for interaction */
   cursor: pointer; /* Change cursor to indicate interactivity */
 }
+.caloric-summary {
+  text-align: center;
+  margin-top: 20px;
+  padding: 15px; /* Add padding for spacing */
+  border-radius: 8px; /* Rounded corners */
+  width: 100%; /* Make it responsive */
+  max-width: 400px; /* Limit max width */
+}
+
+.caloric-summary h3 {
+  font-size: 1.5rem; /* Heading size */
+  color: #388e3c; /* Dark green for the heading */
+  margin-bottom: 10px; /* Space below the heading */
+}
+
+.caloric-summary p {
+  font-size: 1.1rem; /* Text size for caloric summary */
+  color: #333; /* Dark color for text */
+  margin: 5px 0; /* Spacing between paragraphs */
+}

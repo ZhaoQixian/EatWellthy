@@ -14,6 +14,7 @@ const NutritionalGraph = () => {
   const [bmi, setBmi] = useState(null);
   const [bmr, setBmr] = useState(null);
   const [dailyCalories, setDailyCalories] = useState(null);
+  const [caloriesConsumed, setCaloriesConsumed] = useState(1350); // Placeholder for calories consumed
   const [macroData, setMacroData] = useState({ carbs: 0, fat: 0, protein: 0 });
 
   useEffect(() => {
@@ -122,6 +123,9 @@ const NutritionalGraph = () => {
     ],
   };
 
+  // Calculate remaining calories
+  const caloriesRemaining = dailyCalories - caloriesConsumed;
+
   return (
     <div className="nutritional-graph">
       {loading ? (
@@ -146,6 +150,13 @@ const NutritionalGraph = () => {
               Protein: {macroData.protein} Cal (
               {getMacroGrams(macroData.protein, "protein")}g)
             </p>
+          </div>
+          <div className="caloric-summary">
+            <h3>Caloric Summary</h3>
+            <p>Daily Caloric Need: {dailyCalories} kcal</p>
+            <p>Calories Consumed: {caloriesConsumed} kcal</p>
+            <p>Calories Remaining: {caloriesRemaining} kcal</p>
+            <p>*Adjusted for {profile.dietPlan} plan</p>
           </div>
         </div>
       )}
