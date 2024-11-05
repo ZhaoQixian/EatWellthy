@@ -38,7 +38,7 @@ const Dashboard = ({ auth }) => {
       <Sidebar user={auth.user} />
 
       <div className="dashboard-content">
-        <h1>Welcome, {auth.user.name}!</h1>
+      <h1 className="welcome-message">Welcome, {auth.user.name}!</h1>
         <p className="date-display">{currentDate}</p> {/* Display the date */}
         <div className="dashboard-sections">
           <div className="section">

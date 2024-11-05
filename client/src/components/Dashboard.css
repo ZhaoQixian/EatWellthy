@@ -1,16 +1,16 @@
 /* Dashboard Container Layout */
 .dashboard-container {
   display: flex;
-  height: calc(100vh - 60px);
-  margin-top: 60px;
+  height: calc(100vh - 20px);
+  margin-top: 0px;
   font-family: Arial, sans-serif;
 }
 
-/* Date Display */
 .date-display {
   font-size: 1rem;
   color: #666;
   margin-bottom: 20px;
+  margin-top: -5px; /* Add negative margin-top to pull it up */
 }
 
 /* Sidebar Styles */
@@ -172,4 +172,27 @@
     margin-left: 0;
     padding-top: 80px;
   }
+}
+
+.welcome-message {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+/* Optional: Add animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.welcome-message {
+  animation: fadeIn 0.5s ease-in-out;
 }
