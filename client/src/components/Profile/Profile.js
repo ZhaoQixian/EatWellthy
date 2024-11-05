@@ -5,19 +5,19 @@ import {
   deleteAccount,
   updateProfile,
   getProfile,
-} from "../actions/Profile";
-import { updateName } from "../actions/auth";
+} from "../../actions/Profile";
+import { updateName } from "../../actions/auth";
 import "./Profile.css";
 
 // Import all animal icons
-import bearIcon from "../img/bear.png";
-import capybaraIcon from "../img/capybara.png";
-import catIcon from "../img/cat.png";
-import dogIcon from "../img/dog.png";
-import otterIcon from "../img/otter.png";
-import pandaIcon from "../img/panda.png";
-import rabbitIcon from "../img/rabbit.png";
-import tigerIcon from "../img/tiger.png";
+import bearIcon from "../../img/bear.png";
+import capybaraIcon from "../../img/capybara.png";
+import catIcon from "../../img/cat.png";
+import dogIcon from "../../img/dog.png";
+import otterIcon from "../../img/otter.png";
+import pandaIcon from "../../img/panda.png";
+import rabbitIcon from "../../img/rabbit.png";
+import tigerIcon from "../../img/tiger.png";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -187,7 +187,11 @@ const Profile = () => {
       </div>
 
       {message.text && (
-        <div className={`message ${message.type === "error" ? "error" : "success"}`}>
+        <div
+          className={`message ${
+            message.type === "error" ? "error" : "success"
+          }`}
+        >
           {message.text}
         </div>
       )}
@@ -210,11 +214,7 @@ const Profile = () => {
               </div>
               <div className="form-field">
                 <label>Gender</label>
-                <select
-                  name="gender"
-                  value={gender}
-                  onChange={onChange}
-                >
+                <select name="gender" value={gender} onChange={onChange}>
                   <option value="">Select Gender</option>
                   <option value="male">Male</option>
                   <option value="female">Female</option>
@@ -278,20 +278,22 @@ const Profile = () => {
                   value={activityLevel}
                   onChange={onChange}
                 >
-                  <option value="sedentary">Sedentary (little or no exercise)</option>
-                  <option value="lightly">Lightly active (1-3 days/week)</option>
-                  <option value="moderately">Moderately active (3-5 days/week)</option>
+                  <option value="sedentary">
+                    Sedentary (little or no exercise)
+                  </option>
+                  <option value="lightly">
+                    Lightly active (1-3 days/week)
+                  </option>
+                  <option value="moderately">
+                    Moderately active (3-5 days/week)
+                  </option>
                   <option value="very">Very active (6-7 days/week)</option>
                   <option value="super">Super active (physical job)</option>
                 </select>
               </div>
               <div className="form-field">
                 <label>Diet Plan</label>
-                <select
-                  name="dietPlan"
-                  value={dietPlan}
-                  onChange={onChange}
-                >
+                <select name="dietPlan" value={dietPlan} onChange={onChange}>
                   <option value="maintenance">Maintenance Plan</option>
                   <option value="weightloss">Weight Loss Plan</option>
                   <option value="keto">Keto Plan</option>
@@ -300,38 +302,37 @@ const Profile = () => {
               </div>
             </div>
 
+            <div className="form-row-full">
+              <div className="form-field">
+                <label>Dietary Preferences</label>
+                <input
+                  type="text"
+                  name="dietaryPreferences"
+                  value={dietaryPreferences}
+                  onChange={onChange}
+                />
+              </div>
+            </div>
 
             <div className="form-row-full">
-            <div className="form-field">
-              <label>Dietary Preferences</label>
-              <input
-                type="text"
-                name="dietaryPreferences"
-                value={dietaryPreferences}
-                onChange={onChange}
-              />
+              <div className="form-field">
+                <label>Allergies (comma separated)</label>
+                <input
+                  type="text"
+                  name="allergies"
+                  value={allergies}
+                  onChange={onChange}
+                />
+              </div>
             </div>
-          </div>
-
-          <div className="form-row-full">
-            <div className="form-field">
-              <label>Allergies (comma separated)</label>
-              <input
-                type="text"
-                name="allergies"
-                value={allergies}
-                onChange={onChange}
-              />
-            </div>
-          </div>
 
             <div className="profile-icon-section">
               <h3>Choose Your Profile Icon</h3>
               <div className="current-icon">
                 <p>Current Icon:</p>
-                <img 
-                  src={animalIcons[profileIcon]} 
-                  alt={profileIcon} 
+                <img
+                  src={animalIcons[profileIcon]}
+                  alt={profileIcon}
                   className="current-icon-preview"
                 />
               </div>
@@ -339,7 +340,9 @@ const Profile = () => {
                 {Object.entries(animalIcons).map(([name, icon]) => (
                   <div
                     key={name}
-                    className={`icon-option ${profileIcon === name ? 'selected' : ''}`}
+                    className={`icon-option ${
+                      profileIcon === name ? "selected" : ""
+                    }`}
                     onClick={() => handleIconSelect(name)}
                   >
                     <img src={icon} alt={name} className="icon-preview" />
@@ -380,7 +383,9 @@ const Profile = () => {
 
         <div className="danger-zone">
           <h2>Delete Account</h2>
-          <p className="danger-text">This action cannot be undone. Please be certain.</p>
+          <p className="danger-text">
+            This action cannot be undone. Please be certain.
+          </p>
           <button onClick={handleDelete}>Delete My Account</button>
         </div>
       </div>

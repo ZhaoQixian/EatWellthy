@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 import PlacesList from "./PlacesList";
 import Map from "./Map";
-import Sidebar from "../Sidebar";
+import Sidebar from "../layout/Sidebar";
 import "./location.css";
 
 const Location = ({ auth }) => {
