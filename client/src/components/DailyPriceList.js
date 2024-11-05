@@ -43,9 +43,9 @@ const SupermarketShowcase = () => {
     },
     {
       id: "prime",
-      name: "Amazon Prime",
-      url: "https://www.amazon.sg/",
-      description: "Fast delivery of groceries and fresh products right to your doorstep.",
+      name: "Prime",
+      url: "https://www.primesupermarket.com/",
+      description: "Local neighborhood supermarket offering fresh groceries and daily essentials at affordable prices.",
       logo: primeLogo,
       isClickable: true
     },
