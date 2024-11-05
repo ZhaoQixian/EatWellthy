@@ -16,6 +16,8 @@ import tigerIcon from "../img/tiger.png";
 const Sidebar = ({ user }) => {
   const dispatch = useDispatch();
   const profileState = useSelector((state) => state.profile);
+  const authState = useSelector((state) => state.auth);
+  const userId = authState.user._id;
   
   useEffect(() => {
     dispatch(getProfile());
@@ -47,7 +49,7 @@ const Sidebar = ({ user }) => {
           <Link to="/profile">Profile</Link>
         </li>
         <li>
-          <Link to={`/nutrition-calculator/${user && user.name}`}>Tracker</Link>
+          <Link to={`/nutrition-calculator/${userId}/${user && user.name}`}>Tracker</Link>
         </li>
         <li>
           <Link to="/diet-planner">Analysis</Link>
