@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loadUser } from "./actions/auth";
 
 import "./App.css";
 import Navbar from "./components/layout/Navbar";
 import Landing from "./components/layout/Landing";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
-import VerifyEmail from "./components/auth/VerifyEmail"; // Add this import
+import VerifyEmail from "./components/auth/VerifyEmail";
 import PrivateRoute from "./routing/PrivateRoute";
 import NotFound from "./components/NotFound";
 import Dashboard from "./components/Dashboard";
@@ -24,6 +26,17 @@ import LogMeal from "./components/NutritionCalculator_U0301";
 import Profile from "./components/Profile";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Check if token exists and set auth token in axios headers
+    if (localStorage.token) {
+      setAuthToken(localStorage.token);
+      dispatch(loadUser()); // Load user data whenever app mounts
+    }
+  }, [dispatch]); // Only run once when component mounts
+
+  // Set auth token on initial load
   if (localStorage.token) {
     setAuthToken(localStorage.token);
   }
@@ -36,12 +49,15 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/verify" element={<VerifyEmail />} /> {/* Add this route */}
+          <Route path="/verify" element={<VerifyEmail />} />
           <Route
             path="/dashboard"
             element={<PrivateRoute element={Dashboard} />}
           />
-          <Route path="/profile" element={<PrivateRoute element={Profile} />} />
+          <Route 
+            path="/profile" 
+            element={<PrivateRoute element={Profile} />} 
+          />
           <Route
             path="/nutrition-calculator/:userId/:username"
             element={<NutritionCalculator />}
@@ -50,9 +66,19 @@ function App() {
           <Route path="/diet-planner" element={<DietPlanner />} />
           <Route path="/daily-price-list" element={<DailyPriceList />} />
           <Route path="/welloh" element={<Welloh />} />
-          <Route path="/calendar" element={<MyCalendar />} />
-          <Route path="/events/add" element={<AddEvents />} />
-          <Route path="/event/:id/update" element={<UpdateEvent />} />
+          // In App.js, update the calendar routes to use PrivateRoute:
+<Route 
+  path="/calendar" 
+  element={<PrivateRoute element={MyCalendar} />} 
+/>
+<Route 
+  path="/events/add" 
+  element={<PrivateRoute element={AddEvents} />} 
+/>
+<Route 
+  path="/event/:id/update" 
+  element={<PrivateRoute element={UpdateEvent} />} 
+/>
           <Route path="/faqs" element={<FAQs />} />
           <Route path="/location" element={<Location />} />
           <Route path="*" element={<NotFound />} />

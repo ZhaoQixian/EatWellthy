@@ -14,11 +14,11 @@ import {
 } from "../actions/types";
 
 const initialState = {
-  token: localStorage.getItem("token") || null,
-  isAuthenticated: false,
-  loading: false,
+  token: localStorage.getItem("token"),
+  isAuthenticated: localStorage.getItem("token") ? true : false, // Initialize based on token presence
+  loading: true, // Start with true to prevent flash of unauthorized content
   user: null,
-  googleAuto: localStorage.getItem("googleAuto") || false,
+  googleAuto: localStorage.getItem("googleAuto") === "true", // Convert string to boolean
 };
 
 export default function authReducer(state = initialState, action) {
@@ -81,7 +81,7 @@ export default function authReducer(state = initialState, action) {
         user: null,
       };
     case GOOGLE_AUTO:
-      localStorage.setItem("googleAuto", true);
+      localStorage.setItem("googleAuto", "true"); // Store as string
       return { 
         ...state,
         googleAuto: true 
