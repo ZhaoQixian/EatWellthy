@@ -49,7 +49,7 @@ const Sidebar = ({ user }) => {
           <Link to="/profile">Profile</Link>
         </li>
         <li>
-          <Link to={`/nutrition-calculator/${userId}/${user && user.name}`}>
+          <Link to={'/nutrition-calculator'}>
             Tracker
           </Link>
         </li>

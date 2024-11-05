@@ -2,7 +2,7 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import NutritionCalculator from '../components/NutritionCalculator';
+import NutritionCalculator from '../components/nutrition_cal/NutritionCalculator';
 
 const PrivateRoute = ({
   element: Element,

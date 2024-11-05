@@ -13,7 +13,7 @@ import PrivateRoute from "./routing/PrivateRoute";
 import NotFound from "./components/NotFound/NotFound";
 import Dashboard from "./components/Dashboard/Dashboard";
 import setAuthToken from "./utils/setAuthToken";
-import NutritionCalculator from "./components/NutritionCalculator";
+import NutritionCalculator from "./components/nutrition_cal/NutritionCalculator";
 import DietPlanner from "./components/Analysis/DietPlanner";
 import DailyPriceList from "./components/Grocery/DailyPriceList";
 import Welloh from "./components/Welloh/Welloh";
@@ -69,9 +69,9 @@ function App() {
             element={<PrivateRoute element={() => withLayout(Profile)} />}
           />
           <Route
-            path="/nutrition-calculator/:userId/:username"
-            element={withLayout(NutritionCalculator)}
-          />
+  path="/nutrition-calculator"
+  element={<PrivateRoute element={() => withLayout(NutritionCalculator)} />}
+/>
           <Route path="/log-meal" element={withLayout(LogMeal)} />
           <Route path="/diet-planner" element={withLayout(DietPlanner)} />
           <Route
