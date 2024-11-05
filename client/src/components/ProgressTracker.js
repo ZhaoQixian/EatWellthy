@@ -115,14 +115,14 @@ const ProgressTracker = () => {
             </p>
           </div>
           <Doughnut data={data} />
-          <div className="calorie-info">
+          {/* <div className="calorie-info">
             <p>Daily Caloric Need: {dailyCalories || 0} kcal</p>
             <p>Calories Consumed: {caloriesConsumed} kcal</p>
             <p>Calories Remaining: {caloriesRemaining} kcal</p>
             {profile.dietPlan && profile.dietPlan !== "maintenance" && (
               <p className="plan-note">*Adjusted for {profile.dietPlan} plan</p>
             )}
-          </div>
+          </div> */}
         </div>
       )}
     </div>
