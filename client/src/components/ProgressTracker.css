@@ -25,7 +25,7 @@
 /* Style for the label part */
 .weight-info p::before {
   content: attr(data-label);
-  color: #2e7d32;  /* Updated to match diet modal green */
+  color: #2e7d32; /* Updated to match diet modal green */
   font-weight: 600;
 }
 
@@ -48,11 +48,42 @@
 
 .plan-note {
   font-size: 0.9rem;
-  color: #2e7d32;  /* Updated to match diet modal green */
+  color: #2e7d32; /* Updated to match diet modal green */
 }
 
 .doughnut-chart {
   margin: 20px 0;
   width: 100%;
   max-width: 400px;
+}
+
+.nutrition-prompt {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.nutrition-prompt p {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 10px; /* Space between text and button */
+}
+
+.nutrition-prompt button {
+  background-color: #4caf50; /* Green background */
+  color: white; /* White text */
+  font-size: 1rem; /* Adjusted font size */
+  font-weight: bold; /* Bold for emphasis */
+  padding: 12px 25px; /* Space around text */
+  border-radius: 8px; /* Rounded corners */
+  border: none; /* No border */
+  cursor: pointer; /* Pointer cursor */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transition */
+}
+
+.nutrition-prompt button:hover {
+  background-color: #45a049; /* Slightly darker green on hover */
+}
+
+.nutrition-prompt button:active {
+  transform: scale(0.98); /* Slight shrink on click */
 }

@@ -25,6 +25,7 @@ import Location from "./components/Location/Location";
 import LogMeal from "./components/NutritionCalculator_U0301";
 import Profile from "./components/Profile";
 import Layout from "./components/layout/Layout";
+import NutritionixAPI from "./components/NutritionixAPI";
 
 function App() {
   const dispatch = useDispatch();
@@ -63,9 +64,9 @@ function App() {
             path="/dashboard"
             element={<PrivateRoute element={() => withLayout(Dashboard)} />}
           />
-          <Route 
-            path="/profile" 
-            element={<PrivateRoute element={() => withLayout(Profile)} />} 
+          <Route
+            path="/profile"
+            element={<PrivateRoute element={() => withLayout(Profile)} />}
           />
           <Route
             path="/nutrition-calculator/:userId/:username"
@@ -73,20 +74,25 @@ function App() {
           />
           <Route path="/log-meal" element={withLayout(LogMeal)} />
           <Route path="/diet-planner" element={withLayout(DietPlanner)} />
-          <Route path="/daily-price-list" element={withLayout(DailyPriceList)} />
+          <Route
+            path="/daily-price-list"
+            element={withLayout(DailyPriceList)}
+          />
           <Route path="/welloh" element={withLayout(Welloh)} />
-          <Route 
-            path="/calendar" 
-            element={<PrivateRoute element={() => withLayout(MyCalendar)} />} 
+          <Route
+            path="/calendar"
+            element={<PrivateRoute element={() => withLayout(MyCalendar)} />}
           />
-          <Route 
-            path="/events/add" 
-            element={<PrivateRoute element={() => withLayout(AddEvents)} />} 
+          <Route
+            path="/events/add"
+            element={<PrivateRoute element={() => withLayout(AddEvents)} />}
           />
-          <Route 
-            path="/event/:id/update" 
-            element={<PrivateRoute element={() => withLayout(UpdateEvent)} />} 
+          <Route
+            path="/event/:id/update"
+            element={<PrivateRoute element={() => withLayout(UpdateEvent)} />}
           />
+          <Route path="/nutrition" element={<NutritionixAPI />} />
+
           <Route path="/faqs" element={withLayout(FAQs)} />
           <Route path="/location" element={<Location />} />
           <Route path="*" element={<NotFound />} />

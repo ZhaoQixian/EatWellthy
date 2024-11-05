@@ -1,0 +1,72 @@
+/* NutritionixAPI Container */
+.NutritionixAPI {
+  text-align: center;
+  padding: 40px 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Title Styling */
+.NutritionixAPI h1 {
+  font-size: 2.5rem;
+  color: #2e5e4e; /* Green theme color */
+  margin-bottom: 30px;
+  font-weight: 700;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Search and Details Component Styling */
+.NutritionixAPI .NutritionSearch,
+.NutritionixAPI .NutritionDetails {
+  margin-bottom: 25px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(46, 94, 78, 0.1);
+}
+
+/* Button Styling */
+button {
+  background-color: #4caf50; /* Green background */
+  color: white; /* White text */
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 12px 25px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 15px; /* Add space between elements */
+}
+
+button:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
+
+button:active {
+  transform: scale(0.98); /* Slight shrink on click */
+}
+
+/* "Back to Dashboard" Button Styling */
+.back-dashboard-button {
+  background-color: #4caf50; /* Green theme */
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 12px 25px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 15px;
+  display: inline-block;
+}
+
+.back-dashboard-button:hover {
+  background-color: #388e3c; /* Slightly darker shade */
+}
+
+.back-dashboard-button:active {
+  transform: scale(0.98); /* Shrink effect */
+}
