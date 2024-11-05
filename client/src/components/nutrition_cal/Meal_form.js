@@ -92,8 +92,8 @@ const MealForm = ({userId}) => {
         "Content-Type": "application/json",
       },
     };
-    if (formData.time === "" ) {
-      showMessage("Valid date is required!", "error");
+    if (formData.time === "" || formData.meal_type === '') {
+      showMessage("Correct date and meal type are required!", "error");
       return;  
     }
     try {
@@ -207,7 +207,7 @@ const MealForm = ({userId}) => {
           name="meal_type"
           value={formData.meal_type}
           onChange={handleInputChange}
-            
+          required 
         >
           <option value="">-- Select a meal type --</option>
           <option value="breakfast">Breakfast</option>
@@ -258,8 +258,7 @@ const MealForm = ({userId}) => {
     <table>
       <thead>
         <tr>
-          <th>Meal Type</th>
-          <th>Food</th>
+          <th>Name</th>
           <th>Amount</th>
           <th>Energy(kcal)</th>
           <th>Fat(g)</th>
@@ -277,7 +276,6 @@ const MealForm = ({userId}) => {
          
         {foodList.map(food => (
           <tr key={food.meal._id}>
-            <td>{food.meal.meal_type}</td>
             <td>{food.meal.food_taken}</td>
             <td>{food.meal.portion}</td>
             <td>{food.meal.portion * food.nutrition[0].energy}</td>
@@ -295,7 +293,7 @@ const MealForm = ({userId}) => {
           </tr>
         ))}
         <tr>
-            <td colSpan= {3}>Total Nutrition:</td>
+            <td colSpan= {2}>Total Nutrition:</td>
              
             <td>{nutritionTotals.energy}</td>
             <td>{nutritionTotals.fat}</td>
