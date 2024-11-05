@@ -129,7 +129,9 @@ const ProgressTracker = () => {
           <Doughnut data={data} />
           <div className="nutrition-prompt">
             <p>Curious about meal nutrition? Just search it up!</p>
-            <button onClick={handleNavigateToNutrition}>Go to Nutrition</button>
+            <button onClick={handleNavigateToNutrition}>
+              Go to Nutrition Info Finder
+            </button>
           </div>
         </div>
       )}
