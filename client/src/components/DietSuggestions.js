@@ -11,7 +11,10 @@ const DietSuggestions = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
+  const [showMealSelection, setShowMealSelection] = useState(false); // New state for meal selection modal
   const [isAdding, setIsAdding] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [mealDetails, setMealDetails] = useState(null);
 
   useEffect(() => {
     dispatch(getProfile());
@@ -85,7 +88,6 @@ const DietSuggestions = () => {
 
     try {
       if (mealType === "wholeDay") {
-        // Create one event for whole day
         const mealTimes = getMealTimes();
         const fullDayEvent = {
           title: "Full Day Meal Plan",
@@ -108,41 +110,16 @@ const DietSuggestions = () => {
         }
 
         await dispatch(addEvent(fullDayEvent));
-        alert("Full day meal plan added to calendar successfully!");
+        setMealDetails(fullDayEvent);
+        setShowSuccessModal(true);
       } else {
         await addSingleMealToCalendar(mealType);
-        alert("Meal added to calendar successfully!");
+        setMealDetails(createEventDetails(mealType));
+        setShowSuccessModal(true);
       }
 
       setShowDialog(false);
       dispatch(getAllEvents(auth.user._id));
-
-      const addToGoogle = window.confirm(
-        "Do you want to add this to Google Calendar as well?"
-      );
-      if (addToGoogle) {
-        if (mealType === "wholeDay") {
-          // Create one Google Calendar event for whole day
-          const mealTimes = getMealTimes();
-          const fullDayEvent = {
-            title: "Full Day Meal Plan",
-            describe: profileState.profile.dietSuggestions
-              .map(
-                (meal) =>
-                  `${meal.meal}:\n${meal.items
-                    .map((item) => `${item.food} - ${item.weight}`)
-                    .join(", ")}`
-              )
-              .join("\n\n"),
-            start: mealTimes.breakfast.start.toISOString(),
-            end: mealTimes.dinner.end.toISOString(),
-            userId: auth.user._id,
-          };
-          handleGoogleCalendar(fullDayEvent);
-        } else {
-          handleGoogleCalendar(createEventDetails(mealType));
-        }
-      }
     } catch (error) {
       console.error("Failed to add to calendar:", error);
       alert("Failed to add to calendar.");
@@ -200,6 +177,28 @@ const DietSuggestions = () => {
     window.open(url, "_blank");
   };
 
+  const handleSuccessModalConfirm = () => {
+    handleGoogleCalendar(mealDetails);
+    setShowSuccessModal(false);
+  };
+
+  const handleSuccessModalCancel = () => {
+    setShowSuccessModal(false);
+  };
+
+  // Function to open the meal selection modal
+  const openMealSelection = () => {
+    setShowMealSelection(true);
+  };
+
+  // Function to handle the meal selection
+  const handleMealSelection = (mealType) => {
+    setShowMealSelection(false);
+    if (mealType) {
+      addToWebsiteCalendar(mealType);
+    }
+  };
+
   return (
     <div className="p-4">
       {error && (
@@ -226,22 +225,26 @@ const DietSuggestions = () => {
                         {suggestion.meal}
                       </h3>
                       <div className="mt-2">
-                      {suggestion.items.map((item, itemIndex) => (
-  <div
-    key={itemIndex}
-    className="flex items-center py-1"
-  >
-    <span className="text-black font-medium">{item.food}</span>
-    <span className="text-gray-600 ml-2">- {item.weight}</span>
-  </div>
-))}
+                        {suggestion.items.map((item, itemIndex) => (
+                          <div
+                            key={itemIndex}
+                            className="flex items-center py-1"
+                          >
+                            <span className="text-black font-medium">
+                              {item.food}
+                            </span>
+                            <span className="text-gray-600 ml-2">
+                              - {item.weight}
+                            </span>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   )
                 )}
                 <div className="diet-button-container">
                   <button
-                    onClick={() => setShowDialog(true)}
+                    onClick={openMealSelection}
                     disabled={isAdding}
                     className="diet-calendar-button"
                   >
@@ -252,77 +255,55 @@ const DietSuggestions = () => {
                     disabled={isGenerating}
                     className="diet-calendar-button"
                   >
-                    {isGenerating ? "Generating..." : "Generate New Plan"}
+                    {isGenerating
+                      ? "Generating..."
+                      : "Refresh Diet Suggestions"}
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="text-center py-4">
-                No diet suggestions available. Click "Generate New Plan" to
-                create your personalized diet plan.
-              </div>
-            )}
-
-            {/* Calendar Dialog */}
-            {showDialog && (
-              <div className="diet-modal-overlay">
-                <div className="diet-modal">
-                  <div className="diet-modal-header">
-                    <h3>Add to Calendar</h3>
-                    <button
-                      className="diet-modal-close"
-                      onClick={() => setShowDialog(false)}
-                    >
-                      ×
-                    </button>
-                  </div>
-                  <button
-                    className="diet-calendar-button"
-                    onClick={() => addToWebsiteCalendar("wholeDay")}
-                    disabled={isAdding}
-                  >
-                    Add All Meals
-                  </button>
-                  <button
-                    className="diet-calendar-button"
-                    onClick={() => addToWebsiteCalendar("breakfast")}
-                    disabled={isAdding}
-                  >
-                    Add Breakfast
-                  </button>
-                  <button
-                    className="diet-calendar-button"
-                    onClick={() => addToWebsiteCalendar("lunch")}
-                    disabled={isAdding}
-                  >
-                    Add Lunch
-                  </button>
-                  <button
-                    className="diet-calendar-button"
-                    onClick={() => addToWebsiteCalendar("snack")}
-                    disabled={isAdding}
-                  >
-                    Add Snack
-                  </button>
-                  <button
-                    className="diet-calendar-button"
-                    onClick={() => addToWebsiteCalendar("dinner")}
-                    disabled={isAdding}
-                  >
-                    Add Dinner
-                  </button>
-                  <div className="diet-modal-footer">
-                    <button
-                      className="diet-modal-cancel"
-                      onClick={() => setShowDialog(false)}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <div>No diet suggestions available.</div>
             )}
           </div>
+
+          {/* Success Modal */}
+          {showSuccessModal && (
+            <div className="modal">
+              <div className="modal-content">
+                <h2>Meal Added Successfully!</h2>
+                <p>Do you want to add this meal to your Google Calendar?</p>
+                <button onClick={handleSuccessModalConfirm}>Yes</button>
+                <button onClick={handleSuccessModalCancel}>No</button>
+              </div>
+            </div>
+          )}
+
+          {/* Meal Selection Modal */}
+          {showMealSelection && (
+            <div className="modal">
+              <div className="modal-content">
+                <h2>Select Meal Type</h2>
+                <button onClick={() => handleMealSelection("breakfast")}>
+                  Breakfast
+                </button>
+                <button onClick={() => handleMealSelection("lunch")}>
+                  Lunch
+                </button>
+                <button onClick={() => handleMealSelection("snack")}>
+                  Snack
+                </button>
+                <button onClick={() => handleMealSelection("dinner")}>
+                  Dinner
+                </button>
+                <button onClick={() => handleMealSelection("wholeDay")}>
+                  All Meals
+                </button>
+                <button onClick={() => handleMealSelection(null)}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
