@@ -164,27 +164,34 @@
 
 /* Different background colors for each button */
 #add_food {
-    background-color: #66cc66;  /* 浅绿色 */
+    background-color: #66cc66;
+    border-radius: 5px;  /* 浅绿色 */
 }
 
 #add_food:hover {
-    background-color: #4CAF50;  /* 悬停时的深绿色 */
+    background-color: #4CAF50;
+    border-radius: 5px;  /* 悬停时的深绿色 */
 }
 
 #add_meal {
-    background-color: #ffcc66;  /* 浅橙色 */
+    background-color: #ffcc66; 
+    border-radius: 5px; /* 浅橙色 */
 }
 
 #add_meal:hover {
-    background-color: #ffb84d;  /* 悬停时的深橙色 */
+    background-color: #ffb84d;
+    border-radius: 5px;  /* 悬停时的深橙色 */
+      /* 悬停时的深橙色 */
 }
 
 #remove {
-    background-color: #ff6666;  /* 浅红色 */
+    background-color: #ff6666;
+    border-radius: 5px;  /* 浅红色 */
 }
 
 #remove:hover {
-    background-color: #ff4d4d;  /* 悬停时的深红色 */
+    background-color: #ff4d4d;
+    border-radius: 5px;  /* 悬停时的深红色 */
 }
 
 /* Add meal, add food, and remove buttons styling */
@@ -255,7 +262,7 @@ table {
   /* Container */
   .faqs__container {
     width: 100%;
-    max-width: 1200px; /* Adjust max width as needed */
+    max-width: 1400px; /* Adjust max width as needed */
     margin: 10px auto; /* Centering the container */
     padding: 10px;
     background-color: white; /* White background for the FAQ container */
@@ -273,6 +280,7 @@ table {
     font-size: 2.5rem;
     color: #2e5e4e; /* Dark green title color */
     margin-bottom: 20px;
+    border-bottom: 2px solid #f0f0f0;
   }
   
   .faqs__description {
