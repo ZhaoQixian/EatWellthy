@@ -25,8 +25,8 @@ locationRouter.post("/", async (req, res) => {
         item.name.toLowerCase().includes("sheng siong") ||
         item.name.toLowerCase().includes("giant") ||
         item.name.toLowerCase().includes("cold") ||
-        item.name.toLowerCase().includes("red") ||
-        item.name.toLowerCase().includes("amazon") ||
+        //item.name.toLowerCase().includes("red") ||
+        //item.name.toLowerCase().includes("amazon") ||
         item.name.toLowerCase().includes("cs fresh") ||
         item.name.toLowerCase().includes("prime")
     );
