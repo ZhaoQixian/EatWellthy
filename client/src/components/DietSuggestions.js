@@ -231,8 +231,12 @@ const DietSuggestions = () => {
                             key={itemIndex}
                             className="flex justify-between py-1"
                           >
-                            <span>{item.food}</span>
-                            <span className="text-gray-600">{item.weight}</span>
+                            {/* Updated to add spacing between food item and weight */}
+                            <span className="flex-1">{item.food}</span>
+                            <div></div>
+                            <span className="text-gray-600 mt-2 ml-2">
+                              Quantity - {item.weight}
+                            </span>
                           </div>
                         ))}
                       </div>
