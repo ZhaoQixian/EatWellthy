@@ -236,10 +236,10 @@ const Welloh = () => {
             Welloh , your personal health assistant
           </p>
           <p>
-            Welloh know what you like , welloh can tell what you need
+            Welloh knows what you like , Welloh can tell what you need
           </p>
           <p>
-            <strong>Welloh also not restricted to be a health assistant,talk whatever you like</strong>
+            <strong>Welloh is not restricted to being a health assistant, talk to it whenever you like</strong>
           </p>
         </div>
         {dataState.isNutritionLoaded ? (
