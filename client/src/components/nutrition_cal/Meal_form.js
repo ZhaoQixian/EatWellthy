@@ -256,6 +256,7 @@ const MealForm = ({userId}) => {
        
     </form> 
     <h2>What you took:</h2>
+    <div style =  {{ overflowX: "auto", width: "100%" }}>
     <table>
       <thead>
         <tr>
@@ -313,6 +314,7 @@ const MealForm = ({userId}) => {
           </tr>
       </tbody>
     </table>
+    </div>
   </div>
   );
 };
