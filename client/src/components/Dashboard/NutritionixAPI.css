@@ -70,3 +70,8 @@ button:active {
 .back-dashboard-button:active {
   transform: scale(0.98); /* Shrink effect */
 }
+/* src/components/NutritionixAPI.css */
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
