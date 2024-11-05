@@ -94,7 +94,9 @@ const NutritionCalculator = ( ) => {
     <div className="faqs__page-wrapper">
       <div className="faqs__container">
     <div style={{paddingTop : "1rem",paddingLeft : "1.2rem" , paddingRight:"1.2rem"}}>
-      <h1>NutritionCalculator</h1>
+      <div className="faqs__header">
+          <h1 className="faqs__title">NutritionCalculator</h1>
+        </div>
       <p>Hi,{ username} ! Welcome to the NutritionCalculator page!</p>
     
       <h3>Select an option:</h3>
