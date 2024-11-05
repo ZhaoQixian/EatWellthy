@@ -24,6 +24,7 @@ import FAQs from "./components/FAQs";
 import Location from "./components/Location/Location";
 import LogMeal from "./components/NutritionCalculator_U0301";
 import Profile from "./components/Profile";
+import Layout from "./components/layout/Layout";
 
 function App() {
   const dispatch = useDispatch();
@@ -41,6 +42,14 @@ function App() {
     setAuthToken(localStorage.token);
   }
 
+  const withLayout = (Component) => {
+    return (
+      <Layout>
+        <Component />
+      </Layout>
+    );
+  };
+
   return (
     <div className="App">
       <Router>
@@ -52,34 +61,33 @@ function App() {
           <Route path="/verify" element={<VerifyEmail />} />
           <Route
             path="/dashboard"
-            element={<PrivateRoute element={Dashboard} />}
+            element={<PrivateRoute element={() => withLayout(Dashboard)} />}
           />
           <Route 
             path="/profile" 
-            element={<PrivateRoute element={Profile} />} 
+            element={<PrivateRoute element={() => withLayout(Profile)} />} 
           />
           <Route
             path="/nutrition-calculator/:userId/:username"
-            element={<NutritionCalculator />}
+            element={withLayout(NutritionCalculator)}
           />
-          <Route path="/log-meal" element={<LogMeal />} />
-          <Route path="/diet-planner" element={<DietPlanner />} />
-          <Route path="/daily-price-list" element={<DailyPriceList />} />
-          <Route path="/welloh" element={<Welloh />} />
-          // In App.js, update the calendar routes to use PrivateRoute:
-<Route 
-  path="/calendar" 
-  element={<PrivateRoute element={MyCalendar} />} 
-/>
-<Route 
-  path="/events/add" 
-  element={<PrivateRoute element={AddEvents} />} 
-/>
-<Route 
-  path="/event/:id/update" 
-  element={<PrivateRoute element={UpdateEvent} />} 
-/>
-          <Route path="/faqs" element={<FAQs />} />
+          <Route path="/log-meal" element={withLayout(LogMeal)} />
+          <Route path="/diet-planner" element={withLayout(DietPlanner)} />
+          <Route path="/daily-price-list" element={withLayout(DailyPriceList)} />
+          <Route path="/welloh" element={withLayout(Welloh)} />
+          <Route 
+            path="/calendar" 
+            element={<PrivateRoute element={() => withLayout(MyCalendar)} />} 
+          />
+          <Route 
+            path="/events/add" 
+            element={<PrivateRoute element={() => withLayout(AddEvents)} />} 
+          />
+          <Route 
+            path="/event/:id/update" 
+            element={<PrivateRoute element={() => withLayout(UpdateEvent)} />} 
+          />
+          <Route path="/faqs" element={withLayout(FAQs)} />
           <Route path="/location" element={<Location />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
