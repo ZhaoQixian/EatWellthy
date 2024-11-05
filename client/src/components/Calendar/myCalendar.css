@@ -1,6 +1,5 @@
 .main-calendar {
   width: 100%;
-  margin-top: 80px;
   padding: 0 60px;
   flex-direction: column;
 }
