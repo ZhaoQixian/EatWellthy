@@ -1,89 +1,178 @@
-/* Landing Page Styles */
+/* Landing.css */
 .landing {
-  height: calc(
-    100vh - 60px
-  ); /* Full height for the landing section minus navbar height */
+  height: calc(100vh - 60px);
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-  margin-top: 60px; /* Space below fixed navbar */
+  margin-top: 60px;
+  background: url('../../img/landing.jpg') center/cover no-repeat;
+  position: relative;
 }
 
 .dark-overlay {
-  background: rgba(0, 0, 0, 0.6); /* Dark overlay for contrast */
-  padding: 40px; /* Padding for the overlay */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Shadow for depth */
+  background: rgba(0, 0, 0, 0.6);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .landing-inner {
-  position: relative;
-  z-index: 1; /* Ensure text is above the overlay */
+  width: 90%;
+  max-width: 1200px;
+  padding: 20px;
+  z-index: 1;
 }
 
-/* Header Styles */
 h1 {
-  font-size: 4rem; /* Increase font size */
-  font-family: "Montserrat", sans-serif; /* Modern font */
-  color: #fff; /* Light color for text */
-  letter-spacing: 1px; /* Space between letters */
-  animation: fadeIn 1s ease-out; /* Animation for entrance effect */
+  font-size: 4rem;
+  font-family: "Montserrat", sans-serif;
+  color: #2d8a5f;
+  letter-spacing: 1px;
+  margin-bottom: 40px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  position: relative;
 }
 
-/* Keyframes for fade-in animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Button Container Styles */
-.buttons {
-  margin-top: 20px;
+/* Feature Cards */
+.feature-cards {
   display: flex;
-  justify-content: center; /* Center the buttons within the container */
-  gap: 30px; /* Space between buttons */
-  padding: 10px; /* Add padding for a more spacious feel */
-  width: 100%; /* Make the button container full width */
-  max-width: 600px; /* Limit the maximum width to prevent stretching too far */
-  margin-left: auto; /* Center the container */
-  margin-right: auto; /* Center the container */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Optional shadow for depth */
-  border-radius: 10px; /* Optional rounded corners for aesthetics */
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  margin: 0 auto 40px auto;
+  max-width: 1000px;
 }
 
-/* Individual Button Styles */
+/* Flip Card Container */
+.flip-card {
+  background-color: transparent;
+  width: calc(50% - 15px);
+  min-width: 280px;
+  height: 200px;
+  perspective: 1000px;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+/* Front and Back Card Styles */
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.flip-card-front {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.flip-card-back {
+  background: rgba(45, 138, 95, 0.95);
+  transform: rotateY(180deg);
+}
+
+.flip-card-front h3 {
+  color: #fff;
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+}
+
+.flip-card-front p {
+  color: #fff;
+  font-size: 1.1rem;
+}
+
+.flip-card-back p {
+  color: #fff;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+/* Button Styles */
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 20px;
+}
+
 .btn {
-  padding: 15px 30px; /* Increase button padding for a larger clickable area */
-  font-size: 1rem; /* Adjust font size */
-  border: none; /* Ensure no border for a cleaner look */
-  border-radius: 5px; /* Rounded corners */
-  cursor: pointer; /* Change cursor to pointer */
-  transition: background-color 0.3s ease; /* Smooth background change on hover */
+  padding: 15px 40px;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  font-weight: 600;
+  color: white;
+  background: rgba(45, 138, 95, 0.85);
+  border: 2px solid rgba(255, 255, 255, 0.3);
 }
 
 .btn:hover {
-  background-color: rgba(255, 255, 255, 0.2); /* Light hover effect */
+  background: rgba(45, 138, 95, 1);
+  transform: translateY(-2px);
 }
 
 /* Responsive Layout */
+@media (max-width: 992px) {
+  .feature-cards {
+    gap: 20px;
+  }
+
+  .flip-card {
+    width: calc(50% - 10px);
+  }
+}
+
 @media (max-width: 768px) {
   h1 {
-    font-size: 2.5rem; /* Adjust heading size for smaller screens */
+    font-size: 2.5rem;
+    margin-bottom: 30px;
   }
 
-  .dark-overlay {
-    padding: 20px; /* Add padding for smaller screens */
+  .feature-cards {
+    flex-direction: column;
+    align-items: center;
   }
 
-  .landing {
-    height: calc(
-      100vh - 50px
-    ); /* Adjust height for smaller screens if necessary */
+  .flip-card {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .btn {
+    width: 100%;
+    max-width: 200px;
   }
 }
