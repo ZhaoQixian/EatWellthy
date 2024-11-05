@@ -3,21 +3,36 @@
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  background-color: #f8f9fa; /* Light background for better contrast */
-  border-radius: 8px; /* Softened corners */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .weight-info {
-  text-align: center;
+  text-align: left;
   margin-bottom: 20px;
+  align-self: flex-start;
+  width: 100%;
 }
 
 .weight-info p {
-  font-size: 1.25rem; /* Slightly larger font size */
-  font-weight: 600; /* Bold for emphasis */
-  margin: 5px 0; /* Spacing between paragraphs */
-  color: #333; /* Darker color for better readability */
+  font-size: 0.9rem;
+  margin: 5px 0;
+  display: flex;
+  gap: 8px;
+}
+
+/* Style for the label part */
+.weight-info p::before {
+  content: attr(data-label);
+  color: #2e7d32;  /* Updated to match diet modal green */
+  font-weight: 600;
+}
+
+/* Style for the value part */
+.weight-info p span {
+  color: #333;
+  font-weight: 500;
 }
 
 .calorie-info {
@@ -26,24 +41,18 @@
 }
 
 .calorie-info p {
-  font-size: 1.1rem; /* A bit smaller than weight info */
-  margin: 5px 0; /* Spacing */
-  color: #666; /* Medium gray for secondary info */
+  font-size: 1.1rem;
+  margin: 5px 0;
+  color: #666;
 }
 
 .plan-note {
-  font-size: 0.9rem; /* Smaller font for notes */
-  color: #ff9800; /* A noticeable color for emphasis */
+  font-size: 0.9rem;
+  color: #2e7d32;  /* Updated to match diet modal green */
 }
 
 .doughnut-chart {
-  margin: 20px 0; /* Space around the chart */
-  width: 100%; /* Responsive chart width */
-  max-width: 400px; /* Limit max width */
-}
-
-/* Optional: Add a hover effect for interactivity */
-.progress-tracker p:hover {
-  text-decoration: underline; /* Underline on hover for interaction */
-  cursor: pointer; /* Cursor change to indicate interactivity */
+  margin: 20px 0;
+  width: 100%;
+  max-width: 400px;
 }

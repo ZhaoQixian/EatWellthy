@@ -108,12 +108,10 @@ const ProgressTracker = () => {
       ) : (
         <div>
           <div className="weight-info">
-            <p>WEIGHT: {profile.weight} kg</p>
-            <p>GOAL: {profile.targetWeight} kg</p>
-            <p>
-              TO GO: {Math.max(profile.weight - profile.targetWeight, 0)} kg
-            </p>
-          </div>
+  <p data-label="WEIGHT:"><span>{profile.weight} kg</span></p>
+  <p data-label="GOAL:"><span>{profile.targetWeight} kg</span></p>
+  <p data-label="TO GO:"><span>{Math.max(profile.weight - profile.targetWeight, 0)} kg</span></p>
+</div>
           <Doughnut data={data} />
           {/* <div className="calorie-info">
             <p>Daily Caloric Need: {dailyCalories || 0} kcal</p>
