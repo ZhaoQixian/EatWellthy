@@ -1,8 +1,8 @@
-// ProgressTracker.js
 import React, { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useDispatch, useSelector } from "react-redux";
+import axios from 'axios';
 import { getProfile } from "../../actions/Profile";
 import "./ProgressTracker.css";
 
@@ -11,14 +11,50 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const ProgressTracker = () => {
   const dispatch = useDispatch();
   const { profile, loading } = useSelector((state) => state.profile);
+  const auth = useSelector((state) => state.auth);
   const [bmi, setBmi] = useState(null);
   const [bmr, setBmr] = useState(null);
   const [dailyCalories, setDailyCalories] = useState(null);
-  const [caloriesConsumed, setCaloriesConsumed] = useState(1350);
+  const [caloriesConsumed, setCaloriesConsumed] = useState(0);
 
   useEffect(() => {
     dispatch(getProfile());
   }, [dispatch]);
+
+  // New function to fetch today's meals
+  const fetchTodaysMeals = async () => {
+    try {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      const response = await axios.post("http://localhost:5050/nutrition/query_meal", {
+        meal_type: '',
+        owner: auth.user._id,
+        time: today
+      });
+
+      if (response.data.success) {
+        // Calculate total calories from all meals
+        const totalCalories = response.data.meals.reduce((total, { meal, nutrition }) => {
+          if (nutrition !== "No nutrition data found for this meal.") {
+            return total + (nutrition[0].energy * meal.portion);
+          }
+          return total;
+        }, 0);
+
+        setCaloriesConsumed(Math.round(totalCalories));
+      }
+    } catch (err) {
+      console.error("Error fetching meals:", err);
+      setCaloriesConsumed(0);
+    }
+  };
+
+  useEffect(() => {
+    if (auth.user?._id) {
+      fetchTodaysMeals();
+    }
+  }, [auth.user]);
 
   const adjustCaloriesForPlan = (baseCalories, plan, bmi) => {
     switch (plan) {
@@ -107,6 +143,14 @@ const ProgressTracker = () => {
         </div>
       ) : (
         <div>
+          <Doughnut data={data} />
+          <div className="caloric-summary">
+            <h3>Caloric Summary</h3>
+            <p>Need: {dailyCalories} kcal</p>
+            <p>Consumed: {caloriesConsumed} kcal</p>
+            <p>Remaining: {caloriesRemaining} kcal</p>
+            
+          </div>
           <div className="weight-info">
             <p data-label="WEIGHT:">
               <span>{profile.weight} kg</span>
@@ -120,14 +164,6 @@ const ProgressTracker = () => {
               </span>
             </p>
           </div>
-          <Doughnut data={data} />
-          <div className="caloric-summary">
-            <h3>Caloric Summary</h3>
-            <p>Daily Caloric Need: {dailyCalories} kcal</p>
-            <p>Calories Consumed: {caloriesConsumed} kcal</p>
-            <p>Calories Remaining: {caloriesRemaining} kcal</p>
-            <p>*Adjusted for {profile.dietPlan} plan</p>
-          </div>
         </div>
       )}
     </div>
@@ -135,3 +171,5 @@ const ProgressTracker = () => {
 };
 
 export default ProgressTracker;
+
+//<p>Adjusted for {profile.dietPlan} plan</p>

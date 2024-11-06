@@ -200,10 +200,6 @@ const DietSuggestions = ({ setDashboardLoading }) => {
     }
   };
 
-  const handleNavigateToNutrition = () => {
-    navigate("/nutrition");
-  };
-
   return (
     <div className="p-4">
       {error && (
@@ -267,13 +263,6 @@ const DietSuggestions = ({ setDashboardLoading }) => {
             ) : (
               <div>No diet suggestions available.</div>
             )}
-          </div>
-
-          <div className="nutrition-prompt mt-4">
-            <p>Curious about meal nutrition? Just search it up!</p>
-            <button onClick={handleNavigateToNutrition} className="diet-calendar-button">
-              Go to Nutrition Info Finder
-            </button>
           </div>
 
           {/* Success Modal */}
