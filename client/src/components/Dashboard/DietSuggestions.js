@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 import { getProfile, generateDietSuggestions } from "../../actions/Profile";
 import { addEvent, getAllEvents } from "../../actions/eventsActions";
 import "./DietSuggestions.css";
 
 const DietSuggestions = ({ setDashboardLoading }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const profileState = useSelector((state) => state.profile);
   const auth = useSelector((state) => state.auth);
   const [error, setError] = useState(null);
@@ -198,6 +200,10 @@ const DietSuggestions = ({ setDashboardLoading }) => {
     }
   };
 
+  const handleNavigateToNutrition = () => {
+    navigate("/nutrition");
+  };
+
   return (
     <div className="p-4">
       {error && (
@@ -261,6 +267,13 @@ const DietSuggestions = ({ setDashboardLoading }) => {
             ) : (
               <div>No diet suggestions available.</div>
             )}
+          </div>
+
+          <div className="nutrition-prompt mt-4">
+            <p>Curious about meal nutrition? Just search it up!</p>
+            <button onClick={handleNavigateToNutrition} className="diet-calendar-button">
+              Go to Nutrition Info Finder
+            </button>
           </div>
 
           {/* Success Modal */}
