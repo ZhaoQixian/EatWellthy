@@ -17,12 +17,15 @@ import setAuthToken from "../utils/setAuthToken";
 
 // Load User
 export const loadUser = () => async (dispatch) => {
-  if (localStorage.token) {
-    setAuthToken(localStorage.token);
-  }
-
   try {
-    const res = await axios.get("http://localhost:5050/users/auth");
+    const token = localStorage.getItem('token');
+    const config = {
+      headers: {
+        'x-auth-token': token
+      }
+    };
+
+    const res = await axios.get("http://localhost:5050/users/auth", config);
 
     dispatch({
       type: USER_LOADED,
@@ -39,48 +42,52 @@ export const loadUser = () => async (dispatch) => {
 // Update Name
 export const updateName = (name) => async (dispatch) => {
   try {
-      const config = {
-          headers: {
-              "Content-Type": "application/json",
-          },
-      };
-
-      // Basic validation on frontend
-      if (!name || name.trim().length < 2) {
-          dispatch(setAlert('Name must be at least 2 characters long', 'danger'));
-          return false;
-      }
-
-      // Updated URL to match the new endpoint in profile.js
-      const res = await axios.put(
-          "http://localhost:5050/api/profile/update-name",
-          JSON.stringify({ name: name.trim() }),
-          config
-      );
-
-      dispatch({
-          type: UPDATE_NAME_SUCCESS,
-          payload: res.data
-      });
-
-      dispatch(setAlert('Name updated successfully', 'success'));
-      dispatch(loadUser()); // Reload user data to update the state
-      return true;
-  } catch (err) {
-      console.error('Name update error:', err);
-      
-      dispatch({
-          type: UPDATE_NAME_FAIL
-      });
-
-      if (err.response && err.response.data.errors) {
-          err.response.data.errors.forEach(error => 
-              dispatch(setAlert(error.msg, "danger"))
-          );
-      } else {
-          dispatch(setAlert('Failed to update name', 'danger'));
-      }
+    const token = localStorage.getItem('token');
+    if (!token) {
+      dispatch(setAlert('Authentication error - please login again', 'danger'));
       return false;
+    }
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-auth-token': token
+      }
+    };
+
+    const res = await axios.put(
+      "http://localhost:5050/api/profile/update-name",
+      { name }, // No need for JSON.stringify when using axios
+      config
+    );
+
+    dispatch({
+      type: UPDATE_NAME_SUCCESS,
+      payload: res.data
+    });
+
+    dispatch(setAlert('Name updated successfully', 'success'));
+    dispatch(loadUser());
+    return true;
+  } catch (err) {
+    console.error('Name update error:', err);
+    
+    dispatch({
+      type: UPDATE_NAME_FAIL
+    });
+
+    if (err.response) {
+      if (err.response.status === 401) {
+        dispatch(setAlert('Please login again to update your name', 'danger'));
+      } else if (err.response.data.errors) {
+        err.response.data.errors.forEach(error => 
+          dispatch(setAlert(error.msg, "danger"))
+        );
+      }
+    } else {
+      dispatch(setAlert('Failed to update name', 'danger'));
+    }
+    return false;
   }
 };
 
@@ -215,27 +222,29 @@ export const resendVerification = (email) => async (dispatch) => {
 
 // Login User
 export const login = (email, password) => async (dispatch) => {
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
-
-  const body = JSON.stringify({ email, password });
-
   try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      }
+    };
+
     const res = await axios.post(
       "http://localhost:5050/users/auth",
-      body,
+      { email, password },
       config
     );
+
+    // Store token in localStorage
+    if (res.data.token) {
+      localStorage.setItem('token', res.data.token);
+    }
 
     dispatch({
       type: LOGIN_SUCCESS,
       payload: res.data,
     });
 
-    // Load user after successful login
     await dispatch(loadUser());
   } catch (err) {
     if (err.response && err.response.data.errors) {
@@ -253,7 +262,8 @@ export const login = (email, password) => async (dispatch) => {
 
 // Logout / Clear Profile
 export const logout = () => async (dispatch) => {
-  dispatch({ type: "LOGOUT" });
+  localStorage.removeItem('token'); // Remove token on logout
+  dispatch({ type: LOGOUT });
   await fetch("http://localhost:5050/users/google/logout", {
     method: "GET",
   });

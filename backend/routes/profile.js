@@ -220,13 +220,6 @@ router.put("/update-name", auth, async (req, res) => {
   try {
       const { name } = req.body;
 
-      // Basic validation
-      if (!name || typeof name !== 'string' || name.trim().length < 2) {
-          return res.status(400).json({
-              errors: [{ msg: 'Please provide a valid name (minimum 2 characters)' }]
-          });
-      }
-
       // Find and update user
       const user = await User.findById(req.user.id);
       
@@ -234,7 +227,7 @@ router.put("/update-name", auth, async (req, res) => {
           return res.status(404).json({ errors: [{ msg: 'User not found' }] });
       }
 
-      user.name = name.trim();
+      user.name = name;
       await user.save();
 
       res.json({ name: user.name });
