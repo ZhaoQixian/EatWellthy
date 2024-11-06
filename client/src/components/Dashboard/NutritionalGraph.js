@@ -32,6 +32,7 @@ const NutritionalGraph = () => {
     dispatch(getProfile());
   }, [dispatch]);
 
+  // Original fetchTodaysMeals function - keeping the actual macro tracking the same
   const fetchTodaysMeals = async () => {
     try {
       const today = new Date();
@@ -75,7 +76,7 @@ const NutritionalGraph = () => {
     }
   }, [auth.user]);
 
-  // Calculate BMR and daily calories using the same logic as DietPlanner
+  // Calculate BMR and daily calories using the DietPlanner logic
   useEffect(() => {
     if (profile?.height && profile?.weight) {
       const heightInMeters = profile.height / 100;
@@ -106,7 +107,6 @@ const NutritionalGraph = () => {
     }
   }, [profile]);
 
-  // New function from DietPlanner to adjust calories based on plan
   const adjustCaloriesForPlan = (baseCalories, plan, bmi) => {
     switch (plan) {
       case "weightloss":
@@ -131,7 +131,7 @@ const NutritionalGraph = () => {
     return plans[plan || "maintenance"];
   };
 
-  // Calculate target macros using the adjusted daily calories
+  // Calculate target macros based on DietPlanner logic
   useEffect(() => {
     if (dailyCalories && profile) {
       const macroSplit = getDietPlanMacros(profile.dietPlan);
@@ -236,13 +236,13 @@ const NutritionalGraph = () => {
             <div className="macro-info">
               <h3>Nutrition Summary</h3>
               <p>
-                Carbohydrates: {actualMacros.carbs}/{targetMacros.carbs} Cal 
+                Carbohydrates: {actualMacros.carbs}/{targetMacros.carbs} Cal ({getMacroGrams(actualMacros.carbs, 'carbs')}/{getMacroGrams(targetMacros.carbs, 'carbs')}g)
               </p>
               <p>
-                Fat: {actualMacros.fat}/{targetMacros.fat} Cal 
+                Fat: {actualMacros.fat}/{targetMacros.fat} Cal ({getMacroGrams(actualMacros.fat, 'fat')}/{getMacroGrams(targetMacros.fat, 'fat')}g)
               </p>
               <p>
-                Protein: {actualMacros.protein}/{targetMacros.protein} Cal
+                Protein: {actualMacros.protein}/{targetMacros.protein} Cal ({getMacroGrams(actualMacros.protein, 'protein')}/{getMacroGrams(targetMacros.protein, 'protein')}g)
               </p>
             </div>
           </div>
