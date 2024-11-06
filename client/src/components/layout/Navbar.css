@@ -65,6 +65,7 @@ body,
   align-items: center;
   padding: 0.8rem 2rem;
   z-index: 1000;
+  background: rgba(45, 138, 95, 0.85);
 }
 
 /* Icon Container */
