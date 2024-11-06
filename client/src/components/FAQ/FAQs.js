@@ -26,13 +26,22 @@ const FAQs = () => {
         <div className="faq-item">
           <h3>What information does the 'Tracker' provide?</h3>
           <p>
-            Our Tracker is a nutrition calculator that gives you a detailed
-            breakdown of the calories, macros (proteins, fats, carbohydrates),
-            and other nutritional values based on the meals you input. You can
-            also see how these values align with your daily nutritional goals.
+            The 'Tracker' shows a detailed breakdown of your daily calorie
+            intake, macronutrients (carbs, fats, proteins), and other
+            nutritional values. You can view your meal history, compare daily
+            totals, and see how they align with your goals for the day.
           </p>
         </div>
 
+        <div className="faq-item">
+          <h3>How do I view my progress and calorie summary?</h3>
+          <p>
+            The dashboard provides a 'Progress Tracking' section that shows your
+            caloric summary, including your target, consumed, and remaining
+            calories for the day. It also includes weight tracking for
+            monitoring your progress.
+          </p>
+        </div>
         <div className="faq-item">
           <h3>
             Can I check the prices of ingredients before adding them to my plan?
@@ -46,12 +55,39 @@ const FAQs = () => {
         </div>
 
         <div className="faq-item">
-          <h3>What is WellOh, and how does the chatbot work?</h3>
+          <h3>What is Welloh, and how does the chatbot work?</h3>
           <p>
             WellOh is our AI-powered chatbot designed to help you with meal
             planning, nutrition advice, and more. You can ask WellOh about meal
             suggestions, nutritional information, or store availability, and it
             will assist you with real-time responses.
+          </p>
+        </div>
+        <div className="faq-item">
+          <h3>How do I manage events and track my schedule?</h3>
+          <p>
+            The 'Calendar' feature lets you add, update, and delete events
+            related to your meal plan or health goals. You can even sync events
+            to Google Calendar to keep track of your diet suggestions and
+            progress easily.
+          </p>
+        </div>
+        <div className="faq-item">
+          <h3>How do I customize my profile and diet plan?</h3>
+          <p>
+            In the 'Profile' section, update your personal details, set your
+            target weight, daily budget, and activity level. Choose from diet
+            plans like vegetarian and specify any dietary restrictions or
+            allergies to receive meal suggestions tailored to your needs.
+          </p>
+        </div>
+
+        <div className="faq-item">
+          <h3>How can I track my BMI and BMR?</h3>
+          <p>
+            The 'Analysis' section provides your BMI and BMR based on your
+            profile details. These values guide you in setting achievable health
+            goals and maintaining a balanced diet.
           </p>
         </div>
 
