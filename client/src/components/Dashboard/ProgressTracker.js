@@ -146,9 +146,9 @@ const ProgressTracker = () => {
           <Doughnut data={data} />
           <div className="caloric-summary">
             <h3>Caloric Summary</h3>
-            <p>Need: {dailyCalories} kcal</p>
-            <p>Consumed: {caloriesConsumed} kcal</p>
-            <p>Remaining: {caloriesRemaining} kcal</p>
+            <p>Need: {dailyCalories} Cal</p>
+            <p>Consumed: {caloriesConsumed} Cal</p>
+            <p>Remaining: {caloriesRemaining} Cal</p>
             
           </div>
           <div className="weight-info">
