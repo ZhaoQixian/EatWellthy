@@ -1,11 +1,11 @@
+// NutritionalGraph.js
 import React, { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useDispatch, useSelector } from "react-redux";
 import { getProfile } from "../../actions/Profile";
-import "./NutritionGraph.css"; // Import the CSS file
+import "./NutritionGraph.css";
 
-// Register the required elements with Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const NutritionalGraph = () => {
@@ -14,7 +14,7 @@ const NutritionalGraph = () => {
   const [bmi, setBmi] = useState(null);
   const [bmr, setBmr] = useState(null);
   const [dailyCalories, setDailyCalories] = useState(null);
-  const [caloriesConsumed, setCaloriesConsumed] = useState(1350); // Placeholder for calories consumed
+  const [caloriesConsumed, setCaloriesConsumed] = useState(1350);
   const [macroData, setMacroData] = useState({ carbs: 0, fat: 0, protein: 0 });
 
   useEffect(() => {
@@ -103,11 +103,11 @@ const NutritionalGraph = () => {
   const getMacroGrams = (calories, macro) => {
     switch (macro) {
       case "carbs":
-        return Math.round(calories / 4); // 4 calories per gram of carbohydrates
+        return Math.round(calories / 4);
       case "fat":
-        return Math.round(calories / 9); // 9 calories per gram of fat
+        return Math.round(calories / 9);
       case "protein":
-        return Math.round(calories / 4); // 4 calories per gram of protein
+        return Math.round(calories / 4);
       default:
         return 0;
     }
@@ -122,9 +122,6 @@ const NutritionalGraph = () => {
       },
     ],
   };
-
-  // Calculate remaining calories
-  const caloriesRemaining = dailyCalories - caloriesConsumed;
 
   return (
     <div className="nutritional-graph">
@@ -150,13 +147,6 @@ const NutritionalGraph = () => {
               Protein: {macroData.protein} Cal (
               {getMacroGrams(macroData.protein, "protein")}g)
             </p>
-          </div>
-          <div className="caloric-summary">
-            <h3>Caloric Summary</h3>
-            <p>Daily Caloric Need: {dailyCalories} kcal</p>
-            <p>Calories Consumed: {caloriesConsumed} kcal</p>
-            <p>Calories Remaining: {caloriesRemaining} kcal</p>
-            <p>*Adjusted for {profile.dietPlan} plan</p>
           </div>
         </div>
       )}

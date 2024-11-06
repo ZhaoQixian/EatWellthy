@@ -1,21 +1,20 @@
+// ProgressTracker.js
 import React, { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useDispatch, useSelector } from "react-redux";
 import { getProfile } from "../../actions/Profile";
-import { useNavigate } from "react-router-dom"; // useNavigate instead of useHistory
-import "./ProgressTracker.css"; // Import the CSS file
+import "./ProgressTracker.css";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const ProgressTracker = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Using useNavigate
-
   const { profile, loading } = useSelector((state) => state.profile);
   const [bmi, setBmi] = useState(null);
   const [bmr, setBmr] = useState(null);
   const [dailyCalories, setDailyCalories] = useState(null);
+  const [caloriesConsumed, setCaloriesConsumed] = useState(1350);
 
   useEffect(() => {
     dispatch(getProfile());
@@ -82,7 +81,6 @@ const ProgressTracker = () => {
     }
   }, [profile]);
 
-  const [caloriesConsumed, setCaloriesConsumed] = useState(1350);
   const caloriesRemaining = dailyCalories
     ? Math.max(dailyCalories - caloriesConsumed, 0)
     : 0;
@@ -97,10 +95,6 @@ const ProgressTracker = () => {
         backgroundColor: ["#4CAF50", "#E0E0E0"],
       },
     ],
-  };
-
-  const handleNavigateToNutrition = () => {
-    navigate("/nutrition"); // Navigate to /nutrition route
   };
 
   return (
@@ -127,11 +121,12 @@ const ProgressTracker = () => {
             </p>
           </div>
           <Doughnut data={data} />
-          <div className="nutrition-prompt">
-            <p>Curious about meal nutrition? Just search it up!</p>
-            <button onClick={handleNavigateToNutrition}>
-              Go to Nutrition Info Finder
-            </button>
+          <div className="caloric-summary">
+            <h3>Caloric Summary</h3>
+            <p>Daily Caloric Need: {dailyCalories} kcal</p>
+            <p>Calories Consumed: {caloriesConsumed} kcal</p>
+            <p>Calories Remaining: {caloriesRemaining} kcal</p>
+            <p>*Adjusted for {profile.dietPlan} plan</p>
           </div>
         </div>
       )}
