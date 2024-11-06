@@ -75,29 +75,19 @@ const NutritionalGraph = () => {
     }
   }, [auth.user]);
 
+  // Calculate BMR and daily calories using the same logic as DietPlanner
   useEffect(() => {
     if (profile?.height && profile?.weight) {
       const heightInMeters = profile.height / 100;
-      const calculatedBMI = (
-        profile.weight /
-        (heightInMeters * heightInMeters)
-      ).toFixed(1);
+      const calculatedBMI = (profile.weight / (heightInMeters * heightInMeters)).toFixed(1);
       setBmi(calculatedBMI);
 
       if (profile.age && profile.gender) {
         let calculatedBMR;
         if (profile.gender === "male") {
-          calculatedBMR =
-            88.362 +
-            13.397 * profile.weight +
-            4.799 * profile.height -
-            5.677 * profile.age;
+          calculatedBMR = 88.362 + 13.397 * profile.weight + 4.799 * profile.height - 5.677 * profile.age;
         } else {
-          calculatedBMR =
-            447.593 +
-            9.247 * profile.weight +
-            3.098 * profile.height -
-            4.33 * profile.age;
+          calculatedBMR = 447.593 + 9.247 * profile.weight + 3.098 * profile.height - 4.33 * profile.age;
         }
         setBmr(Math.round(calculatedBMR));
 
@@ -108,37 +98,27 @@ const NutritionalGraph = () => {
           very: 1.725,
           super: 1.9,
         };
-        const calories =
-          calculatedBMR *
-          activityMultipliers[profile.activityLevel || "sedentary"];
-        setDailyCalories(Math.round(calories));
+
+        const baseCalories = calculatedBMR * activityMultipliers[profile.activityLevel || "sedentary"];
+        const adjustedCalories = adjustCaloriesForPlan(baseCalories, profile.dietPlan, calculatedBMI);
+        setDailyCalories(Math.round(adjustedCalories));
       }
     }
   }, [profile]);
 
-  useEffect(() => {
-    if (dailyCalories && profile) {
-      const dietPlan = profile.dietPlan || "maintenance";
-      const macroSplit = getDietPlanMacros(dietPlan);
-
-      const carbsCal = calculateMacroCalories(dailyCalories, macroSplit.carbs);
-      const fatCal = calculateMacroCalories(dailyCalories, macroSplit.fats);
-      const proteinCal = calculateMacroCalories(
-        dailyCalories,
-        macroSplit.protein
-      );
-
-      setTargetMacros({
-        carbs: carbsCal,
-        fat: fatCal,
-        protein: proteinCal,
-      });
+  // New function from DietPlanner to adjust calories based on plan
+  const adjustCaloriesForPlan = (baseCalories, plan, bmi) => {
+    switch (plan) {
+      case "weightloss":
+        const deficitPercentage = parseFloat(bmi) > 30 ? 0.25 : 0.2;
+        return baseCalories * (1 - deficitPercentage);
+      case "keto":
+        return baseCalories * 0.85;
+      case "maintenance":
+      case "vegetarian":
+      default:
+        return baseCalories;
     }
-  }, [dailyCalories, profile]);
-
-  const calculateMacroCalories = (totalCalories, macroPercentage) => {
-    const calories = totalCalories * (macroPercentage / 100);
-    return Math.round(calories);
   };
 
   const getDietPlanMacros = (plan) => {
@@ -151,17 +131,37 @@ const NutritionalGraph = () => {
     return plans[plan || "maintenance"];
   };
 
-  const hasCompleteProfile =
-    profile?.height && profile?.weight && profile?.age && profile?.gender;
+  // Calculate target macros using the adjusted daily calories
+  useEffect(() => {
+    if (dailyCalories && profile) {
+      const macroSplit = getDietPlanMacros(profile.dietPlan);
+      
+      const carbsCal = calculateMacroCalories(dailyCalories, macroSplit.carbs);
+      const proteinCal = calculateMacroCalories(dailyCalories, macroSplit.protein);
+      const fatCal = calculateMacroCalories(dailyCalories, macroSplit.fats);
+
+      setTargetMacros({
+        carbs: carbsCal,
+        protein: proteinCal,
+        fat: fatCal,
+      });
+    }
+  }, [dailyCalories, profile]);
+
+  const calculateMacroCalories = (totalCalories, macroPercentage) => {
+    const calories = totalCalories * (macroPercentage / 100);
+    return Math.round(calories);
+  };
+
+  const hasCompleteProfile = profile?.height && profile?.weight && profile?.age && profile?.gender;
 
   const getMacroGrams = (calories, macro) => {
     switch (macro) {
       case "carbs":
+      case "protein":
         return Math.round(calories / 4);
       case "fat":
         return Math.round(calories / 9);
-      case "protein":
-        return Math.round(calories / 4);
       default:
         return 0;
     }
@@ -183,7 +183,16 @@ const NutritionalGraph = () => {
         }
       },
       tooltip: {
-        enabled: true
+        enabled: true,
+        callbacks: {
+          label: function(context) {
+            const label = context.label || '';
+            const value = context.raw || 0;
+            const macro = label.toLowerCase().includes('carbohydrates') ? 'carbs' :
+                         label.toLowerCase().includes('protein') ? 'protein' : 'fat';
+            return `${label}: ${value} Cal (${getMacroGrams(value, macro)}g)`;
+          }
+        }
       }
     }
   };
@@ -201,12 +210,12 @@ const NutritionalGraph = () => {
           Math.max(0, targetMacros.protein - actualMacros.protein)
         ],
         backgroundColor: [
-          "#007bff", // Carbs consumed
-          "#E0E0E0", // Carbs remaining
-          "#ff6347", // Fat consumed
-          "#E0E0E0", // Fat remaining
-          "#28a745", // Protein consumed
-          "#E0E0E0", // Protein remaining
+          "#007bff",
+          "#E0E0E0",
+          "#ff6347",
+          "#E0E0E0",
+          "#28a745",
+          "#E0E0E0",
         ],
       },
     ],
@@ -227,10 +236,10 @@ const NutritionalGraph = () => {
             <div className="macro-info">
               <h3>Nutrition Summary</h3>
               <p>
-                Carbohydrates: {actualMacros.carbs}/{targetMacros.carbs} Cal
+                Carbohydrates: {actualMacros.carbs}/{targetMacros.carbs} Cal 
               </p>
               <p>
-                Fat: {actualMacros.fat}/{targetMacros.fat} Cal
+                Fat: {actualMacros.fat}/{targetMacros.fat} Cal 
               </p>
               <p>
                 Protein: {actualMacros.protein}/{targetMacros.protein} Cal
