@@ -8,7 +8,10 @@ const User = require("../models/User");
 const fs = require("fs");
 let multer = require("multer");
 let uuidv4 = require("uuid");
-const { sendVerificationEmail } = require('../utils/emailUtil');
+const {
+  sendVerificationEmail,
+  sendForgotPasswordEmail,
+} = require("../utils/emailUtil");
 
 var jwtSecret = "mysecrettoken";
 
@@ -17,15 +20,74 @@ const generateVerificationCode = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
+// Helper function to generate a strong temporary password
+const generateTemporaryPassword = () => {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+  let password = "";
+  for (let i = 0; i < 12; i++) {
+    password += characters.charAt(
+      Math.floor(Math.random() * characters.length)
+    );
+  }
+  return password;
+};
+// @route   POST /users/forgot-password
+// @desc    Generate a new password and send via email
+// @access  Public
+router.post(
+  "/forgot-password",
+  [check("email", "Please include a valid email").isEmail()],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { email } = req.body;
+
+    try {
+      let user = await User.findOne({ email });
+
+      if (!user) {
+        return res.status(404).json({ errors: [{ msg: "User not found" }] });
+      }
+
+      // Generate a temporary new password
+      const temporaryPassword = generateTemporaryPassword();
+
+      // Hash the temporary password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(temporaryPassword, salt);
+
+      // Update the user's password
+      user.password = hashedPassword;
+      await user.save();
+
+      // Send the new password via email
+      const emailSent = await sendForgotPasswordEmail(email, temporaryPassword);
+
+      if (!emailSent) {
+        return res
+          .status(500)
+          .json({ msg: "Failed to send the email. Please try again later." });
+      }
+
+      res.json({ msg: "A new password has been sent to your email" });
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server error");
+    }
+  }
+);
+
 // @route   PUT /users/update-name
 // @desc    Update user's name
 // @access  Private
 router.put(
   "/update-name",
   auth,
-  [
-    check("name", "Name is required").not().isEmpty()
-  ],
+  [check("name", "Name is required").not().isEmpty()],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -89,7 +151,7 @@ router.post(
         password,
         verificationCode,
         verificationCodeExpires,
-        isVerified: false
+        isVerified: false,
       });
 
       const salt = await bcrypt.genSalt(10);
@@ -107,9 +169,9 @@ router.post(
 
       jwt.sign(payload, jwtSecret, { expiresIn: 360000 }, (err, token) => {
         if (err) throw err;
-        res.json({ 
+        res.json({
           token,
-          msg: "Registration successful! Please check your email for the verification code." 
+          msg: "Registration successful! Please check your email for the verification code.",
         });
       });
     } catch (err) {
@@ -122,7 +184,8 @@ router.post(
 // @route   POST /users/verify-code
 // @desc    Verify email with code
 // @access  Public
-router.post("/verify-code", 
+router.post(
+  "/verify-code",
   [
     check("email", "Email is required").isEmail(),
     check("code", "Verification code is required").not().isEmpty(),
@@ -139,12 +202,12 @@ router.post("/verify-code",
       const user = await User.findOne({
         email,
         verificationCode: code,
-        verificationCodeExpires: { $gt: Date.now() }
+        verificationCodeExpires: { $gt: Date.now() },
       });
 
       if (!user) {
-        return res.status(400).json({ 
-          errors: [{ msg: "Invalid or expired verification code" }] 
+        return res.status(400).json({
+          errors: [{ msg: "Invalid or expired verification code" }],
         });
       }
 
@@ -201,9 +264,9 @@ router.post(
       }
 
       if (!user.isVerified) {
-        return res
-          .status(400)
-          .json({ errors: [{ msg: "Please verify your email before logging in" }] });
+        return res.status(400).json({
+          errors: [{ msg: "Please verify your email before logging in" }],
+        });
       }
 
       const isMatch = await bcrypt.compare(password, user.password);
@@ -234,7 +297,8 @@ router.post(
 // @route   POST /users/resend-verification
 // @desc    Resend verification code
 // @access  Public
-router.post("/resend-verification", 
+router.post(
+  "/resend-verification",
   [check("email", "Please include a valid email").isEmail()],
   async (req, res) => {
     const errors = validationResult(req);
@@ -252,7 +316,9 @@ router.post("/resend-verification",
       }
 
       if (user.isVerified) {
-        return res.status(400).json({ errors: [{ msg: "Email already verified" }] });
+        return res
+          .status(400)
+          .json({ errors: [{ msg: "Email already verified" }] });
       }
 
       const verificationCode = generateVerificationCode();
