@@ -25,13 +25,19 @@ router.post("/add", [], async (req, res) => {
     // Hash the owner ID
     owner = Nutrition_data.hashedOwner(owner);
 
-    // Check for existing food with same name for this user
-    const existingFood = await Nutrition_data.findOne({
-      name: new RegExp(`^${name}$`, 'i'), // Case insensitive match
-      owner
-    });
+    query = {
+      "$and": [
+                {"$or":[{"owner": 'admin'},{"owner": owner}] }, {"name":new RegExp(`^${name}$`, 'i')}
+              ]
 
-    if (existingFood) {
+    }
+
+    // Check for existing food with same name for this user
+    const existingFood = await Nutrition_data.find(
+      query
+    );
+
+    if (existingFood.length > 0) {
       return res.status(400).json({ msg: "Food already exists in your list" });
     }
 
@@ -171,9 +177,10 @@ router.post(
 
         query = {
           "$and": [
-            {"owner": owner }, {"name": food_taken}
-          ]
-          }
+                    {"$or":[{"owner": 'admin'},{"owner": owner}] }, {"name":new RegExp(`^${food_taken}$`, 'i')}
+                  ]
+    
+         }
           let finding = await Nutrition_data.find(query);
           console.log('finding', finding);
           const config = {headers: {
@@ -296,7 +303,7 @@ router.post(
           const mealsWithNutrition = await Promise.all(meals.map(async (meal) => {
             let query2 = {
               "$and": [
-                {"$or":[{"owner": 'admin'},{"owner": hashedowner}] }, {"name": meal.food_taken}
+                {"$or":[{"owner": 'admin'},{"owner": hashedowner}] }, {"name": new RegExp(`^${meal.food_taken}$`, 'i')}
               ]
 
             };
