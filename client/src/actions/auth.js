@@ -39,37 +39,48 @@ export const loadUser = () => async (dispatch) => {
 // Update Name
 export const updateName = (name) => async (dispatch) => {
   try {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
+      const config = {
+          headers: {
+              "Content-Type": "application/json",
+          },
+      };
 
-    const res = await axios.put(
-      "http://localhost:5050/users/update-name",
-      JSON.stringify({ name }),
-      config
-    );
+      // Basic validation on frontend
+      if (!name || name.trim().length < 2) {
+          dispatch(setAlert('Name must be at least 2 characters long', 'danger'));
+          return false;
+      }
 
-    dispatch({
-      type: UPDATE_NAME_SUCCESS,
-      payload: res.data
-    });
+      // Updated URL to match the new endpoint in profile.js
+      const res = await axios.put(
+          "http://localhost:5050/api/profile/update-name",
+          JSON.stringify({ name: name.trim() }),
+          config
+      );
 
-    dispatch(setAlert('Name updated successfully', 'success'));
-    return true;
+      dispatch({
+          type: UPDATE_NAME_SUCCESS,
+          payload: res.data
+      });
+
+      dispatch(setAlert('Name updated successfully', 'success'));
+      dispatch(loadUser()); // Reload user data to update the state
+      return true;
   } catch (err) {
-    dispatch({
-      type: UPDATE_NAME_FAIL
-    });
+      console.error('Name update error:', err);
+      
+      dispatch({
+          type: UPDATE_NAME_FAIL
+      });
 
-    if (err.response && err.response.data.errors) {
-      const errors = err.response.data.errors;
-      errors.forEach(error => dispatch(setAlert(error.msg, "danger")));
-    } else {
-      dispatch(setAlert('Failed to update name', 'danger'));
-    }
-    return false;
+      if (err.response && err.response.data.errors) {
+          err.response.data.errors.forEach(error => 
+              dispatch(setAlert(error.msg, "danger"))
+          );
+      } else {
+          dispatch(setAlert('Failed to update name', 'danger'));
+      }
+      return false;
   }
 };
 
