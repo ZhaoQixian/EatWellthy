@@ -17,19 +17,19 @@ const FAQs = () => {
           <h3>How do I input my meals and diet preferences?</h3>
           <p>
             You can easily input your meals and dietary preferences in the
-            dashboard. Once you've logged in, navigate to the 'Meal Planner'
-            section to select or manually enter your meals, along with specific
-            dietary preferences (e.g., vegetarian, keto, etc.).
+            dashboard. Once you've logged in, navigate to the 'Tracker' section
+            to select or manually enter your meals, along with specific dietary
+            preferences (e.g., vegetarian, keto, etc.) in your 'Profile'.
           </p>
         </div>
 
         <div className="faq-item">
-          <h3>What information does the nutrition calculator provide?</h3>
+          <h3>What information does the 'Tracker' provide?</h3>
           <p>
-            Our nutrition calculator gives you a detailed breakdown of the
-            calories, macros (proteins, fats, carbohydrates), and other
-            nutritional values based on the meals you input. You can also see
-            how these values align with your daily nutritional goals.
+            Our Tracker is a nutrition calculator that gives you a detailed
+            breakdown of the calories, macros (proteins, fats, carbohydrates),
+            and other nutritional values based on the meals you input. You can
+            also see how these values align with your daily nutritional goals.
           </p>
         </div>
 
@@ -40,8 +40,8 @@ const FAQs = () => {
           <p>
             Yes, you can! Our platform is integrated with Amazon Fresh, Giant,
             and other stores to provide real-time price information. Visit the
-            'Daily Price List' section on the dashboard to see the availability
-            and pricing of items at nearby stores.
+            'Grocery' section on the sidebar to see the availability and pricing
+            of items at nearby stores.
           </p>
         </div>
 
