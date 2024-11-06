@@ -4,8 +4,9 @@ import { useDispatch } from "react-redux";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import { LOGIN_SUCCESS, GOOGLE_AUTO, USER_LOADED } from "../../actions/types";
+import { LOGIN_SUCCESS, GOOGLE_AUTO } from "../../actions/types";
 import { login } from "../../actions/auth";
+import { setAlert } from "../../actions/alert";
 import Alert from "../layout/Alert";
 import googleLogo from "./google.png";
 import "./login.css";
@@ -17,13 +18,10 @@ const Login = ({ auth, login }) => {
     email: "",
     password: "",
   });
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
 
   const { email, password } = formData;
-
-  console.log("LOGIN/isAuthenticated", auth.isAuthenticated);
-  console.log("LOGIN/Loading", auth.loading);
-  console.log("LOGIN/User", auth.user);
-  console.log("LOGIN/Google status", auth.googleAuto);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -55,7 +53,7 @@ const Login = ({ auth, login }) => {
     if (auth.googleAuto) {
       getUser();
     }
-  }, []);
+  }, [auth.googleAuto, dispatch]);
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -63,6 +61,33 @@ const Login = ({ auth, login }) => {
   const onSubmit = async (e) => {
     e.preventDefault();
     login(email, password);
+  };
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    if (!forgotEmail) {
+      return dispatch(setAlert("Please enter your email address", "danger"));
+    }
+    try {
+      const response = await fetch(
+        "http://localhost:5050/users/forgot-password",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: forgotEmail }),
+        }
+      );
+
+      if (response.ok) {
+        dispatch(setAlert("Password reset email sent successfully", "success"));
+        setShowForgotPasswordModal(false);
+      } else {
+        dispatch(setAlert("Failed to send password reset email", "danger"));
+      }
+    } catch (err) {
+      console.error("Error sending password reset email:", err);
+      dispatch(setAlert("Server error. Please try again later.", "danger"));
+    }
   };
 
   const handleGoogleAuth = async () => {
@@ -82,20 +107,14 @@ const Login = ({ auth, login }) => {
       });
     } else if (response.status === 200) {
       response.json().then((data) => {
-        console.log("DATA", data.user);
         dispatch({
           type: LOGIN_SUCCESS,
           payload: data,
         });
-        // dispatch({
-        //   type: USER_LOADED,
-        //   payload: data.user,
-        // });
       });
     }
   };
 
-  // Redirect if logged in
   if (auth.isAuthenticated) {
     navigate("/dashboard");
   }
@@ -107,15 +126,14 @@ const Login = ({ auth, login }) => {
         <i className="fas fa-user"></i> Sign Into Your Account
       </p>
       <Alert />
-      <br />
-      <form className="form" onSubmit={(e) => onSubmit(e)}>
+      <form className="form" onSubmit={onSubmit}>
         <div className="form-group">
           <input
             type="email"
             placeholder="Email Address"
             name="email"
             value={email}
-            onChange={(e) => onChange(e)}
+            onChange={onChange}
             required
           />
         </div>
@@ -124,9 +142,8 @@ const Login = ({ auth, login }) => {
             type="password"
             placeholder="Password"
             name="password"
-            minLength="6"
             value={password}
-            onChange={(e) => onChange(e)}
+            onChange={onChange}
             required
           />
         </div>
@@ -136,31 +153,56 @@ const Login = ({ auth, login }) => {
         style={{
           display: "flex",
           flexDirection: "row",
-          alignContent: "center",
           justifyContent: "center",
           marginTop: 35,
         }}
       >
-        {/* <div
-          style={{
-            marginRight: 100,
-            alignContent: "center",
-            fontSize: 22,
-            fontWeight: 600,
-          }}
-        >
-          Or
-        </div> */}
         <div onClick={handleGoogleAuth} className="google_btn">
           <img src={googleLogo} alt="Google OAuth" />
           <span>Sign in with Google</span>
         </div>
+      </div>
+      <div style={{ marginTop: 20 }}>
+        <p
+          className="link"
+          onClick={() => setShowForgotPasswordModal(true)}
+          style={{ cursor: "pointer", color: "#007bff" }}
+        >
+          Forgot your password?
+        </p>
       </div>
       <div style={{ marginTop: 60 }}>
         <p className="link">
           Don't have an account? <Link to="/register">Sign Up</Link>
         </p>
       </div>
+
+      {/* Forgot Password Modal */}
+      {showForgotPasswordModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Forgot Password</h2>
+            <form onSubmit={handleForgotPassword}>
+              <input
+                type="email"
+                placeholder="Enter your email"
+                value={forgotEmail}
+                onChange={(e) => setForgotEmail(e.target.value)}
+                required
+              />
+              <button type="submit" className="btn">
+                Send Reset Email
+              </button>
+            </form>
+            <button
+              className="btn close-btn"
+              onClick={() => setShowForgotPasswordModal(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
