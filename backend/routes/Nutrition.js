@@ -196,8 +196,8 @@ router.post(
               energy = api_foods.nf_calories;
               fat = api_foods.nf_total_fat;
               sugar = api_foods.nf_sugars;
-              fiber = api_foods.nf_fiber;
-              protein = api_foods.nf_total_protein;
+              fiber = api_foods.nf_dietary_fiber;
+              protein = api_foods.nf_protein;
               
 
                
