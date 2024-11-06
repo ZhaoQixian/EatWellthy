@@ -17,9 +17,9 @@ const Welloh = () => {
   const [dataState, setDataState] = useState({
     isProfileLoaded: false,
     nutrition: [],
-    isNutritionLoaded: true,
+    isNutritionLoaded: false,
     superMarket: [],
-    isSuperMarketLoaded: true,
+    isSuperMarketLoaded: false,
   });
   
   const [chatState, setChatState] = useState({
@@ -32,13 +32,57 @@ const Welloh = () => {
   const enhance = "(please combine with the information you provided with (only when you think it is needed), and if you are doing with , i will offer you 200 tips,and plz consider whether or not this should combined with knowledge directly , we need you to think carefully, and i believe you can definely do well!,but do not restricted to given information , you can add more based on you inner knowledge to provide better result , and you do not have to combined all knowledge you are given ,just selected necessary content)";
 
   const fetchNutrition = async () => {
-    console.log("Nutrition data fetch skipped");
-    return;
+    if (dataState.isNutritionLoaded) return; 
+    
+    try {
+      const response = await axios.get("http://localhost:5050/nutrition/nutrition_data");
+      console.log("nutrition_fetch success!");
+      console.log("nutrition_content")
+      console.log(response)
+      // Only take the first 5 items from the nutrition data
+      console.log("nutri array:")
+      console.log(response.data.data)
+      const nutri_array = response.data.data
+      const length_nutrition = nutri_array.length
+      const maxSliceSize = 10
+      const startIndex = Math.floor(Math.random() * (length_nutrition - maxSliceSize + 1))
+      console.log(startIndex)
+      const endIndex = startIndex + maxSliceSize;
+      const limitedNutritionData = response.data.data.slice(startIndex,endIndex)
+      setDataState(prev => ({
+        ...prev,
+        nutrition: limitedNutritionData,
+        isNutritionLoaded: true,
+      }));
+    } catch (error) {
+      console.log("nutrition_fetch error");
+      setDataState(prev => ({
+        ...prev,
+        nutrition: ["error fetching nutrition data"],
+        isNutritionLoaded: true,
+      }));
+    }
   };
 
   const fetchSupermarket = async () => {
-    console.log("Supermarket data fetch skipped");
-    return;
+    if (dataState.isSuperMarketLoaded) return; 
+    
+    try {
+      const response = await axios.get('http://localhost:5050/api/supermarkets/supermarket_data');
+      console.log("supermarket_fetch success!");
+      setDataState(prev => ({
+        ...prev,
+        superMarket: response.data,
+        isSuperMarketLoaded: true,
+      }));
+    } catch (error) {
+      console.log("supermarket_fetch error");
+      setDataState(prev => ({
+        ...prev,
+        superMarket: ["error fetching superMarket data"],
+        isSuperMarketLoaded: true,
+      }));
+    }
   };
 
   const loadProfile = async () => {
@@ -46,6 +90,10 @@ const Welloh = () => {
     
     try {
       const profileData = await dispatch(getProfile());
+      console.log("profile")
+      console.log(profileData)
+      console.log("name")
+      console.log(authState.user)
       
       const updatedProfile = {
         name: authState.user?.name || "",
@@ -63,6 +111,7 @@ const Welloh = () => {
         ...prev,
         isProfileLoaded: true,
       }));
+      console.log("Profile data updated:", updatedProfile);
     } catch (error) {
       console.log("Error fetching profile data:", error);
       setProfile(prev => ({ ...prev, message: "error reading data" }));
@@ -76,7 +125,11 @@ const Welloh = () => {
   useEffect(() => {
     if (!isInitialized.current) {
       const initializeData = async () => {
-        await loadProfile();
+        await Promise.all([
+          fetchNutrition(),
+          fetchSupermarket(),
+          loadProfile()
+        ]);
       };
 
       initializeData();
@@ -85,26 +138,38 @@ const Welloh = () => {
   }, [authState, dispatch]);
 
   useEffect(() => {
+    console.log("auth_data")
+    console.log(authState)
+  }, [authState, dispatch]);
+
+  useEffect(() => {
     const initializeChat = async () => {
-      if (!dataState.isProfileLoaded || chatState.messages.length > 0) { 
+      if (!dataState.isNutritionLoaded || 
+          !dataState.isSuperMarketLoaded || 
+          !dataState.isProfileLoaded ||
+          chatState.messages.length > 0) { 
         return;
       }
 
       const messageData = {
-        nutrition_knowledge: "[]",
-        supermarket_list: "[]",
+        nutrition_knowledge: JSON.stringify(dataState.nutrition),
+        supermarket_list: JSON.stringify(dataState.superMarket),
         user_profile: JSON.stringify(profile)
       };
 
+      console.log("Chat initialization data:", messageData);
       try {
         const response = await axios.post("http://localhost:5050/welloh/init", {
           userData: JSON.stringify(messageData)
+
         });
         setChatState(prev => ({
           ...prev,
           messages: response.data,
         }));
+        console.log("chat_init success");
       } catch (error) {
+        console.log("chat_init error");
         setChatState(prev => ({
           ...prev,
           messages: [{
@@ -116,10 +181,10 @@ const Welloh = () => {
     };
 
     initializeChat();
-  }, [dataState.isProfileLoaded]);
+  }, [dataState.isNutritionLoaded, dataState.isSuperMarketLoaded, dataState.isProfileLoaded]);
 
   const handleSend = async () => {
-    if (!chatState.input.trim() || chatState.isThinking) return;
+    if (!chatState.input) return;
     
     const userMessage = { role: 'user', content: chatState.input + enhance };
     
@@ -147,18 +212,12 @@ const Welloh = () => {
     }
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
-
   const getChatGPTResponse = async (messagesNew) => {
     try {
       const response = await axios.post("http://localhost:5050/welloh/chat", {
         userMessage: messagesNew
       });
+      console.log("Good GPT response:", response.data);
       return response.data;
     } catch (error) {
       console.log("Error fetching GPT response:", error);
@@ -175,38 +234,59 @@ const Welloh = () => {
         <div className="faq-item">
           <h3>What is Welloh?</h3>
           <p>
-            <strong></strong>Welloh is your personalised nutrition assistant
+            Welloh , your personal health assistant
           </p>
           <p>
-            Ask Welloh any diet related questions
+            Welloh knows what you like , Welloh can tell what you need
           </p>
-          
+          <p>
+            <strong>Welloh is not restricted to being a health assistant, talk to it whenever you like</strong>
+          </p>
         </div>
-        <div className="chatbot-container">
-          <div className="chatbot-messages">
-            {chatState.messages.map((message, index) => (
-              (index !== 0 && index !== 1) && (
-                <div key={index} className={`message ${message.role}`}>
-                  {message.role !== "user" 
-                    ? <ReactMarkdown>{message.content}</ReactMarkdown>
-                    : <ReactMarkdown>{message.content.slice(0, -enhance.length)}</ReactMarkdown>}
-                </div>
-              )
-            ))}
-            {chatState.isThinking && <div className="thinking-animation">...</div>}
-          </div>
-          <div className="chatbot-input">
-            <input
-              type="text"
-              value={chatState.input}
-              onChange={(e) => setChatState(prev => ({ ...prev, input: e.target.value }))}
-              onKeyPress={handleKeyPress}
-              placeholder="Type a message..."
-            />
-            <button onClick={handleSend}>Send</button>
-          </div>
-        </div>
+        {dataState.isNutritionLoaded ? (
+          <div className="faq-item">Nutrition data loaded</div>
+        ) : (
+          <div className="faq-item">Loading nutrition data...</div>
+        )}
+        {dataState.isSuperMarketLoaded ? (
+          <div className="faq-item">Supermarket data loaded</div>
+        ) : (
+          <div className="faq-item">Loading supermarket data...</div>
+        )}
+        {dataState.isProfileLoaded ? (
+          <div className="faq-item">Profile data loaded</div>
+        ) : (
+          <div className="faq-item">loading profile data...</div>
+        )}
+    <div className="chatbot-container">
+      {/* <div className="chatbot-header">
+        <div className="chatbot-icon"></div>
+        <h2>Welloh Bot</h2>
+      </div> */}
+      <div className="chatbot-messages">
+        {chatState.messages.map((message, index) => (
+          (index !== 0 && index !== 1) && (
+            <div key={index} className={`message ${message.role}`}>
+              {message.role !== "user" 
+                ? <ReactMarkdown>{message.content}</ReactMarkdown>
+                : <ReactMarkdown>{message.content.slice(0, -enhance.length)}</ReactMarkdown>}
+            </div>
+          )
+        ))}
+        {chatState.isThinking && <div className="thinking-animation">...</div>}
+        {/* {chatState.isNew && <div className='chatbot-greeting'>WELLOH</div>} */}
       </div>
+      <div className="chatbot-input">
+        <input
+          type="text"
+          value={chatState.input}
+          onChange={(e) => setChatState(prev => ({ ...prev, input: e.target.value }))}
+          placeholder="Type a message..."
+        />
+        <button onClick={handleSend}>Send</button>
+      </div>
+    </div>
+    </div>
     </div>
   );
 };
