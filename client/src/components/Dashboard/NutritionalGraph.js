@@ -201,12 +201,12 @@ const NutritionalGraph = () => {
           Math.max(0, targetMacros.protein - actualMacros.protein)
         ],
         backgroundColor: [
-          "#007bff",
-          "#E0E0E0",
-          "#ff6347",
-          "#E0E0E0",
-          "#28a745",
-          "#E0E0E0",
+          "#007bff", // Carbs consumed
+          "#E0E0E0", // Carbs remaining
+          "#ff6347", // Fat consumed
+          "#E0E0E0", // Fat remaining
+          "#28a745", // Protein consumed
+          "#E0E0E0", // Protein remaining
         ],
       },
     ],
@@ -221,27 +221,29 @@ const NutritionalGraph = () => {
           <p>Please update your profile to see your nutritional data.</p>
         </div>
       ) : (
-        <div>
-          <Doughnut data={data} options={options} />
-          <div className="macro-info">
-            <h3>Nutrition Summary</h3>
-            <p>
-              Carbohydrates: {actualMacros.carbs}/{targetMacros.carbs} Cal
-            </p>
-            <p>
-              Fat: {actualMacros.fat}/{targetMacros.fat} Cal
-            </p>
-            <p>
-              Protein: {actualMacros.protein}/{targetMacros.protein} Cal
-            </p>
+        <>
+          <div>
+            <Doughnut data={data} options={options} />
+            <div className="macro-info">
+              <h3>Nutrition Summary</h3>
+              <p>
+                Carbohydrates: {actualMacros.carbs}/{targetMacros.carbs} Cal
+              </p>
+              <p>
+                Fat: {actualMacros.fat}/{targetMacros.fat} Cal
+              </p>
+              <p>
+                Protein: {actualMacros.protein}/{targetMacros.protein} Cal
+              </p>
+            </div>
           </div>
-          <div className="nutrition-prompt mt-4">
+          <div className="nutrition-prompt">
             <p>Curious about meal nutrition? Just search it up!</p>
             <button onClick={handleNavigateToNutrition} className="diet-calendar-button">
               Go to Nutrition Info Finder
             </button>
           </div>
-        </div>
+        </>
       )}
     </div>
   );
