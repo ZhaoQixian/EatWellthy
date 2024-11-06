@@ -6,7 +6,7 @@ import "./Dashboard.css";
 import NutritionalGraph from "./NutritionalGraph";
 import ProgressTracker from "./ProgressTracker";
 import DietSuggestions from "./DietSuggestions";
-import FoodTransformLoading from "../FoodTransformLoading";
+import FoodTransformLoading from "./FoodTransformLoading";
 
 const Dashboard = ({ auth }) => {
   const navigate = useNavigate();

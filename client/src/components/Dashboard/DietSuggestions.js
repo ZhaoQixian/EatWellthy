@@ -219,53 +219,57 @@ const DietSuggestions = ({ setDashboardLoading }) => {
           <div className="space-y-4">
             {profileState.profile.dietSuggestions?.length > 0 ? (
               <div className="space-y-4">
-                {profileState.profile.dietSuggestions.map(
-                  (suggestion, index) => (
-                    <div key={index} className="bg-white p-4 rounded shadow">
-                      <h3 className="font-bold text-lg text-blue-600">
-                        {suggestion.meal}
-                      </h3>
-                      <div className="mt-2">
-                        {suggestion.items.map((item, itemIndex) => (
-                          <div
-                            key={itemIndex}
-                            className="flex items-center py-1"
-                          >
-                            <span className="text-black font-medium">
-                              {item.food}
-                            </span>
-                            <span className="text-gray-600 ml-2">
-                              - {item.weight}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
+                {profileState.profile.dietSuggestions.map((suggestion, index) => (
+                  <div key={index} className="bg-white p-4 rounded shadow">
+                    <h3 className="font-bold text-lg text-blue-600">
+                      {suggestion.meal}
+                    </h3>
+                    <div className="mt-2">
+                      {suggestion.items.map((item, itemIndex) => (
+                        <div key={itemIndex} className="flex items-center py-1">
+                          <span className="text-black font-medium">
+                            {item.food}
+                          </span>
+                          <span className="text-gray-600 ml-2">
+                            - {item.weight}
+                          </span>
+                        </div>
+                      ))}
                     </div>
-                  )
-                )}
-                <div className="diet-button-container">
-                  <button
-                    onClick={openMealSelection}
-                    disabled={isAdding}
-                    className="diet-calendar-button"
-                  >
-                    {isAdding ? "Adding to Calendar..." : "Add to Calendar"}
-                  </button>
-                  <button
-                    onClick={handleRefresh}
-                    disabled={isAdding}
-                    className="diet-calendar-button"
-                  >
-                    {isAdding ? "Generating..." : "Refresh Diet Suggestions"}
-                  </button>
-                </div>
+                  </div>
+                ))}
               </div>
             ) : (
               <div>No diet suggestions available.</div>
             )}
+
+            {/* Button container at the bottom */}
+            <div className="diet-button-container">
+              {/* Show Refresh button when length >= 0 */}
+              {profileState.profile.dietSuggestions?.length >= 0 && (
+                <button
+                  onClick={handleRefresh}
+                  disabled={isAdding}
+                  className="diet-calendar-button"
+                >
+                  {isAdding ? "Generating..." : "Refresh Diet Suggestions"}
+                </button>
+              )}
+              
+              {/* Show Add to Calendar when length > 0 */}
+              {profileState.profile.dietSuggestions?.length > 0 && (
+                <button
+                  onClick={openMealSelection}
+                  disabled={isAdding}
+                  className="diet-calendar-button"
+                >
+                  {isAdding ? "Adding to Calendar..." : "Add to Calendar"}
+                </button>
+              )}
+            </div>
           </div>
 
-          {/* Success Modal */}
+          {/* Keep modals unchanged */}
           {showSuccessModal && (
             <div className="modal">
               <div className="modal-content">
@@ -277,7 +281,6 @@ const DietSuggestions = ({ setDashboardLoading }) => {
             </div>
           )}
 
-          {/* Meal Selection Modal */}
           {showMealSelection && (
             <div className="modal">
               <div className="modal-content">
