@@ -13,6 +13,7 @@
                       cd client
                       npm install
                       cd ../backend
+                      npm install
                       npm start
 
 7. The web app window should pop out from your default browser
