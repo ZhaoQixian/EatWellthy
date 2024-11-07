@@ -106,6 +106,11 @@ If modules need reinstalling (usually in the `client` folder):
 
 ---
 
+## 📜 License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+
+---
+
 ## 📝 Additional Notes
 
 - Make sure to frequently fetch changes from the origin to prevent merge conflicts.
