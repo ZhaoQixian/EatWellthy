@@ -44,7 +44,7 @@ To run the app, follow these steps:
    ```bash
    npm install
    ```
-3. **Start the Backend**:
+3. **Start the Server and Client Concurrently**:
    ```bash
    cd ../backend
    npm start
@@ -63,19 +63,6 @@ After making updates, use the GitHub Desktop app to:
 
 2. **Undo Changes** (if needed):
    - Right-click on the modified file in GitHub Desktop and select “Discard Changes” to undo any uncommitted modifications.
-
----
-
-## 🔗 Database Connection Setup
-
-To connect components with the database, you’ll likely edit these files:
-   - **Backend**:
-     - `models`
-     - `routes`
-     - `server.js`
-   - **Client**:
-     - `src/actions`
-     - `src/components/reducers`
 
 ---
 
