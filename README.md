@@ -47,6 +47,7 @@ To run the app, follow these steps:
 3. **Start the Server and Client Concurrently**:
    ```bash
    cd ../backend
+   npm install
    npm start
    ```
 4. **Open in Browser**:
