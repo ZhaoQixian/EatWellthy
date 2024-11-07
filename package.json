@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "concurrently": "^9.1.0",
     "react": "^18.3.1"
   }
 }
