@@ -29,7 +29,7 @@ const Welloh = () => {
     isNew: true,
   });
 
-  const enhance = "(please combine with the information you provided with (only when you think it is needed), and if you are doing with , i will offer you 200 tips,and plz consider whether or not this should combined with knowledge directly , we need you to think carefully, and i believe you can definely do well!,but do not restricted to given information , you can add more based on you inner knowledge to provide better result , and you do not have to combined all knowledge you are given ,just selected necessary content)";
+  const enhance = "(please combine with the information you provided with (only when you think it is needed), and if you are doing with , i will offer you 200 tips,and plz consider whether or not this should combined with knowledge directly , we need you to think carefully, and i believe you can definely do well!,but do not restricted to given information , you can add more based on you inner knowledge to provide better result , and you do not have to combined all knowledge you are given ,just selected necessary content,answer in markdown format)";
 
   const fetchNutrition = async () => {
     console.log("Nutrition data fetch skipped");
