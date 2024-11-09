@@ -1,6 +1,18 @@
 # EatWellthy 🍲
 A web application built with the MERN stack (MongoDB, Express.js, React.js, Node.js) to promote healthy eating habits! This README will guide you through setting up the project, managing changes, and making contributions.
 
+## 🌐 Live Demo & Deployment
+- **Live Application**: [EatWellthy on Render](https://eatwellthy.onrender.com)
+- **Demo Video**: [Watch on YouTube](https://www.youtube.com/watch?v=_jXpvho58wg)
+
+## 👥 Team Members
+- LIU XIAOTAO
+- LOW JO YI, NICOLE
+- MAHI PANDEY
+- MEHTA RISHIKA
+- ZHANG YICHI
+- [ZHAO QIXIAN](https://github.com/ZhaoQixian)
+
 ---
 
 ## 🛠️ Getting Started
@@ -26,7 +38,7 @@ Before making changes or reviewing code, always fetch the latest updates to stay
    - Open PowerShell (Windows) or a terminal in VS Code to access the project directory.
 
 ### 4. Navigate to Project Folder
-   Open a terminal in the `EatWellthy` directory. Replace `WhereYouStoreTheProject` with your project’s actual path:
+   Open a terminal in the `EatWellthy` directory. Replace `WhereYouStoreTheProject` with your project's actual path:
    ```bash
    cd "WhereYouStoreTheProject\EatWellthy"
    ```
@@ -35,23 +47,14 @@ Before making changes or reviewing code, always fetch the latest updates to stay
 
 ## 🚀 Running the Application
 
-To run the app, follow these steps:
-1. **Navigate to the client directory**:
-   ```bash
-   cd client
-   ```
-2. **Install Dependencies**:
-   ```bash
-   npm install
-   ```
-3. **Start the Server and Client Concurrently**:
-   ```bash
-   cd ../backend
-   npm install
-   npm start
-   ```
-4. **Open in Browser**:
-   The web app should open in your default browser.
+To run the app, follow these steps under the eatwellthy directory:
+```bash
+npm install
+npm run install-all
+npm run dev
+```
+
+The web app should automatically open in your default browser.
 
 ---
 
@@ -63,7 +66,7 @@ After making updates, use the GitHub Desktop app to:
    - Push to the repository to update it for others.
 
 2. **Undo Changes** (if needed):
-   - Right-click on the modified file in GitHub Desktop and select “Discard Changes” to undo any uncommitted modifications.
+   - Right-click on the modified file in GitHub Desktop and select "Discard Changes" to undo any uncommitted modifications.
 
 ---
 
@@ -103,6 +106,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - Make sure to frequently fetch changes from the origin to prevent merge conflicts.
 - Always test the application after making significant changes, especially those involving the backend or database.
+- The application is deployed using Welloh on Render's platform.
 
 ---
 
