@@ -5,6 +5,7 @@ import NutritionSearch from "./NutritionSearch";
 import NutritionDetails from "./NutritionDetails";
 import { useNavigate } from "react-router-dom";
 import "./NutritionixAPI.css";
+import config from '../../config'; 
 
 const NutritionixAPI = () => {
   const [nutritionData, setNutritionData] = useState(null);
@@ -13,7 +14,7 @@ const NutritionixAPI = () => {
 
   const handleSearch = async (query) => {
     try {
-      const response = await axios.post("http://localhost:5050/api/nutrition", {
+      const response = await axios.post(`${config.backendUrl}/api/nutrition`, {
         query,
       });
       if (response.data) {

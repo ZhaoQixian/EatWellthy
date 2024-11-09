@@ -14,28 +14,59 @@ import {
   UPDATE_NAME_FAIL,
 } from "./types";
 import setAuthToken from "../utils/setAuthToken";
+import config from '../config';
+
+// Utility function for handling API errors
+const handleApiError = (error, dispatch, customMessage = config.defaultErrorMsg) => {
+  console.log('API Error:', error); // For debugging
+
+  try {
+    // Network or axios error
+    if (!error.response) {
+      dispatch(setAlert('Unable to connect to server. Please check your internet connection.', 'danger'));
+      return;
+    }
+
+    // Server returned an error
+    const data = error.response.data;
+    
+    if (data && Array.isArray(data.errors)) {
+      data.errors.forEach(err => {
+        dispatch(setAlert(err.msg || customMessage, 'danger'));
+      });
+      return;
+    }
+
+    if (data && typeof data.message === 'string') {
+      dispatch(setAlert(data.message, 'danger'));
+      return;
+    }
+
+    // Default error message
+    dispatch(setAlert(customMessage, 'danger'));
+  } catch (e) {
+    console.error('Error handling failed:', e);
+    dispatch(setAlert(customMessage, 'danger'));
+  }
+};
 
 // Load User
 export const loadUser = () => async (dispatch) => {
   try {
     const token = localStorage.getItem('token');
-    const config = {
-      headers: {
-        'x-auth-token': token
-      }
+    const headers = {
+      'x-auth-token': token
     };
 
-    const res = await axios.get("http://localhost:5050/users/auth", config);
+    const res = await axios.get(`${config.backendUrl}/users/auth`, { headers });
 
     dispatch({
       type: USER_LOADED,
       payload: res.data || {},
     });
   } catch (err) {
-    console.error(err);
-    dispatch({
-      type: AUTH_ERROR,
-    });
+    handleApiError(err, dispatch, 'Authentication failed. Please log in again.');
+    dispatch({ type: AUTH_ERROR });
   }
 };
 
@@ -48,17 +79,15 @@ export const updateName = (name) => async (dispatch) => {
       return false;
     }
 
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        'x-auth-token': token
-      }
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-auth-token': token
     };
 
     const res = await axios.put(
-      "http://localhost:5050/api/profile/update-name",
-      { name }, // No need for JSON.stringify when using axios
-      config
+      `${config.backendUrl}/api/profile/update-name`,
+      { name },
+      { headers }
     );
 
     dispatch({
@@ -70,99 +99,51 @@ export const updateName = (name) => async (dispatch) => {
     dispatch(loadUser());
     return true;
   } catch (err) {
-    console.error('Name update error:', err);
-    
-    dispatch({
-      type: UPDATE_NAME_FAIL
-    });
-
-    if (err.response) {
-      if (err.response.status === 401) {
-        dispatch(setAlert('Please login again to update your name', 'danger'));
-      } else if (err.response.data.errors) {
-        err.response.data.errors.forEach(error => 
-          dispatch(setAlert(error.msg, "danger"))
-        );
-      }
-    } else {
-      dispatch(setAlert('Failed to update name', 'danger'));
-    }
+    handleApiError(err, dispatch, 'Failed to update name. Please try again.');
+    dispatch({ type: UPDATE_NAME_FAIL });
     return false;
   }
 };
 
 // Register User
-export const register =
-  ({ name, email, password }) =>
-  async (dispatch) => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
+export const register = ({ name, email, password }) => async (dispatch) => {
+  try {
+    const headers = {
+      'Content-Type': 'application/json'
     };
 
-    const body = JSON.stringify({ name, email, password });
+    const res = await axios.post(
+      `${config.backendUrl}/users/`,
+      { name, email, password },
+      { headers }
+    );
 
-    try {
-      const res = await axios.post(
-        "http://localhost:5050/users/",
-        body,
-        config
-      );
+    dispatch({
+      type: REGISTER_SUCCESS,
+      payload: res.data || {},
+    });
 
-      dispatch({
-        type: REGISTER_SUCCESS,
-        payload: res.data || {},
-      });
-
-      // Load user immediately after registration
-      dispatch(loadUser());
-
-      dispatch(setAlert('Registration successful! Please check your email to verify your account.', 'success'));
-      return true;
-    } catch (err) {
-      console.error("Registration Error: ", err);
-
-      if (err.response) {
-        const errors = err.response.data.errors;
-
-        if (errors) {
-          errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
-        } else {
-          dispatch(
-            setAlert(
-              "Registration failed: " + err.response.data.message ||
-                "Unknown error",
-              "danger"
-            )
-          );
-        }
-      } else {
-        dispatch(setAlert("Network error: Unable to reach server", "danger"));
-      }
-
-      dispatch({
-        type: REGISTER_FAIL,
-      });
-      return false;
-    }
-  };
+    dispatch(loadUser());
+    dispatch(setAlert('Registration successful! Please check your email to verify your account.', 'success'));
+    return true;
+  } catch (err) {
+    handleApiError(err, dispatch, 'Registration failed. Please try again.');
+    dispatch({ type: REGISTER_FAIL });
+    return false;
+  }
+};
 
 // Verify Email with Code
 export const verifyEmail = (email, code) => async (dispatch) => {
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
-
-  const body = JSON.stringify({ email, code });
-
   try {
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+
     const res = await axios.post(
-      "http://localhost:5050/users/verify-code",
-      body,
-      config
+      `${config.backendUrl}/users/verify-code`,
+      { email, code },
+      { headers }
     );
 
     dispatch({
@@ -170,52 +151,33 @@ export const verifyEmail = (email, code) => async (dispatch) => {
       payload: res.data
     });
 
-    // Load user after successful verification
     await dispatch(loadUser());
-
     dispatch(setAlert('Email verified successfully! You can now proceed to dashboard.', 'success'));
     return true;
   } catch (err) {
-    dispatch({
-      type: EMAIL_VERIFICATION_FAIL
-    });
-
-    if (err.response && err.response.data.errors) {
-      const errors = err.response.data.errors;
-      errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
-    } else {
-      dispatch(setAlert('Email verification failed', 'danger'));
-    }
+    handleApiError(err, dispatch, 'Email verification failed. Please try again.');
+    dispatch({ type: EMAIL_VERIFICATION_FAIL });
     return false;
   }
 };
 
 // Resend Verification Code
 export const resendVerification = (email) => async (dispatch) => {
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
-
-  const body = JSON.stringify({ email });
-
   try {
-    const res = await axios.post(
-      "http://localhost:5050/users/resend-verification",
-      body,
-      config
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+
+    await axios.post(
+      `${config.backendUrl}/users/resend-verification`,
+      { email },
+      { headers }
     );
     
     dispatch(setAlert('New verification code has been sent. Please check your inbox.', 'success'));
     return true;
   } catch (err) {
-    if (err.response && err.response.data.errors) {
-      const errors = err.response.data.errors;
-      errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
-    } else {
-      dispatch(setAlert('Failed to send verification code', 'danger'));
-    }
+    handleApiError(err, dispatch, 'Failed to send verification code. Please try again.');
     return false;
   }
 };
@@ -223,50 +185,46 @@ export const resendVerification = (email) => async (dispatch) => {
 // Login User
 export const login = (email, password) => async (dispatch) => {
   try {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      }
+    const headers = {
+      'Content-Type': 'application/json'
     };
 
     const res = await axios.post(
-      "http://localhost:5050/users/auth",
+      `${config.backendUrl}/users/auth`,
       { email, password },
-      config
+      { headers }
     );
 
-    // Store token in localStorage
-    if (res.data.token) {
+    if (res.data && res.data.token) {
       localStorage.setItem('token', res.data.token);
-    }
-
-    dispatch({
-      type: LOGIN_SUCCESS,
-      payload: res.data,
-    });
-
-    await dispatch(loadUser());
-  } catch (err) {
-    if (err.response && err.response.data.errors) {
-      const errors = err.response.data.errors;
-      errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
+      dispatch({
+        type: LOGIN_SUCCESS,
+        payload: res.data
+      });
+      await dispatch(loadUser());
     } else {
-      dispatch(setAlert("An unexpected error occurred", "danger"));
+      throw new Error('Invalid response format');
     }
-
-    dispatch({
-      type: LOGIN_FAIL,
-    });
+  } catch (err) {
+    handleApiError(err, dispatch, 'Login failed. Please check your credentials and try again.');
+    dispatch({ type: LOGIN_FAIL });
   }
 };
 
-// Logout / Clear Profile
+// Logout
 export const logout = () => async (dispatch) => {
-  localStorage.removeItem('token'); // Remove token on logout
-  dispatch({ type: LOGOUT });
-  await fetch("http://localhost:5050/users/google/logout", {
-    method: "GET",
-  });
+  try {
+    localStorage.removeItem('token');
+    dispatch({ type: LOGOUT });
+    
+    await fetch(`${config.backendUrl}/users/google/logout`, {
+      method: "GET",
+      credentials: 'include'
+    });
+  } catch (err) {
+    handleApiError(err, dispatch, 'Logout completed with some errors');
+    dispatch({ type: LOGOUT });
+  }
 };
 
 export default {

@@ -1,8 +1,12 @@
+// client/src/components/nutrition_cal/Meal_form.js
+
 import React, { useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
+import config from '../../config';  // Adjust the path if necessary
 
 const MealForm = ({ userId, mode = 'tracker' }) => {
   console.log('mfuserid', userId);
+  console.log('config:', config);
   const [foodList, setFoodList] = useState([]);
   const [message, setMessage] = useState({ text: "", type: "" });
   const [formData, setFormData] = useState({
@@ -13,7 +17,7 @@ const MealForm = ({ userId, mode = 'tracker' }) => {
     owner: userId,
   });
   const [foodOptions, setFoodOptions] = useState([]);
-  const [editingMeal, setEditingMeal] = useState(null); // Add this line
+  const [editingMeal, setEditingMeal] = useState(null);
   const isHistoryMode = mode === 'historySearch';
   
   const showMessage = (text, type = "success") => {
@@ -24,102 +28,18 @@ const MealForm = ({ userId, mode = 'tracker' }) => {
   useEffect(() => {
     const fetchFoodOptions = async () => {
       try {
-        const body = { "owner": userId }
-        const response = await axios.post("http://localhost:5050/nutrition/query_food", body);
+        const body = { "owner": userId };
+        const response = await axios.post(`${config.backendUrl}/nutrition/query_food`, body);
         const foods = response.data.food_saved;
         setFoodOptions(foods.map(food => food.name));
       } catch (err) {
         console.error("Error fetching food options: ", err);
+        showMessage("Failed to load food options", "error");
       }
     };
 
     fetchFoodOptions();
   }, []);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleEdit = async (food) => {
-    try {
-      if (editingMeal === food.meal._id) {
-        // Get values from the inputs
-        const updatedMeal = {
-          meal_type: document.getElementById(`meal_type_${food.meal._id}`).value,
-          food_taken: document.getElementById(`food_${food.meal._id}`).value,
-          portion: Number(document.getElementById(`portion_${food.meal._id}`).value),
-          time: food.meal.time, // Keep the original time
-          owner: userId
-        };
-
-        console.log('Sending update with data:', updatedMeal);
-
-        const config = {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        };
-
-        const response = await axios.put(
-          `http://localhost:5050/nutrition/meal_update/${food.meal._id}`,
-          updatedMeal,
-          config
-        );
-
-        if (response.data.success) {
-          setEditingMeal(null);
-          showMessage("Meal updated successfully!");
-          // Refresh the meal list
-          handleMealQuery(new Event('submit'));
-        } else {
-          throw new Error(response.data.message || 'Update failed');
-        }
-      } else {
-        // Start editing this meal
-        setEditingMeal(food.meal._id);
-      }
-    } catch (error) {
-      console.error("Error updating meal:", error);
-      showMessage(error.response?.data?.msg || "Failed to update meal", "error");
-    }
-  };
-
-  const handleMealDelete = async (id) => {
-    try {
-      await axios.delete(`http://localhost:5050/nutrition/meal_delete/${id}`);
-      
-      // Remove the deleted meal from the local state first
-      setFoodList(foodList.filter(food => food.meal._id !== id));
-      
-      // Only show success message
-      showMessage("Meal deleted successfully!");
-      
-      // Don't call handleMealQuery if foodList will be empty after deletion
-      if (foodList.length > 1) {
-        handleMealQuery(new Event('submit'));
-      } else {
-        // Reset nutrition totals if this was the last meal
-        setNutritionTotals({
-          energy: 0,
-          fat: 0,
-          sugar: 0,
-          fiber: 0,
-          protein: 0,
-          sodium: 0,
-          vitamin_c: 0,
-          calcium: 0,
-          iron: 0,
-        });
-      }
-    } catch (error) {
-      console.error("Error deleting food item:", error);
-      showMessage("Error deleting meal", "error");
-    }
-  };
 
   const [nutritionTotals, setNutritionTotals] = useState({
     energy: 0,
@@ -154,7 +74,7 @@ const MealForm = ({ userId, mode = 'tracker' }) => {
     }
 
     try {
-      const response = await axios.post("http://localhost:5050/nutrition/query_meal", formData);
+      const response = await axios.post(`${config.backendUrl}/nutrition/query_meal`, formData);
       console.log(response.data);
 
       if (response.data.success) {
@@ -187,13 +107,21 @@ const MealForm = ({ userId, mode = 'tracker' }) => {
 
     } catch (err) {
       setFoodList([]);
-      console.error("Error fetching food options: ", err);
+      console.error("Error fetching meals: ", err);
       showMessage("No meals found for this time period. Please try again.", "error");
     }
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
   const handleSubmit = async (e) => {
-    const config = {
+    const configAxios = {
       headers: {
         "Content-Type": "application/json",
       },
@@ -211,9 +139,9 @@ const MealForm = ({ userId, mode = 'tracker' }) => {
         owner: userId,
       };
       const res = await axios.post(
-        "http://localhost:5050/nutrition/log_meal",
+        `${config.backendUrl}/nutrition/log_meal`,
         dataToSend,
-        config
+        configAxios
       );
       console.log(res);
       handleMealQuery(e);
@@ -221,9 +149,77 @@ const MealForm = ({ userId, mode = 'tracker' }) => {
 
     } catch (err) {
       console.error("Food addition Error: ", err);
-      showMessage("Failed to log meal. Please try again.");
+      showMessage("Failed to log meal. Please try again.", "error");
     };
-  }
+  };
+
+  const handleEdit = async (food) => {
+    try {
+      if (editingMeal === food.meal._id) {
+        const updatedMeal = {
+          meal_type: document.getElementById(`meal_type_${food.meal._id}`).value,
+          food_taken: document.getElementById(`food_${food.meal._id}`).value,
+          portion: Number(document.getElementById(`portion_${food.meal._id}`).value),
+          time: food.meal.time,
+          owner: userId
+        };
+
+        console.log('Sending update with data:', updatedMeal);
+
+        const response = await axios.put(
+          `${config.backendUrl}/nutrition/meal_update/${food.meal._id}`,
+          updatedMeal,
+          {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+
+        if (response.data.success) {
+          setEditingMeal(null);
+          showMessage("Meal updated successfully!");
+          handleMealQuery(new Event('submit'));
+        } else {
+          throw new Error(response.data.message || 'Update failed');
+        }
+      } else {
+        setEditingMeal(food.meal._id);
+      }
+    } catch (error) {
+      console.error("Error updating meal:", error);
+      showMessage(error.response?.data?.msg || "Failed to update meal", "error");
+    }
+  };
+
+  const handleMealDelete = async (id) => {
+    try {
+      await axios.delete(`${config.backendUrl}/nutrition/meal_delete/${id}`);
+      
+      setFoodList(foodList.filter(food => food.meal._id !== id));
+      
+      showMessage("Meal deleted successfully!");
+      
+      if (foodList.length > 1) {
+        handleMealQuery(new Event('submit'));
+      } else {
+        setNutritionTotals({
+          energy: 0,
+          fat: 0,
+          sugar: 0,
+          fiber: 0,
+          protein: 0,
+          sodium: 0,
+          vitamin_c: 0,
+          calcium: 0,
+          iron: 0,
+        });
+      }
+    } catch (error) {
+      console.error("Error deleting meal:", error);
+      showMessage("Error deleting meal", "error");
+    }
+  };
 
   return (
     <div>

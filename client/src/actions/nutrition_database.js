@@ -1,4 +1,5 @@
 import axios from "axios";
+import appConfig from '../config';  // renamed to avoid conflict
 import { setAlert } from "./alert";
 import { 
   ADD_NUTRITION_INFOR_SUCCESS,
@@ -15,7 +16,7 @@ import {
 export const fetchFoods = (userId) => async (dispatch) => {
   try {
     const response = await axios.post(
-      "http://localhost:5050/nutrition/query_food", 
+      `${appConfig.backendUrl}/nutrition/query_food`, 
       { owner: userId }
     );
     
@@ -35,7 +36,7 @@ export const fetchFoods = (userId) => async (dispatch) => {
 
 // Add new food
 export const add_nutrition_infor = (nutritionData) => async (dispatch) => {
-  const config = {
+  const axiosConfig = {  // renamed from config
     headers: {
       "Content-Type": "application/json",
     },
@@ -43,9 +44,9 @@ export const add_nutrition_infor = (nutritionData) => async (dispatch) => {
 
   try {
     const res = await axios.post(
-      "http://localhost:5050/nutrition/add",
+      `${appConfig.backendUrl}/nutrition/add`,
       nutritionData,
-      config
+      axiosConfig
     );
 
     dispatch({
@@ -67,7 +68,7 @@ export const add_nutrition_infor = (nutritionData) => async (dispatch) => {
 // Delete food
 export const deleteFood = (id) => async (dispatch) => {
   try {
-    await axios.delete(`http://localhost:5050/nutrition/delete/${id}`);
+    await axios.delete(`${appConfig.backendUrl}/nutrition/delete/${id}`);
     
     dispatch({
       type: DELETE_FOOD_SUCCESS,
@@ -86,26 +87,23 @@ export const deleteFood = (id) => async (dispatch) => {
 };
 
 // Update food
-// In nutrition_database.js
-// In nutrition_database.js
 export const updateFood = (id, foodData) => async (dispatch) => {
     try {
-      const config = {
+      const axiosConfig = {  // renamed from config
         headers: {
           "Content-Type": "application/json",
         },
       };
   
-      // Log request data for debugging
       console.log("Sending update request with:", {
         id,
         foodData
       });
   
       const res = await axios.put(
-        `http://localhost:5050/nutrition/update/${id}`,
+        `${appConfig.backendUrl}/nutrition/update/${id}`,
         foodData,
-        config
+        axiosConfig
       );
   
       dispatch({
@@ -125,4 +123,4 @@ export const updateFood = (id, foodData) => async (dispatch) => {
       dispatch(setAlert("Error updating food", "danger"));
       throw err;
     }
-  };
+};

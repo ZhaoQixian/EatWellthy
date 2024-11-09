@@ -26,7 +26,7 @@ const isProduction = process.env.NODE_ENV === "production";
 
 // Define frontend URL based on environment
 const FRONTEND_URL = isProduction 
-  ? "https://eatwellthy-frontend.onrender.com"  // Your frontend Render URL
+  ? "https://eatwellthy-frontend.onrender.com"
   : "http://localhost:3000";
 
 const app = express();
@@ -51,9 +51,11 @@ app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// CORS options
+// CORS options with support for both development and production
 const corsOptions = {
-  origin: FRONTEND_URL,
+  origin: isProduction 
+    ? ["https://eatwellthy-frontend.onrender.com"]
+    : ["http://localhost:3000", "https://eatwellthy-frontend.onrender.com"],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204,
@@ -73,9 +75,8 @@ app.use("/location", locationRouter);
 app.use("/nutrition/", nutrition);
 app.use("/api/scrape", scrapeRoutes);
 app.use("/welloh", wellohRountes);
-app.use("/api/profile", require("./routes/profile")); // Import the new route
+app.use("/api/profile", require("./routes/profile"));
 app.use("/events", eventRoute);
-
 app.use("/api", nutritionixRoute);
 
 // MongoDB connection
@@ -104,5 +105,5 @@ if (isProduction) {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Frontend URL: ${FRONTEND_URL}`);
-  console.log(`Environment: ${process.env.NODE_ENV}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });

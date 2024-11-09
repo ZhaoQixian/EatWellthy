@@ -1,18 +1,27 @@
 import * as moment from "moment";
 import axios from "axios";
+import config from "../config";
 
 const apiCall = axios.create({
-  baseURL: "http://localhost:5050/events",
+  baseURL: `${config.backendUrl}/events`,  // Fixed template literal syntax
+  headers: {
+    'Content-Type': 'application/json'
+  }
 });
 
-export const getEvent = (id) => async (dispatch) => {
-  //i won't get the event from redux store as it is safer to
-  //keep updated with db.
+const handleError = (err, message = "An error occurred") => {
+  console.error(message, err);
+  if (err.response && err.response.data) {
+    return err.response.data.message || message;
+  }
+  return message;
+};
 
+export const getEvent = (id) => async (dispatch) => {
   try {
     const result = await apiCall.get(`/${id}/show`);
-    const { title, _id, start, end, describe } = await result.data;
-    const convertedEvent = await {
+    const { title, _id, start, end, describe } = result.data;
+    const convertedEvent = {
       title,
       describe,
       id: _id,
@@ -25,41 +34,49 @@ export const getEvent = (id) => async (dispatch) => {
       payload: convertedEvent,
     });
   } catch (err) {
-    console.log(err.data.message);
+    handleError(err, "Failed to fetch event");
+    dispatch({
+      type: "EVENT_ERROR",
+      payload: "Failed to fetch event"
+    });
   }
 };
 
 export const getAllEvents = (id) => async (dispatch) => {
-  // console.log("started fetching the api");
-  //i won't get the event from redux store as it is safer to
-  //keep updated with db.
-
   try {
     const result = await apiCall.get(`/?id=${id}`);
-    const convertedDates = await result.data.map((event) => {
-      return {
-        title: event.title,
-        start: new Date(event.start),
-        end: new Date(event.end),
-        id: event._id,
-        describe: event.describe,
-      };
-    });
+    const convertedDates = result.data.map((event) => ({
+      title: event.title,
+      start: new Date(event.start),
+      end: new Date(event.end),
+      id: event._id,
+      describe: event.describe,
+    }));
+    
     dispatch({
       type: "SHOW_EVENTS",
       payload: convertedDates,
     });
   } catch (err) {
-    console.log(err.data.message);
+    handleError(err, "Failed to fetch events");
+    dispatch({
+      type: "EVENT_ERROR",
+      payload: "Failed to fetch events"
+    });
   }
 };
 
 export const deleteEvent = (id) => async (dispatch) => {
   try {
-    const result = await apiCall.delete(`/${id}/delete`);
-    console.log("DELETE event : ", id);
+    await apiCall.delete(`/${id}/delete`);
+    dispatch({
+      type: "DELETE_EVENT",
+      payload: id
+    });
+    return true;
   } catch (err) {
-    console.error(err);
+    handleError(err, "Failed to delete event");
+    return false;
   }
 };
 
@@ -72,9 +89,15 @@ export const addEvent = (values) => async (dispatch) => {
       describe: values.describe,
       userId: values.userId,
     });
-    console.log("ADD event : ", result.data.data._id);
-  } catch (e) {
-    console.log(e);
+    
+    dispatch({
+      type: "ADD_EVENT",
+      payload: result.data.data
+    });
+    return result.data.data;
+  } catch (err) {
+    handleError(err, "Failed to add event");
+    return null;
   }
 };
 
@@ -86,17 +109,37 @@ export const updateEvent = (values, id) => async (dispatch) => {
       end: values.end,
       describe: values.describe,
     });
-    console.log("UPDATE event: ", result.data);
+    
+    dispatch({
+      type: "UPDATE_EVENT",
+      payload: result.data
+    });
+    return result.data;
   } catch (err) {
-    console.error(err);
+    handleError(err, "Failed to update event");
+    return null;
   }
 };
 
 export const addGoogleCalendarEvent = (event) => async (dispatch) => {
   try {
-    const result = await apiCall.post("/google-calendar", event); // Assuming this route in your backend handles Google Calendar events
-    console.log("Google Calendar event added: ", result.data);
-  } catch (e) {
-    console.log("Error adding Google Calendar event: ", e);
+    const result = await apiCall.post("/google-calendar", event);
+    dispatch({
+      type: "ADD_GOOGLE_EVENT",
+      payload: result.data
+    });
+    return result.data;
+  } catch (err) {
+    handleError(err, "Failed to add Google Calendar event");
+    return null;
   }
+};
+
+export default {
+  getEvent,
+  getAllEvents,
+  deleteEvent,
+  addEvent,
+  updateEvent,
+  addGoogleCalendarEvent
 };

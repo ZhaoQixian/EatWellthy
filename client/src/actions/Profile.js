@@ -1,4 +1,5 @@
 import axios from "axios";
+import appConfig from '../config';  // renamed import to avoid conflict
 import {
   SET_PROFILE,
   PROFILE_ERROR,
@@ -9,7 +10,7 @@ import {
 
 // Get Profile
 export const getProfile = () => async (dispatch) => {
-  let config = null;
+  let axiosConfig = null;
 
   try {
     dispatch({ type: LOADING_PROFILE });
@@ -23,14 +24,14 @@ export const getProfile = () => async (dispatch) => {
       return null;
     }
 
-    config = {
+    axiosConfig = {
       headers: {
         "x-auth-token": token,
       },
     };
 
     console.log("Fetching profile...");
-    const res = await axios.get("http://localhost:5050/api/profile/me", config);
+    const res = await axios.get(`${appConfig.backendUrl}/api/profile/me`, axiosConfig);
     console.log("Profile response:", res.data);
 
     dispatch({
@@ -42,7 +43,7 @@ export const getProfile = () => async (dispatch) => {
   } catch (err) {
     console.error("Error fetching profile:", err.response?.data || err.message);
 
-    if (err.response?.status === 400 && config) {
+    if (err.response?.status === 400) {
       try {
         const defaultProfile = {
           age: 0,
@@ -52,13 +53,13 @@ export const getProfile = () => async (dispatch) => {
           dailyBudget: 0,
           dietaryPreferences: "",
           allergies: [],
-          profileIcon: "bear" // Add default icon
+          profileIcon: "bear"
         };
 
         const createRes = await axios.post(
-          "http://localhost:5050/api/profile",
+          `${appConfig.backendUrl}/api/profile`,
           defaultProfile,
-          config
+          axiosConfig
         );
 
         dispatch({
@@ -95,14 +96,13 @@ export const updateProfile = (profileData) => async (dispatch) => {
       return false;
     }
 
-    const config = {
+    const axiosConfig = {
       headers: {
         "Content-Type": "application/json",
         "x-auth-token": token,
       },
     };
 
-    // Process the data before sending
     const processedData = {
       ...profileData,
       age: Number(profileData.age) || 0,
@@ -110,7 +110,7 @@ export const updateProfile = (profileData) => async (dispatch) => {
       weight: Number(profileData.weight) || 0,
       targetWeight: Number(profileData.targetWeight) || 0,
       dailyBudget: Number(profileData.dailyBudget) || 0,
-      profileIcon: profileData.profileIcon || "bear", // Add profileIcon
+      profileIcon: profileData.profileIcon || "bear",
       allergies: Array.isArray(profileData.allergies)
         ? profileData.allergies
         : profileData.allergies
@@ -121,9 +121,9 @@ export const updateProfile = (profileData) => async (dispatch) => {
 
     console.log("Sending profile data:", processedData);
     const res = await axios.post(
-      "http://localhost:5050/api/profile",
+      `${appConfig.backendUrl}/api/profile`,
       processedData,
-      config
+      axiosConfig
     );
     console.log("Update response:", res.data);
 
@@ -165,20 +165,20 @@ export const changePassword = (newPassword) => async (dispatch) => {
       return false;
     }
 
-    const config = {
+    const axiosConfig = {
       headers: {
         "Content-Type": "application/json",
         "x-auth-token": token,
       },
     };
 
-    console.log("Updating password..."); // Debug log
+    console.log("Updating password...");
     const res = await axios.put(
-      "http://localhost:5050/api/profile/updatepassword",
+      `${appConfig.backendUrl}/api/profile/updatepassword`,
       { password: newPassword },
-      config
+      axiosConfig
     );
-    console.log("Password update response:", res.data); // Debug log
+    console.log("Password update response:", res.data);
 
     return true;
   } catch (err) {
@@ -208,15 +208,15 @@ export const deleteAccount = () => async (dispatch) => {
       return false;
     }
 
-    const config = {
+    const axiosConfig = {
       headers: {
         "x-auth-token": token,
       },
     };
 
-    console.log("Deleting account..."); // Debug log
-    await axios.delete("http://localhost:5050/api/profile", config);
-    console.log("Account deleted successfully"); // Debug log
+    console.log("Deleting account...");
+    await axios.delete(`${appConfig.backendUrl}/api/profile`, axiosConfig);
+    console.log("Account deleted successfully");
 
     dispatch({ type: CLEAR_PROFILE });
     dispatch({ type: LOGOUT });
@@ -233,7 +233,7 @@ export const deleteAccount = () => async (dispatch) => {
   }
 };
 
-// Add this to your existing Profile.js actions file
+// Generate Diet Suggestions
 export const generateDietSuggestions = () => async (dispatch) => {
   try {
     dispatch({ type: LOADING_PROFILE });
@@ -247,7 +247,7 @@ export const generateDietSuggestions = () => async (dispatch) => {
       return null;
     }
 
-    const config = {
+    const axiosConfig = {
       headers: {
         "x-auth-token": token,
       },
@@ -255,13 +255,12 @@ export const generateDietSuggestions = () => async (dispatch) => {
 
     console.log("Sending request to generate diet suggestions...");
     const res = await axios.post(
-      "http://localhost:5050/api/profile/generate-diet",
+      `${appConfig.backendUrl}/api/profile/generate-diet`,
       {},
-      config
+      axiosConfig
     );
     console.log("Received response:", res.data);
 
-    // Make sure we're dispatching the entire profile
     await dispatch(getProfile());
 
     return res.data;
