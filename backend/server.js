@@ -54,8 +54,8 @@ app.use(express.json());
 // CORS options with support for both development and production
 const corsOptions = {
   origin: isProduction 
-    ? ["https://eatwellthy-frontend.onrender.com"]
-    : ["http://localhost:3000", "https://eatwellthy-frontend.onrender.com"],
+    ? ["https://eatwellthy-ncnp.onrender.com"]
+    : ["http://localhost:3000", "https://eatwellthy-ncnp.onrender.com"],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204,
