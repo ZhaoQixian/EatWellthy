@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import config from '../../config';
 
 const RecentMeals = ({ userId }) => {
   const [mealData, setMealData] = useState({
@@ -44,7 +45,7 @@ const RecentMeals = ({ userId }) => {
 
   const fetchMealsForDate = async (date) => {
     try {
-      const response = await axios.post("http://localhost:5050/nutrition/query_meal", {
+      const response = await axios.post(`${config.backendUrl}/nutrition/query_meal`, {
         meal_type: '',
         owner: userId,
         time: date

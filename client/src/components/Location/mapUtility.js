@@ -12,6 +12,7 @@ import {
 import axios from "axios";
 import "./map.css";
 import "@reach/combobox/styles.css";
+import appConfig from '../../config';  // Renamed to appConfig
 
 export const Search = ({ panTo, setLocation }) => {
   const {
@@ -74,37 +75,29 @@ export const Search = ({ panTo, setLocation }) => {
 };
 
 export const getAddress = (lat, lng) => {
-  let config = {
+  let axiosConfig = {  // Renamed to axiosConfig
     method: "get",
     url: `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`,
     headers: {},
   };
   const promiseAddress = new Promise((resolve, reject) => {
-    resolve(axios.request(config));
+    resolve(axios.request(axiosConfig));
     reject(new Error("Failed to retrieve address!"));
   });
   return promiseAddress;
 };
 
 export const getStoreList = (location) => {
-  let config = {
+  let axiosConfig = {  // Renamed to axiosConfig
     method: "post",
-    url: "http://localhost:5050/location",
+    url: `${appConfig.backendUrl}/location`,  // Using appConfig instead
     headers: {},
     data: location,
   };
 
   const promiseStoreList = new Promise((resolve, reject) => {
-    resolve(axios.request(config).then((response) => response.data));
+    resolve(axios.request(axiosConfig).then((response) => response.data));
     reject(new Error("Failed to retrieve store!"));
   });
-  // try {
-  //   const response = await axios.request(config);
-  //   // console.log(response.data);
-  //   setStoreList(response.data);
-  // } catch (e) {
-  //   console.error(e);
-  // }
-
   return promiseStoreList;
 };

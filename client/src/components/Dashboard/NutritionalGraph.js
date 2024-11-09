@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { getProfile } from "../../actions/Profile";
 import "./NutritionGraph.css";
+import config from '../../config';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -38,7 +39,7 @@ const NutritionalGraph = () => {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       
-      const response = await axios.post("http://localhost:5050/nutrition/query_meal", {
+      const response = await axios.post(`${config.backendUrl}/nutrition/query_meal`, {
         meal_type: '',
         owner: auth.user._id,
         time: today

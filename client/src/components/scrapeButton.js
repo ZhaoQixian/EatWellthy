@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import config from '../config';
 
 const ScrapeButton = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -9,7 +10,7 @@ const ScrapeButton = () => {
     setIsLoading(true);
     setResult(null);
     try {
-      const response = await axios.post('http://localhost:5050/api/scrape/fairprice');
+      const response = await axios.post(`${config.backendUrl}/api/scrape/fairprice`);
       setResult(response.data);
     } catch (error) {
       console.error('Error during scraping:', error);

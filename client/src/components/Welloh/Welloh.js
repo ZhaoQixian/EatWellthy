@@ -4,6 +4,7 @@ import './Welloh.css';
 import axios from 'axios';
 import { getProfile } from "../../actions/Profile"
 import ReactMarkdown from 'react-markdown';
+import config from '../../config';
 
 const Welloh = () => {
   const dispatch = useDispatch();
@@ -97,7 +98,7 @@ const Welloh = () => {
       };
 
       try {
-        const response = await axios.post("http://localhost:5050/welloh/init", {
+        const response = await axios.post(`${config.backendUrl}/welloh/init`, {
           userData: JSON.stringify(messageData)
         });
         setChatState(prev => ({
@@ -156,7 +157,7 @@ const Welloh = () => {
 
   const getChatGPTResponse = async (messagesNew) => {
     try {
-      const response = await axios.post("http://localhost:5050/welloh/chat", {
+      const response = await axios.post(`${config.backendUrl}/welloh/chat`, {
         userMessage: messagesNew
       });
       return response.data;
