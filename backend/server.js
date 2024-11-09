@@ -22,6 +22,12 @@ const nutritionixRoute = require("./routes/nutritionixRoute");
 dotenv.config();
 
 const PORT = process.env.PORT || 5050;
+const isProduction = process.env.NODE_ENV === "production";
+
+// Define frontend URL based on environment
+const FRONTEND_URL = isProduction 
+  ? "https://eatwellthy.onrender.com"
+  : "http://localhost:3000";
 
 const app = express();
 
@@ -30,6 +36,8 @@ app.use(
     name: "session",
     maxAge: 24 * 60 * 60 * 1000,
     keys: [process.env.COOKIE_KEY_1, process.env.COOKIE_KEY_2],
+    sameSite: isProduction ? 'none' : 'lax',
+    secure: isProduction
   })
 );
 
@@ -43,9 +51,11 @@ app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// CORS options
+// CORS options with support for both development and production
 const corsOptions = {
-  origin: "http://localhost:3000", //frontend URL
+  origin: isProduction 
+    ? ["https://eatwellthy.onrender.com"]
+    : ["http://localhost:3000", "https://eatwellthy.onrender.com"],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204,
@@ -65,9 +75,8 @@ app.use("/location", locationRouter);
 app.use("/nutrition/", nutrition);
 app.use("/api/scrape", scrapeRoutes);
 app.use("/welloh", wellohRountes);
-app.use("/api/profile", require("./routes/profile")); // Import the new route
+app.use("/api/profile", require("./routes/profile"));
 app.use("/events", eventRoute);
-
 app.use("/api", nutritionixRoute);
 
 // MongoDB connection
@@ -80,12 +89,21 @@ mongoose
   .catch((err) => console.log(err));
 
 // Serve static assets in production
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("mern-auth/build"));
+if (isProduction) {
+  app.use(express.static(path.join(__dirname, "client", "build")));
 
   app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "mern-auth", "build", "index.html"));
+    res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+  });
+} else {
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
   });
 }
+
 // Start the server
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Frontend URL: ${FRONTEND_URL}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+});

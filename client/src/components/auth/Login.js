@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import config from '../../config';
 
 import { LOGIN_SUCCESS, GOOGLE_AUTO } from "../../actions/types";
 import { login } from "../../actions/auth";
@@ -12,7 +13,7 @@ import googleLogo from "./google.png";
 import "./login.css";
 
 const Login = ({ auth, login }) => {
-  const googleAuthURL = "http://localhost:5050/users/google";
+  const googleAuthURL = `${config.backendUrl}/users/google`;
 
   const [formData, setFormData] = useState({
     email: "",
@@ -70,7 +71,7 @@ const Login = ({ auth, login }) => {
     }
     try {
       const response = await fetch(
-        "http://localhost:5050/users/forgot-password",
+        `${config.backendUrl}/users/forgot-password`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

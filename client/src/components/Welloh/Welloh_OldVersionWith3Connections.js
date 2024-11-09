@@ -1,3 +1,5 @@
+/*
+
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import './Welloh.css';
@@ -262,7 +264,7 @@ const Welloh = () => {
       {/* <div className="chatbot-header">
         <div className="chatbot-icon"></div>
         <h2>Welloh Bot</h2>
-      </div> */}
+      </div> }
       <div className="chatbot-messages">
         {chatState.messages.map((message, index) => (
           (index !== 0 && index !== 1) && (
@@ -274,7 +276,7 @@ const Welloh = () => {
           )
         ))}
         {chatState.isThinking && <div className="thinking-animation">...</div>}
-        {/* {chatState.isNew && <div className='chatbot-greeting'>WELLOH</div>} */}
+        {/* {chatState.isNew && <div className='chatbot-greeting'>WELLOH</div>} }
       </div>
       <div className="chatbot-input">
         <input
@@ -292,3 +294,5 @@ const Welloh = () => {
 };
 
 export default Welloh;
+
+*/

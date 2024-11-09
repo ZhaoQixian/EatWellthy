@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { connect  } from "react-redux";
+import config from '../../config'; 
 import {useParams} from 'react-router-dom';
 
 
@@ -12,6 +13,7 @@ const FoodStored = () => {
   const params = useParams();
   const userId = params.userId;
   const username =params.username;
+  
    
   useEffect(() => {
     
@@ -19,7 +21,7 @@ const FoodStored = () => {
       try {
         
         const body = {"owner": userId}
-        const response = await axios.post("http://localhost:5050/nutrition/query_food",body);
+        const response = await axios.post(`${config.backendUrl}/nutrition/query_food`,body);
         console.log(response.data);  
         if (response.data.success) {
           setFoodList(response.data.food_saved);
@@ -44,7 +46,7 @@ const FoodStored = () => {
     ){
         try {
        
-          await axios.delete(`http://localhost:5050/nutrition/delete/${id}`);
+          await axios.delete(`${config.backendUrl}/nutrition/delete/${id}`);
           setFoodList(foodList.filter(food => food._id !== id));  
         } catch (error) {
           console.error("Error deleting food item:", error);

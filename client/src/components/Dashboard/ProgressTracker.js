@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from 'axios';
 import { getProfile } from "../../actions/Profile";
 import "./ProgressTracker.css";
+import config from '../../config';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -27,7 +28,7 @@ const ProgressTracker = () => {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       
-      const response = await axios.post("http://localhost:5050/nutrition/query_meal", {
+      const response = await axios.post(`${config.backendUrl}/nutrition/query_meal`, {
         meal_type: '',
         owner: auth.user._id,
         time: today
