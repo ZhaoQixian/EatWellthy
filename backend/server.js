@@ -26,7 +26,7 @@ const isProduction = process.env.NODE_ENV === "production";
 
 // Define frontend URL based on environment
 const FRONTEND_URL = isProduction 
-  ? "https://eatwellthy-frontend.onrender.com"
+  ? "https://eatwellthy-ncnp.onrender.com"
   : "http://localhost:3000";
 
 const app = express();
