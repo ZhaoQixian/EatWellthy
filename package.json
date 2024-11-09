@@ -1,5 +1,12 @@
 {
-  "dependencies": {
-    "react": "^18.3.1"
+  "name": "eatwellthy-root",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently \"cd backend && npm run server\" \"cd client && npm start\"",
+    "install-all": "cd client && npm install && cd ../backend && npm install",
+    "start": "cd backend && npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
   }
 }
