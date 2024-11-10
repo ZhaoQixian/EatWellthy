@@ -26,6 +26,7 @@ const Profile = () => {
   const { loading, error } = profileState;
 
   const [message, setMessage] = useState({ text: "", type: "" });
+  const [validationErrors, setValidationErrors] = useState({});
   const [formData, setFormData] = useState({
     name: "",
     newPassword: "",
@@ -71,6 +72,34 @@ const Profile = () => {
     profileIcon,
   } = formData;
 
+  const validationRules = {
+    age: {
+      min: 1,
+      max: 120,
+      message: "Age must be between 1 and 120 years",
+    },
+    height: {
+      min: 30,
+      max: 300,
+      message: "Height must be between 30 and 300 cm",
+    },
+    weight: {
+      min: 20,
+      max: 500,
+      message: "Weight must be between 20 and 500 kg",
+    },
+    targetWeight: {
+      min: 20,
+      max: 500,
+      message: "Target weight must be between 20 and 500 kg",
+    },
+    dailyBudget: {
+      min: 0,
+      max: 1000,
+      message: "Daily budget must be between 0 and 1000 SGD",
+    },
+  };
+
   useEffect(() => {
     const loadProfile = async () => {
       const profileData = await dispatch(getProfile());
@@ -100,8 +129,56 @@ const Profile = () => {
     setTimeout(() => setMessage({ text: "", type: "" }), 5000);
   };
 
+  const validateField = (name, value) => {
+    if (validationRules[name]) {
+      const { min, max, message } = validationRules[name];
+      const numValue = Number(value);
+      
+      if (value && (isNaN(numValue) || numValue < min || numValue > max)) {
+        return message;
+      }
+    }
+    return "";
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    
+    // Validate name
+    if (!name.trim()) {
+      errors.name = "Name is required";
+    }
+
+    // Validate numeric fields
+    Object.keys(validationRules).forEach((field) => {
+      const error = validateField(field, formData[field]);
+      if (error) {
+        errors[field] = error;
+      }
+    });
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const onChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    
+    // For numeric fields, prevent negative values on input
+    if (validationRules[name] && value !== "") {
+      const numValue = Number(value);
+      if (numValue < 0) return;
+    }
+
+    setFormData({ ...formData, [name]: value });
+    
+    // Clear validation error when field is modified
+    if (validationErrors[name]) {
+      setValidationErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
   };
 
   const handleIconSelect = (iconName) => {
@@ -110,6 +187,11 @@ const Profile = () => {
 
   const onSubmitProfile = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      showMessage("Please correct the errors in the form", "error");
+      return;
+    }
 
     if (name !== authState.user?.name) {
       const nameUpdateSuccess = await dispatch(updateName(name));
@@ -187,11 +269,7 @@ const Profile = () => {
       </div>
 
       {message.text && (
-        <div
-          className={`message ${
-            message.type === "error" ? "error" : "success"
-          }`}
-        >
+        <div className={`message ${message.type === "error" ? "error" : "success"}`}>
           {message.text}
         </div>
       )}
@@ -210,7 +288,11 @@ const Profile = () => {
                   name="name"
                   value={name}
                   onChange={onChange}
+                  className={validationErrors.name ? "error" : ""}
                 />
+                {validationErrors.name && (
+                  <span className="error-message">{validationErrors.name}</span>
+                )}
               </div>
               <div className="form-field">
                 <label>Gender</label>
@@ -227,7 +309,12 @@ const Profile = () => {
                   name="age"
                   value={age}
                   onChange={onChange}
+                  min="0"
+                  className={validationErrors.age ? "error" : ""}
                 />
+                {validationErrors.age && (
+                  <span className="error-message">{validationErrors.age}</span>
+                )}
               </div>
             </div>
 
@@ -239,7 +326,12 @@ const Profile = () => {
                   name="height"
                   value={height}
                   onChange={onChange}
+                  min="0"
+                  className={validationErrors.height ? "error" : ""}
                 />
+                {validationErrors.height && (
+                  <span className="error-message">{validationErrors.height}</span>
+                )}
               </div>
               <div className="form-field">
                 <label>Current Weight (kg)</label>
@@ -248,7 +340,12 @@ const Profile = () => {
                   name="weight"
                   value={weight}
                   onChange={onChange}
+                  min="0"
+                  className={validationErrors.weight ? "error" : ""}
                 />
+                {validationErrors.weight && (
+                  <span className="error-message">{validationErrors.weight}</span>
+                )}
               </div>
               <div className="form-field">
                 <label>Target Weight (kg)</label>
@@ -257,7 +354,12 @@ const Profile = () => {
                   name="targetWeight"
                   value={targetWeight}
                   onChange={onChange}
+                  min="0"
+                  className={validationErrors.targetWeight ? "error" : ""}
                 />
+                {validationErrors.targetWeight && (
+                  <span className="error-message">{validationErrors.targetWeight}</span>
+                )}
               </div>
             </div>
 
@@ -269,24 +371,19 @@ const Profile = () => {
                   name="dailyBudget"
                   value={dailyBudget}
                   onChange={onChange}
+                  min="0"
+                  className={validationErrors.dailyBudget ? "error" : ""}
                 />
+                {validationErrors.dailyBudget && (
+                  <span className="error-message">{validationErrors.dailyBudget}</span>
+                )}
               </div>
               <div className="form-field">
                 <label>Activity Level</label>
-                <select
-                  name="activityLevel"
-                  value={activityLevel}
-                  onChange={onChange}
-                >
-                  <option value="sedentary">
-                    Sedentary (little or no exercise)
-                  </option>
-                  <option value="lightly">
-                    Lightly active (1-3 days/week)
-                  </option>
-                  <option value="moderately">
-                    Moderately active (3-5 days/week)
-                  </option>
+                <select name="activityLevel" value={activityLevel} onChange={onChange}>
+                  <option value="sedentary">Sedentary (little or no exercise)</option>
+                  <option value="lightly">Lightly active (1-3 days/week)</option>
+                  <option value="moderately">Moderately active (3-5 days/week)</option>
                   <option value="very">Very active (6-7 days/week)</option>
                   <option value="super">Super active (physical job)</option>
                 </select>
@@ -340,9 +437,7 @@ const Profile = () => {
                 {Object.entries(animalIcons).map(([name, icon]) => (
                   <div
                     key={name}
-                    className={`icon-option ${
-                      profileIcon === name ? "selected" : ""
-                    }`}
+                    className={`icon-option ${profileIcon === name ? "selected" : ""}`}
                     onClick={() => handleIconSelect(name)}
                   >
                     <img src={icon} alt={name} className="icon-preview" />
