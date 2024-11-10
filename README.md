@@ -59,7 +59,7 @@ NUTRITION_API_KEY=your_api_key
 ### 3. Install Dependencies
 Under the eatwellthy directory:
 ```bash
-npm install --force
+npm install 
 npm run install-all
 npm run dev
 ```

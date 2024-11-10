@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "concurrently \"cd backend && npm run server\" \"cd client && npm start\"",
-    "install-all": "cd client && npm install && cd ../backend && npm install",
+    "install-all": "cd client && npm install --legacy-peer-deps && cd ../backend && npm install",
     "start": "cd backend && npm start"
   },
   "devDependencies": {
