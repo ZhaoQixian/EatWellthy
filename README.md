@@ -136,6 +136,23 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 
 ## 🔗 References
-- add later
+
+Here are the documentation resources used in this project:
+
+- [Nutritionix API Documentation](https://developer.nutritionix.com/docs/v2)  
+  V2.0 API Home. (n.d.).
+- [BREVO API Documentation](https://developers.brevo.com/)  
+  Brevo API. (n.d.).
+- [Google API Documentation](https://console.cloud.google.com/apis/library)  
+  API Library – APIs & Services – Google Cloud console. (n.d.).
+- [OpenAI API Documentation](https://platform.openai.com/docs/api-reference/introduction)  
+  OpenAI Platform. (n.d.).
+- [IEEE Software Engineering Standards](https://innovate.ieee.org/ieee-software-engineering-standards/)  
+  Ieeeinnovate. (2019, December 9). Innovate.
+- [Good Practices for Educational Software Engineering Projects](https://ieeexplore.ieee.org/document/4222631)  
+  IEEE Conference Publication | IEEE Xplore. (n.d.).
+- **Nanyang Technological University, Singapore** - SC2006 Software Engineering, Lecture Notes
+
+
 
 Happy coding with **EatWellthy**! 💪
