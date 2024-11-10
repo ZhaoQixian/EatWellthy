@@ -57,7 +57,7 @@ NUTRITION_API_KEY=your_api_key
 ```
 
 ### 3. Install Dependencies
-Under the eatwellthy directory, copy this:
+Under the eatwellthy directory, copy this to your terminal:
 ```bash
 npm install 
 npm run install-all
@@ -104,8 +104,9 @@ git push origin feature/your-feature-name
 ## 📦 Troubleshooting
 If modules need reinstalling:
 ```bash
-cd client
-rm -rf node_modules  # or Remove-Item -Recurse -Force .\node_modules on Windows
+cd EatWellthy or client or backend
+For Mac/Linux users: rm -rf node_modules
+For Windows users: Remove-Item -Recurse -Force .\node_modules 
 npm install --legacy-peer-deps
 
 ```
