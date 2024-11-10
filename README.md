@@ -1,113 +1,134 @@
 # EatWellthy 🍲
-A web application built with the MERN stack (MongoDB, Express.js, React.js, Node.js) to promote healthy eating habits! This README will guide you through setting up the project, managing changes, and making contributions.
+A comprehensive web application built with the MERN stack (MongoDB, Express.js, React.js, Node.js) designed to revolutionize healthy eating habits through intelligent meal planning and nutrition tracking.
 
 ## 🌐 Live Demo & Deployment
-- **Live Application**: [EatWellthy on Render](https://eatwellthy.onrender.com)
 - **Demo Video**: [Watch on YouTube](https://www.youtube.com/watch?v=_jXpvho58wg)
+- **Deployed Application**: [EatWellthy on Render](https://eatwellthy.onrender.com)
+- This deployed application may be inactive periodically
+- It is highly recommended to clone this repository and use localhost
 
 ## 👥 Team Members
-- LIU XIAOTAO
-- LOW JO YI, NICOLE
-- MAHI PANDEY
-- MEHTA RISHIKA
-- ZHANG YICHI
+- [LIU XIAOTAO](https://github.com/Neurotic58)
+- [LOW JO YI, NICOLE](https://github.com/Nicoleelow)
+- [MAHI PANDEY](https://github.com/mahipandcy)
+- [MEHTA RISHIKA](https://github.com/Oganesson0221)
+- [ZHANG YICHI](https://github.com/CatilonyZhang)
 - [ZHAO QIXIAN](https://github.com/ZhaoQixian)
 
+## ✨ Core Features
+### 🍽️ Smart Meal Planning
+- Comprehensive nutritional information from reliable Nutritionix API
+- Custom recipe creation and storage
+- Daily meal plan suggestion based on profile information 
+
+### 📊 Nutrition Analytics
+- Real-time calorie and macro tracking
+- Detailed breakdown of macro and micro nutrients
+- Progress visualization with interactive charts
+
+### 👤 User Experience
+- Personalized dashboard with daily summaries
+- Intuitive meal planning interface with drag-and-drop functionality
+- Responsive AI assistant Welloh for any user inquery 
+
 ---
-
 ## 🛠️ Getting Started
-
 ### 1. Clone the Repository
 Clone the entire repository using Git or the GitHub Desktop app:
-   - **GitHub Desktop**: The app is beginner-friendly after a few tries and allows you to manage repositories easily.
-   - **Git Command Line**: If you prefer the terminal, use:
+   - **GitHub Desktop**: Recommended for beginners - provides a user-friendly interface
+   - **Git Command Line**:
      ```bash
      git clone <repository-url>
      ```
 
-### 2. Fetch Latest Changes Regularly
-Before making changes or reviewing code, always fetch the latest updates to stay in sync with the team:
-   - In GitHub Desktop: Click **Fetch Origin**.
-   - Or in the terminal:
-     ```bash
-     git fetch origin
-     ```
+### 2. Environment Setup
+Create a `.env` file in the root directory with:
+```
+MONGODB_URI=your_mongodb_uri
+JWT_SECRET=your_jwt_secret
+NUTRITION_API_KEY=your_api_key
+```
 
-### 3. Open the Repository Locally
-   - Navigate to the cloned folder on your laptop, named `Github\EatWellthy`.
-   - Open PowerShell (Windows) or a terminal in VS Code to access the project directory.
-
-### 4. Navigate to Project Folder
-   Open a terminal in the `EatWellthy` directory. Replace `WhereYouStoreTheProject` with your project's actual path:
-   ```bash
-   cd "WhereYouStoreTheProject\EatWellthy"
-   ```
-
----
-
-## 🚀 Running the Application
-
-To run the app, follow these steps under the eatwellthy directory:
+### 3. Install Dependencies
+Under the eatwellthy directory:
 ```bash
 npm install
 npm run install-all
 npm run dev
 ```
-
-The web app should automatically open in your default browser.
-
----
-
-## 🔄 Making & Managing Changes
-
-After making updates, use the GitHub Desktop app to:
-1. **Commit and Push**:
-   - Make a commit with a description of your changes.
-   - Push to the repository to update it for others.
-
-2. **Undo Changes** (if needed):
-   - Right-click on the modified file in GitHub Desktop and select "Discard Changes" to undo any uncommitted modifications.
+The web app will automatically open in your default browser.
 
 ---
+## 🔄 Development Workflow
+### Regular Updates
+Before making changes:
+```bash
+git fetch origin
+git pull origin main
+```
 
-## 📦 Reinstalling Modules
-
-If modules need reinstalling (usually in the `client` folder):
-1. **Navigate to the client directory**:
-   ```bash
-   cd client
-   ```
-2. **Remove Existing Modules**:
-   - Windows:
-     ```bash
-     Remove-Item -Recurse -Force .\node_modules
-     ```
-   - Mac & Linux:
-     ```bash
-     rm -rf node_modules
-     ```
-3. **Install Dependencies with Legacy Peer Deps**:
-   ```bash
-   npm install --legacy-peer-deps
-   ```
-   - For subsequent installs, you can simply use:
-     ```bash
-     npm install
-     ```
+### Making Changes
+1. Create a new branch for your feature:
+```bash
+git checkout -b feature/your-feature-name
+```
+2. Make your changes
+3. Commit and push:
+```bash
+git add .
+git commit -m "Description of changes"
+git push origin feature/your-feature-name
+```
 
 ---
+## 📦 Troubleshooting
+If modules need reinstalling:
+```bash
+cd client
+rm -rf node_modules  # or Remove-Item -Recurse -Force .\node_modules on Windows
+npm install --legacy-peer-deps
+
+```
+## 🔌 API Integrations
+EatWellthy leverages several powerful APIs to provide a comprehensive health and nutrition experience:
+### 🥗 Nutritionix API
+- Complete food database with accurate nutritional information and natural language processing
+### 🤖 OpenAI Integration
+- Personalised meal recommendations interactive chatbot Welloh powered by AI
+### 📍 Google Maps API
+- Locate and grocery stores in your area conveniently
+### 📅 Google Calendar API
+- Seamlessly sync meal plans and set reminders in your google calendar
+### ✉️ Brevo API
+- Streamlined email verification and password reset
+### 🔐 Google OAuth 2.0
+- Secure authentication with cross-device profile synchronization
+
+
+## 📚 Documentation
+- will add later
+
 
 ## 📜 License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
----
+
+## 🤝 Contributing
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
 
 ## 📝 Additional Notes
+- Regularly pull changes from main to stay updated
+- Follow the README.md for operation guidance
+- The application uses [Nutrition API Name] for food data
+- Deployed on Render's platform
 
-- Make sure to frequently fetch changes from the origin to prevent merge conflicts.
-- Always test the application after making significant changes, especially those involving the backend or database.
-- The application is deployed using Welloh on Render's platform.
 
----
+## 🔗 References
+- add later
 
 Happy coding with **EatWellthy**! 💪
