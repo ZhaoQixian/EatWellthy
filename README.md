@@ -57,13 +57,24 @@ NUTRITION_API_KEY=your_api_key
 ```
 
 ### 3. Install Dependencies
-Under the eatwellthy directory:
+Under the eatwellthy directory, copy this:
 ```bash
 npm install 
 npm run install-all
 npm run dev
 ```
 The web app will automatically open in your default browser.
+
+Alternatively you may key in the command line by line 
+```bash
+npm install 
+cd client 
+npm install --legacy-peer-deps
+cd ../backend
+npm install
+cd ..
+npm run dev
+```
 
 ---
 ## 🔄 Development Workflow
