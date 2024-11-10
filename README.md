@@ -123,7 +123,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📝 Additional Notes
 - Regularly pull changes from main to stay updated
 - Follow the README.md for operation guidance
-- The application uses [Nutrition API Name] for food data
+- The application uses Nutritionix API for food data
 - Deployed on Render's platform
 
 
