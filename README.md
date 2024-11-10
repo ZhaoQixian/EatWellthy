@@ -1,6 +1,14 @@
 # EatWellthy 🍲
 A comprehensive web application built with the MERN stack (MongoDB, Express.js, React.js, Node.js) designed to revolutionize healthy eating habits through intelligent meal planning and nutrition tracking.
 
+<p align="center">
+  <img src="https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white" />
+  <img src="https://img.shields.io/badge/Express.js-404D59?style=for-the-badge&logo=express&logoColor=white" />
+  <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=white" />
+  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white" />
+</p>
+
+
 ## 🌐 Live Demo & Deployment
 - **Demo Video**: [Watch on YouTube](https://www.youtube.com/watch?v=_jXpvho58wg)
 - **Deployed Application**: [EatWellthy on Render](https://eatwellthy.onrender.com)
