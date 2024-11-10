@@ -42,10 +42,9 @@ Clone the entire repository using Git or the GitHub Desktop app:
      ```
 
 ### 2. Environment Setup
-Create a `.env` file in the root directory with:
+Open the .env file at EatWellthy/backend/.env_example, key in your API keys
 ```
 MONGODB_URI=your_mongodb_uri
-JWT_SECRET=your_jwt_secret
 NUTRITION_API_KEY=your_api_key
 ```
 
