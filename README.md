@@ -125,9 +125,18 @@ EatWellthy leverages several powerful APIs to provide a comprehensive health and
 ### 🔐 Google OAuth 2.0
 - Secure authentication with cross-device profile synchronization
 
+## 📚 Documentation Structure
 
-## 📚 Documentation
-- will add later
+- [Documents](/Documents)
+  - [Design Diagrams](/Documents/DesignDiagrams)
+  - [Lab Deliverables](/Documents/LabDeliverables)
+  - [Sequence Diagrams](/Documents/SequenceDiagrams)
+
+## 📋 Project Resources
+- [EatWellthy Demo Slides](/Documents/EatWellthy%20Demo%20Slides.pdf)
+- [EatWellthy Development Team](/Documents/EatWellthy%20Development%20Team.pdf)
+- [EatWellthy Test Cases](/Documents/EatWellthy%20Test%20Cases.pdf)
+- [EatWellthy Use Cases](/Documents/EatWellthy%20Use%20Cases.pdf)
 
 
 ## 📜 License
