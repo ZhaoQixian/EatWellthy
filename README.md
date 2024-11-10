@@ -64,6 +64,8 @@ npm run install-all
 npm run dev
 ```
 The web app will automatically open in your default browser.
+The first local run may take ~45 seconds to install packages
+The following takes ~20 seconds
 
 Alternatively you may key in the command line by line 
 ```bash
