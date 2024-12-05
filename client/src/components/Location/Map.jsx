@@ -28,29 +28,39 @@ const options = {
 };
 
 const Map = ({ clickData, setStoreList, storeList }) => {
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-    libraries,
-  });
-
   const [selected, setSelected] = useState(null);
   const [location, setLocation] = useState(defaultCenter);
   const [address, setAddress] = useState(null);
   const mapRef = useRef();
 
-  const circleOptions = {
-    strokeColor: "#90daee",
-    strokeOpacity: 0.5,
-    strokeWeight: 1,
-    fillColor: "grey",
-    fillOpacity: 0.4,
-    clickable: false,
-    draggable: false,
-    editable: false,
-    visible: true,
-    radius: 1000,
-    center: location,
-  };
+  // Initialize panTo first to avoid reference issues
+  const panTo = useCallback(({ lat, lng }) => {
+    if (mapRef.current && lat && lng) {
+      mapRef.current.panTo({ lat, lng });
+      mapRef.current.setZoom(15);
+    }
+  }, []);
+
+  const onMapClick = useCallback(
+    (e) => {
+      const newLocation = {
+        lat: e.latLng.lat(),
+        lng: e.latLng.lng(),
+      };
+      setLocation(newLocation);
+      panTo(newLocation);
+    },
+    [panTo]
+  );
+
+  const onMapLoad = useCallback((map) => {
+    mapRef.current = map;
+  }, []);
+
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+    libraries,
+  });
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -72,19 +82,6 @@ const Map = ({ clickData, setStoreList, storeList }) => {
     }
   }, []);
 
-  useEffect(() => {
-    if (location) {
-      updateAddress(location.lat, location.lng);
-      updateStoreList();
-    }
-  }, [location]);
-
-  useEffect(() => {
-    if (clickData) {
-      setSelected(clickData);
-    }
-  }, [clickData]);
-
   const updateAddress = async (lat, lng) => {
     try {
       const res = await getAddress(lat, lng);
@@ -103,31 +100,24 @@ const Map = ({ clickData, setStoreList, storeList }) => {
     }
   };
 
-  const onMapClick = useCallback((e) => {
-    const newLocation = {
-      lat: e.latLng.lat(),
-      lng: e.latLng.lng(),
-    };
-    setLocation(newLocation);
-    panTo(newLocation);
-  }, []);
-
-  const onMapLoad = useCallback((map) => {
-    mapRef.current = map;
-  }, []);
-
-  const panTo = useCallback(({ lat, lng }) => {
-    if (mapRef.current && lat && lng) {
-      mapRef.current.panTo({ lat, lng });
-      mapRef.current.setZoom(15);
+  useEffect(() => {
+    if (location) {
+      updateAddress(location.lat, location.lng);
+      updateStoreList();
     }
-  }, []);
+  }, [location]);
+
+  useEffect(() => {
+    if (clickData) {
+      setSelected(clickData);
+    }
+  }, [clickData]);
 
   const Locate = () => (
     <div className="locate">
-      <img 
-        src={require("./compass.png")} 
-        alt="compass" 
+      <img
+        src={require("./compass.png")}
+        alt="compass"
         onClick={() => {
           navigator.geolocation.getCurrentPosition(
             (position) => {
@@ -189,7 +179,21 @@ const Map = ({ clickData, setStoreList, storeList }) => {
           />
         ))}
 
-        <CircleF options={circleOptions} />
+        <CircleF
+          options={{
+            strokeColor: "#90daee",
+            strokeOpacity: 0.5,
+            strokeWeight: 1,
+            fillColor: "grey",
+            fillOpacity: 0.4,
+            clickable: false,
+            draggable: false,
+            editable: false,
+            visible: true,
+            radius: 1000,
+            center: location,
+          }}
+        />
 
         {selected && (
           <InfoWindowF
@@ -206,7 +210,7 @@ const Map = ({ clickData, setStoreList, storeList }) => {
         )}
 
         <Locate />
-        
+
         <div className="search">
           <Search panTo={panTo} setLocation={setLocation} />
         </div>
