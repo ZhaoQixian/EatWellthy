@@ -4,9 +4,6 @@ import axios from 'axios';
 const MealTaken = () => {
   const [foodList, setFoodList] = useState([]);
 
-   
-   
-
   useEffect(() => {
     const fetchFoodOptions = async () => {
       try {
@@ -23,11 +20,8 @@ const MealTaken = () => {
     fetchFoodOptions();  
   }, []);
   
-
-  
   const handleDelete = async (id) => {
     try {
-       
       await axios.delete(`http://localhost:5050/nutrition/delete/${id}`);
       setFoodList(foodList.filter(food => food._id !== id));  
     } catch (error) {
@@ -41,16 +35,56 @@ const MealTaken = () => {
       <table>
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Energy(kcal)</th>
-            <th>Fat(g)</th>
-            <th>Sugar(g)</th>
-            <th>Fiber(g)</th>
-            <th>Protein(g)</th>
-            <th>Sodium(mg)</th>
-            <th>Vitamin C(mg)</th>
-            <th>Calcium(mg)</th>
-            <th>Iron(mg)</th>
+            <th>
+              Name
+              <br />
+              <span className="unit"></span>
+            </th>
+            <th>
+              Energy
+              <br />
+              <span className="unit">(kcal)</span>
+            </th>
+            <th>
+              Fat
+              <br />
+              <span className="unit">(g)</span>
+            </th>
+            <th>
+              Sugar
+              <br />
+              <span className="unit">(g)</span>
+            </th>
+            <th>
+              Fiber
+              <br />
+              <span className="unit">(g)</span>
+            </th>
+            <th>
+              Protein
+              <br />
+              <span className="unit">(g)</span>
+            </th>
+            <th>
+              Sodium
+              <br />
+              <span className="unit">(mg)</span>
+            </th>
+            <th>
+              Vitamin C
+              <br />
+              <span className="unit">(mg)</span>
+            </th>
+            <th>
+              Calcium
+              <br />
+              <span className="unit">(mg)</span>
+            </th>
+            <th>
+              Iron
+              <br />
+              <span className="unit">(mg)</span>
+            </th>
             <th>Actions</th>
           </tr>
         </thead>

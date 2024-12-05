@@ -88,22 +88,24 @@ const RecentMeals = ({ userId }) => {
       <h2>{title}</h2>
       <div className="table-container">
         <table>
-          <thead>
-            <tr>
-              <th>Meal Type</th>
-              <th>Food</th>
-              <th>Amount</th>
-              <th>Energy(kcal)</th>
-              <th>Fat(g)</th>
-              <th>Sugar(g)</th>
-              <th>Fiber(g)</th>
-              <th>Protein(g)</th>
-              <th>Sodium(mg)</th>
-              <th>Vitamin C(mg)</th>
-              <th>Calcium(mg)</th>
-              <th>Iron(mg)</th>
-            </tr>
-          </thead>
+        <thead>
+  <tr>
+    <th style={{ width: '100px' }}>Meal Type</th>
+    <th style={{ width: '120px' }}>Food</th>
+    <th style={{ width: '60px' }}>Amount</th>
+    <th style={{ width: '80px' }}>Energy<br />(kcal)</th>
+    <th style={{ width: '60px' }}>Fat<br />(g)</th>
+    <th style={{ width: '60px' }}>Sugar<br />(g)</th>
+    <th style={{ width: '60px' }}>Fiber<br />(g)</th>
+    <th style={{ width: '60px' }}>Protein<br />(g)</th>
+    <th style={{ width: '80px' }}>Sodium<br />(mg)</th>
+    <th style={{ width: '80px' }}>Vitamin C<br />(mg)</th>
+    <th style={{ width: '80px' }}>Calcium<br />(mg)</th>
+    <th style={{ width: '60px' }}>Iron<br />(mg)</th>
+  </tr>
+</thead>
+
+
           <tbody>
             {dayData.meals.length === 0 ? (
               <tr>

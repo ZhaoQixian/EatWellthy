@@ -303,23 +303,25 @@ const MealForm = ({ userId, mode = 'tracker' }) => {
       <h2>What you took:</h2>
       <div style={{ overflowX: "auto", width: "100%" }}>
         <table>
-          <thead>
-            <tr>
-              <th>Meal Type</th>
-              <th>Food</th>
-              <th>Amount</th>
-              <th>Energy(kcal)</th>
-              <th>Fat(g)</th>
-              <th>Sugar(g)</th>
-              <th>Fiber(g)</th>
-              <th>Protein(g)</th>
-              <th>Sodium(mg)</th>
-              <th>Vitamin C(mg)</th>
-              <th>Calcium(mg)</th>
-              <th>Iron(mg)</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+        <thead>
+  <tr>
+    <th>Meal Type</th>
+    <th>Food</th>
+    <th>Amount</th>
+    <th>Energy<br />(kcal)</th>
+    <th>Fat<br />(g)</th>
+    <th>Sugar<br />(g)</th>
+    <th>Fiber<br />(g)</th>
+    <th>Protein<br />(g)</th>
+    <th>Sodium<br />(mg)</th>
+    <th>Vitamin C<br />(mg)</th>
+    <th>Calcium<br />(mg)</th>
+    <th>Iron<br />(mg)</th>
+    <th>Actions</th>
+  </tr>
+</thead>
+
+
           <tbody>
             {foodList.map(food => (
               <tr key={food.meal._id}>

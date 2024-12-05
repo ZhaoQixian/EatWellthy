@@ -7,7 +7,7 @@ import FoodStored from './food_stored';
 import "./NutritionCalculator.css";
 
 const NutritionCalculator = () => {
-  const [formType, setFormType] = useState(null);
+  const [formType, setFormType] = useState('recentMeal');
   const [message, setMessage] = useState({ text: "", type: "" });
   const [editingFood, setEditingFood] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -16,7 +16,6 @@ const NutritionCalculator = () => {
   const { user } = useSelector((state) => state.auth);
   const { foods = [], loading, error } = useSelector((state) => state.nutrition || { foods: [], loading: true });
   const userId = user?._id;
-  const username = user?.name;
 
   useEffect(() => {
     if (userId && formType === 'customisedFood') {
@@ -58,8 +57,6 @@ const NutritionCalculator = () => {
       showMessage("Error updating food: " + (err.response?.data?.msg || "Unknown error"), "error");
     }
   };
-
-  
 
   const add_nutrition_infor2 = useCallback(async(e) => {
     e.preventDefault();
@@ -110,12 +107,8 @@ const NutritionCalculator = () => {
     setTimeout(() => setMessage({ text: "", type: "" }), 5000);
   };
 
-  useEffect(() => {
-    setFormType('recentMeal');
-  }, []);
-
   const renderCustomFoodTable = () => (
-    <div className="custom-foods-section">
+    <div className="faqs__container" style={{ maxWidth: '1200px' }}>
       {!showAddForm && (
         <>
           <h3>My Custom Foods</h3>
@@ -129,15 +122,15 @@ const NutritionCalculator = () => {
                 <thead>
                   <tr>
                     <th>Name</th>
-                    <th>Energy(kcal)</th>
-                    <th>Fat(g)</th>
-                    <th>Sugar(g)</th>
-                    <th>Fiber(g)</th>
-                    <th>Protein(g)</th>
-                    <th>Sodium(mg)</th>
-                    <th>Vitamin C(mg)</th>
-                    <th>Calcium(mg)</th>
-                    <th>Iron(mg)</th>
+                    <th>Energy (kcal)</th>
+                    <th>Fat (g)</th>
+                    <th>Sugar (g)</th>
+                    <th>Fiber (g)</th>
+                    <th>Protein (g)</th>
+                    <th>Sodium (mg)</th>
+                    <th>Vitamin C (mg)</th>
+                    <th>Calcium (mg)</th>
+                    <th>Iron (mg)</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -151,15 +144,15 @@ const NutritionCalculator = () => {
                       editingFood === food._id ? (
                         <tr key={food._id}>
                           <td>{food.name}</td>
-                          <td><input type="number" id={`food_energy_${food._id}`} defaultValue={food.energy} /></td>
-                          <td><input type="number" id={`food_fat_${food._id}`} defaultValue={food.fat} /></td>
-                          <td><input type="number" id={`food_sugar_${food._id}`} defaultValue={food.sugar} /></td>
-                          <td><input type="number" id={`food_fiber_${food._id}`} defaultValue={food.fiber} /></td>
-                          <td><input type="number" id={`food_protein_${food._id}`} defaultValue={food.protein} /></td>
-                          <td><input type="number" id={`food_sodium_${food._id}`} defaultValue={food.sodium} /></td>
-                          <td><input type="number" id={`food_vc_${food._id}`} defaultValue={food.vitamin_c} /></td>
-                          <td><input type="number" id={`food_calcium_${food._id}`} defaultValue={food.calcium} /></td>
-                          <td><input type="number" id={`food_iron_${food._id}`} defaultValue={food.iron} /></td>
+                          <td><input type="number" id={`food_energy_${food._id}`} defaultValue={food.energy} style={{ width: '60px' }} /></td>
+                          <td><input type="number" id={`food_fat_${food._id}`} defaultValue={food.fat} style={{ width: '60px' }} /></td>
+                          <td><input type="number" id={`food_sugar_${food._id}`} defaultValue={food.sugar} style={{ width: '60px' }} /></td>
+                          <td><input type="number" id={`food_fiber_${food._id}`} defaultValue={food.fiber} style={{ width: '60px' }} /></td>
+                          <td><input type="number" id={`food_protein_${food._id}`} defaultValue={food.protein} style={{ width: '60px' }} /></td>
+                          <td><input type="number" id={`food_sodium_${food._id}`} defaultValue={food.sodium} style={{ width: '60px' }} /></td>
+                          <td><input type="number" id={`food_vc_${food._id}`} defaultValue={food.vitamin_c} style={{ width: '60px' }} /></td>
+                          <td><input type="number" id={`food_calcium_${food._id}`} defaultValue={food.calcium} style={{ width: '60px' }} /></td>
+                          <td><input type="number" id={`food_iron_${food._id}`} defaultValue={food.iron} style={{ width: '60px' }} /></td>
                           <td>
                             <button onClick={(e) => handleEdit(e, food)}>Save</button>
                             <button onClick={() => setEditingFood(null)}>Cancel</button>
@@ -201,15 +194,15 @@ const NutritionCalculator = () => {
           <form id="add_food_form" onSubmit={add_nutrition_infor2}>
             <h3>Add New Custom Food:</h3>
             <p>Name: <input type="text" id="name" name='name' autoComplete="off" required /></p>
-            <p>Energy (in kcal): <input type="number" id="food_energy" autoComplete="off" required /></p>
-            <p>Fat (in grams): <input type="number" id="food_fat" autoComplete="off" /></p>
-            <p>Sugar (in grams): <input type="number" id="food_sugar" autoComplete="off" /></p>
-            <p>Fiber (in grams): <input type="number" id="food_fiber" autoComplete="off" /></p>
-            <p>Protein (in grams): <input type="number" id="food_protein" autoComplete="off" /></p>
-            <p>Sodium (in milligrams): <input type="number" id="food_sodium" autoComplete="off" /></p>
-            <p>Vitamin_c (in milligrams): <input type="number" id="food_vc" autoComplete="off" /></p>
-            <p>Calcium (in milligrams): <input type="number" id="food_calcium" autoComplete="off" /></p>
-            <p>Iron (in milligrams): <input type="number" id="food_iron" autoComplete="off" /></p>
+            <p>Energy (in kcal): <input type="number" id="food_energy" autoComplete="off" required style={{ width: '80px' }} /></p>
+            <p>Fat (in grams): <input type="number" id="food_fat" autoComplete="off" style={{ width: '80px' }} /></p>
+            <p>Sugar (in grams): <input type="number" id="food_sugar" autoComplete="off" style={{ width: '80px' }} /></p>
+            <p>Fiber (in grams): <input type="number" id="food_fiber" autoComplete="off" style={{ width: '80px' }} /></p>
+            <p>Protein (in grams): <input type="number" id="food_protein" autoComplete="off" style={{ width: '80px' }} /></p>
+            <p>Sodium (in milligrams): <input type="number" id="food_sodium" autoComplete="off" style={{ width: '80px' }} /></p>
+            <p>Vitamin C (in milligrams): <input type="number" id="food_vc" autoComplete="off" style={{ width: '80px' }} /></p>
+            <p>Calcium (in milligrams): <input type="number" id="food_calcium" autoComplete="off" style={{ width: '80px' }} /></p>
+            <p>Iron (in milligrams): <input type="number" id="food_iron" autoComplete="off" style={{ width: '80px' }} /></p>
 
             <div className="add_food_bottom_buttons">
               <button className="submit" type="submit">Submit</button>
@@ -223,48 +216,50 @@ const NutritionCalculator = () => {
   );
 
   return (
-    <div>
-      <h1>Nutrition Tracker</h1>
+    <div className="faqs__page-wrapper">
+      <div className="faqs__container" style={{ maxWidth: '1200px' }}>
+        <h1 className="faqs__title">Nutrition Tracker</h1>
 
-      <div id="food_meal_buttons" className="select">
-        <li id="recent_meal" onClick={() => setFormType('recentMeal')}>
-          Recent meals
-        </li>
-        <li id="tracker" onClick={() => setFormType('tracker')}>
-          Tracker
-        </li>
-        <li id="history_search" onClick={() => setFormType('historySearch')}>
-          History Search
-        </li>
-        <li id="customised_food" onClick={() => setFormType('customisedFood')}>
-          Customised Food
-        </li>
-      </div>
-
-      {message.text && (
-        <div className={`message ${message.type === "error" ? "error" : "success"}`}>
-          {message.text}
+        <div id="food_meal_buttons" className="select">
+          <li id="recent_meal" onClick={() => setFormType('recentMeal')}>
+            Recent meals
+          </li>
+          <li id="tracker" onClick={() => setFormType('tracker')}>
+            Tracker
+          </li>
+          <li id="history_search" onClick={() => setFormType('historySearch')}>
+            History Search
+          </li>
+          <li id="customised_food" onClick={() => setFormType('customisedFood')}>
+            Customised Food
+          </li>
         </div>
-      )}
 
-      <div id="food_meal_forms">
-        {formType === 'recentMeal' && (
-          <RecentMeals userId={userId} />
-        )}
-
-        {formType === 'tracker' && (
-          <MealForm userId={userId} mode="tracker" />
-        )}
-
-        {formType === 'historySearch' && (
-          <MealForm userId={userId} mode="historySearch" />
-        )}
-
-        {formType === 'customisedFood' && (
-          <div>
-            {renderCustomFoodTable()}
+        {message.text && (
+          <div className={`message ${message.type === "error" ? "error" : "success"}`}>
+            {message.text}
           </div>
         )}
+
+        <div id="food_meal_forms" style={{ overflow: 'hidden' }}>
+          {formType === 'recentMeal' && (
+            <RecentMeals userId={userId} />
+          )}
+
+          {formType === 'tracker' && (
+            <MealForm userId={userId} mode="tracker" />
+          )}
+
+          {formType === 'historySearch' && (
+            <MealForm userId={userId} mode="historySearch" />
+          )}
+
+          {formType === 'customisedFood' && (
+            <div>
+              {renderCustomFoodTable()}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
