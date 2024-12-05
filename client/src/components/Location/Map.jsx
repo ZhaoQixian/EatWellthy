@@ -32,7 +32,6 @@ const Map = ({ clickData, setStoreList, storeList }) => {
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries,
   });
-
   const [selected, setSelected] = useState(null);
   const [location, setLocation] = useState(defaultCenter);
   const [address, setAddress] = useState(null);
@@ -52,6 +51,37 @@ const Map = ({ clickData, setStoreList, storeList }) => {
     center: location,
   };
 
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const newLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          setLocation(newLocation);
+          updateAddress(newLocation.lat, newLocation.lng);
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+          setLocation(defaultCenter);
+          updateAddress(defaultCenter.lat, defaultCenter.lng);
+        }
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    if (location) {
+      updateAddress(location.lat, location.lng);
+      updateStoreList();
+    }
+  }, [location]);
+  useEffect(() => {
+    if (clickData) {
+      setSelected(clickData);
+    }
+  }, [clickData]);
   const updateAddress = async (lat, lng) => {
     try {
       const res = await getAddress(lat, lng);
@@ -70,42 +100,17 @@ const Map = ({ clickData, setStoreList, storeList }) => {
     }
   };
 
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const newLocation = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
-          setLocation(newLocation);
-          updateAddress(newLocation.lat, newLocation.lng);
-        },
-        (error) => {
-          console.error("Error getting location:", error);
-          setLocation(defaultCenter);
-          updateAddress(defaultCenter.lat, defaultCenter.lng);
-        }
-      );
-    } else {
-      // If geolocation is not available, use default location
-      setLocation(defaultCenter);
-      updateAddress(defaultCenter.lat, defaultCenter.lng);
-    }
+  const onMapClick = useCallback((e) => {
+    const newLocation = {
+      lat: e.latLng.lat(),
+      lng: e.latLng.lng(),
+    };
+    setLocation(newLocation);
+    panTo(newLocation);
   }, []);
-
-  useEffect(() => {
-    if (location) {
-      updateAddress(location.lat, location.lng);
-      updateStoreList();
-    }
-  }, [location]);
-
-  useEffect(() => {
-    if (clickData) {
-      setSelected(clickData);
-    }
-  }, [clickData]);
+  const onMapLoad = useCallback((map) => {
+    mapRef.current = map;
+  }, []);
 
   const panTo = useCallback(({ lat, lng }) => {
     if (mapRef.current && lat && lng) {
@@ -114,27 +119,11 @@ const Map = ({ clickData, setStoreList, storeList }) => {
     }
   }, []);
 
-  const onMapClick = useCallback(
-    (e) => {
-      const newLocation = {
-        lat: e.latLng.lat(),
-        lng: e.latLng.lng(),
-      };
-      setLocation(newLocation);
-      panTo(newLocation);
-    },
-    [panTo]
-  );
-
-  const onMapLoad = useCallback((map) => {
-    mapRef.current = map;
-  }, []);
-
   const Locate = () => (
     <div className="locate">
-      <img
-        src={require("./compass.png")}
-        alt="compass"
+      <img 
+        src={require("./compass.png")} 
+        alt="compass" 
         onClick={() => {
           navigator.geolocation.getCurrentPosition(
             (position) => {
@@ -213,14 +202,9 @@ const Map = ({ clickData, setStoreList, storeList }) => {
         )}
 
         <Locate />
-
-        {/* Pass isLoaded to Search component */}
+        
         <div className="search">
-          <Search
-            panTo={panTo}
-            setLocation={setLocation}
-            isLoaded={isLoaded}
-          />
+          <Search panTo={panTo} setLocation={setLocation} />
         </div>
 
         {address && (

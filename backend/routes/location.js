@@ -5,10 +5,10 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-// Route to fetch nearby supermarkets based on location
 locationRouter.post("/", async (req, res) => {
   const location = req.body;
   const url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
+  // console.log(location);
 
   let config = {
     method: "get",
@@ -28,25 +28,12 @@ locationRouter.post("/", async (req, res) => {
         item.name.toLowerCase().includes("cs fresh") ||
         item.name.toLowerCase().includes("prime")
     );
+    console.log(filteredResult);
 
+    // return res.status(200).json(response.data.results);
     return res.status(200).json(filteredResult);
   } catch (e) {
-    console.error(e);
-    return res.status(500).json({ error: "Failed to fetch location data" });
-  }
-});
-
-// Route to fetch Google Maps API key
-locationRouter.get("/google-maps-api-key", (req, res) => {
-  try {
-    const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
-    if (!apiKey) {
-      return res.status(404).json({ error: "Google Maps API key not found" });
-    }
-    res.status(200).json({ apiKey });
-  } catch (e) {
-    console.error("Error fetching API key:", e);
-    return res.status(500).json({ error: "Failed to fetch API key" });
+    console.log(e);
   }
 });
 

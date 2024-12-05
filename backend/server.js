@@ -1,4 +1,3 @@
-// Import necessary modules and routes
 const dotenv = require("dotenv");
 const express = require("express");
 const mongoose = require("mongoose");
@@ -11,7 +10,7 @@ const cookieSession = require("cookie-session");
 const passportSetup = require("./passport/passportConfig");
 const auth = require("./routes/Auth");
 const googleAuth = require("./routes/googleAuth");
-const locationRouter = require("./routes/location"); // Location route
+const locationRouter = require("./routes/location");
 const nutrition = require("./routes/Nutrition");
 const scrapeRoutes = require("./routes/scrapeRoutes");
 const wellohRountes = require("./routes/wellohAI");
@@ -71,7 +70,7 @@ app.get("/", (req, res) => {
 
 app.use("/users/google", googleAuth);
 app.use("/users", auth);
-app.use("/location", locationRouter); // Register location router here
+app.use("/location", locationRouter);
 app.use("/nutrition/", nutrition);
 app.use("/api/scrape", scrapeRoutes);
 app.use("/welloh", wellohRountes);

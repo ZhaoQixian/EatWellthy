@@ -12,10 +12,9 @@ import {
 import axios from "axios";
 import "./map.css";
 import "@reach/combobox/styles.css";
-import appConfig from "../../config"; // Renamed to appConfig
+import appConfig from '../../config';  // Renamed to appConfig
 
-export const Search = ({ panTo, setLocation, isLoaded }) => {
-  // Hooks must be called unconditionally
+export const Search = ({ panTo, setLocation }) => {
   const {
     ready,
     value,
@@ -24,25 +23,12 @@ export const Search = ({ panTo, setLocation, isLoaded }) => {
     clearSuggestions,
   } = usePlacesAutocomplete({
     requestOptions: {
-      location: { lat: 1.29027, lng: 103.851959 }, // Use numbers instead of functions
-      radius: 1000, // Radius in meters
+      location: { lat: () => 1.29027, lng: () => 103.851959 },
+      radius: 1 * 1000,
     },
   });
 
-  // Handle the case when Google Maps API is not loaded yet
-  if (!isLoaded) {
-    return (
-      <Combobox className="box-style">
-        <ComboboxInput
-          className="box-input"
-          value=""
-          onChange={() => {}}
-          disabled={true}
-          placeholder="Loading..."
-        />
-      </Combobox>
-    );
-  }
+  // https://developers.google.com/maps/documentation/javascript/reference/places-autocomplete-service#AutocompletionRequest
 
   const handleInput = (e) => {
     setValue(e.target.value);
@@ -79,8 +65,8 @@ export const Search = ({ panTo, setLocation, isLoaded }) => {
       <ComboboxPopover>
         <ComboboxList>
           {status === "OK" &&
-            data.map(({ place_id, description }) => (
-              <ComboboxOption key={place_id} value={description} />
+            data.map(({ id, description }) => (
+              <ComboboxOption key={id} value={description} />
             ))}
         </ComboboxList>
       </ComboboxPopover>
@@ -89,21 +75,29 @@ export const Search = ({ panTo, setLocation, isLoaded }) => {
 };
 
 export const getAddress = (lat, lng) => {
-  const axiosConfig = {
+  let axiosConfig = {  // Renamed to axiosConfig
     method: "get",
     url: `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`,
     headers: {},
   };
-  return axios.request(axiosConfig);
+  const promiseAddress = new Promise((resolve, reject) => {
+    resolve(axios.request(axiosConfig));
+    reject(new Error("Failed to retrieve address!"));
+  });
+  return promiseAddress;
 };
 
 export const getStoreList = (location) => {
-  const axiosConfig = {
+  let axiosConfig = {  // Renamed to axiosConfig
     method: "post",
-    url: `${appConfig.backendUrl}/location`,
+    url: `${appConfig.backendUrl}/location`,  // Using appConfig instead
     headers: {},
     data: location,
   };
 
-  return axios.request(axiosConfig).then((response) => response.data);
+  const promiseStoreList = new Promise((resolve, reject) => {
+    resolve(axios.request(axiosConfig).then((response) => response.data));
+    reject(new Error("Failed to retrieve store!"));
+  });
+  return promiseStoreList;
 };
