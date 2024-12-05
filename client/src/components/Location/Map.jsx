@@ -28,12 +28,85 @@ const options = {
 };
 
 const Map = ({ clickData, setStoreList, storeList }) => {
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+    libraries,
+  });
+
   const [selected, setSelected] = useState(null);
   const [location, setLocation] = useState(defaultCenter);
   const [address, setAddress] = useState(null);
   const mapRef = useRef();
 
-  // Initialize panTo first to avoid reference issues
+  const circleOptions = {
+    strokeColor: "#90daee",
+    strokeOpacity: 0.5,
+    strokeWeight: 1,
+    fillColor: "grey",
+    fillOpacity: 0.4,
+    clickable: false,
+    draggable: false,
+    editable: false,
+    visible: true,
+    radius: 1000,
+    center: location,
+  };
+
+  const updateAddress = async (lat, lng) => {
+    try {
+      const res = await getAddress(lat, lng);
+      setAddress(res.data.address);
+    } catch (err) {
+      console.error("Error fetching address:", err);
+    }
+  };
+
+  const updateStoreList = async () => {
+    try {
+      const data = await getStoreList(location);
+      setStoreList(data);
+    } catch (err) {
+      console.error("Error fetching stores:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const newLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          setLocation(newLocation);
+          updateAddress(newLocation.lat, newLocation.lng);
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+          setLocation(defaultCenter);
+          updateAddress(defaultCenter.lat, defaultCenter.lng);
+        }
+      );
+    } else {
+      // If geolocation is not available, use default location
+      setLocation(defaultCenter);
+      updateAddress(defaultCenter.lat, defaultCenter.lng);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (location) {
+      updateAddress(location.lat, location.lng);
+      updateStoreList();
+    }
+  }, [location]);
+
+  useEffect(() => {
+    if (clickData) {
+      setSelected(clickData);
+    }
+  }, [clickData]);
+
   const panTo = useCallback(({ lat, lng }) => {
     if (mapRef.current && lat && lng) {
       mapRef.current.panTo({ lat, lng });
@@ -56,62 +129,6 @@ const Map = ({ clickData, setStoreList, storeList }) => {
   const onMapLoad = useCallback((map) => {
     mapRef.current = map;
   }, []);
-
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-    libraries,
-  });
-
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const newLocation = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
-          setLocation(newLocation);
-          updateAddress(newLocation.lat, newLocation.lng);
-        },
-        (error) => {
-          console.error("Error getting location:", error);
-          setLocation(defaultCenter);
-          updateAddress(defaultCenter.lat, defaultCenter.lng);
-        }
-      );
-    }
-  }, []);
-
-  const updateAddress = async (lat, lng) => {
-    try {
-      const res = await getAddress(lat, lng);
-      setAddress(res.data.address);
-    } catch (err) {
-      console.error("Error fetching address:", err);
-    }
-  };
-
-  const updateStoreList = async () => {
-    try {
-      const data = await getStoreList(location);
-      setStoreList(data);
-    } catch (err) {
-      console.error("Error fetching stores:", err);
-    }
-  };
-
-  useEffect(() => {
-    if (location) {
-      updateAddress(location.lat, location.lng);
-      updateStoreList();
-    }
-  }, [location]);
-
-  useEffect(() => {
-    if (clickData) {
-      setSelected(clickData);
-    }
-  }, [clickData]);
 
   const Locate = () => (
     <div className="locate">
@@ -179,21 +196,7 @@ const Map = ({ clickData, setStoreList, storeList }) => {
           />
         ))}
 
-        <CircleF
-          options={{
-            strokeColor: "#90daee",
-            strokeOpacity: 0.5,
-            strokeWeight: 1,
-            fillColor: "grey",
-            fillOpacity: 0.4,
-            clickable: false,
-            draggable: false,
-            editable: false,
-            visible: true,
-            radius: 1000,
-            center: location,
-          }}
-        />
+        <CircleF options={circleOptions} />
 
         {selected && (
           <InfoWindowF
@@ -211,8 +214,13 @@ const Map = ({ clickData, setStoreList, storeList }) => {
 
         <Locate />
 
+        {/* Pass isLoaded to Search component */}
         <div className="search">
-          <Search panTo={panTo} setLocation={setLocation} />
+          <Search
+            panTo={panTo}
+            setLocation={setLocation}
+            isLoaded={isLoaded}
+          />
         </div>
 
         {address && (
