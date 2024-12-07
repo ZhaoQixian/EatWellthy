@@ -50,10 +50,14 @@ Clone the entire repository using Git or the GitHub Desktop app:
      ```
 
 ### 2. Environment Setup
-Open the .env file at EatWellthy/backend/.env_example, key in your API keys
+Open EatWellthy/backend/.env.example, key in your API keys, rename as .env
 ```
 MONGODB_URI=your_mongodb_uri
 NUTRITION_API_KEY=your_api_key
+```
+Open EatWellthy/client/.env.example, key in your API key, rename as .env
+```
+REACT_APP_GOOGLE_MAPS_API_KEY=your_api_key
 ```
 
 ### 3. Install Dependencies
