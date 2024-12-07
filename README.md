@@ -12,7 +12,8 @@ A comprehensive web application built with the MERN stack (MongoDB, Express.js, 
 ## 🌐 Live Demo & Deployment
 - **Demo Video**: [Watch on YouTube](https://www.youtube.com/watch?v=_jXpvho58wg)
 - **Deployed Application**: [EatWellthy](https://eatwellthy.onrender.com)
-- This deployed application may be inactive periodically
+- This deployed website application may be inactive periodically
+- and works the best with Chrome/Edge Browser on your desktop devices with stable internet connection
 - It is highly recommended to clone this repository and use localhost
 
 ## 👥 Team Members
